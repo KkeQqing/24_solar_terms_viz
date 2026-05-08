@@ -1,7 +1,8 @@
-// 主题切换
-function toggleTheme() {
+// assets/js/modules/theme.js
+window.toggleTheme = () => {
   document.body.classList.toggle('dark');
-  updateCharts(solarTerms[currentTermIndex]);
-  if (compareChart) renderCompare();
-  if (analysisChart) renderAnalysisChart(currentAnalysisType);
-}
+  if(window.updateCharts) window.updateCharts(window.solarTerms[window.currentTermIndex]);
+  else if(window.refreshAllCharts) window.refreshAllCharts();
+  if(window.compareChart) window.renderCompare();
+  if(window.analysisChart) window.renderAnalysisChart(window.currentAnalysisType);
+};

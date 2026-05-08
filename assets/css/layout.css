@@ -1,3 +1,4 @@
+/* assets/css/layout.css */
 .app {
   width: min(100vw, 1540px);
   height: 100vh;
@@ -10,99 +11,22 @@
   position: relative;
   z-index: 2;
 }
-
-header {
-  grid-column: 1/4;
-  grid-row: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.left-col {
-  grid-column: 1;
-  grid-row: 2/4;
-  display: grid;
-  grid-template-rows: 1fr .92fr;
-  gap: 16px;
-  min-height: 0;
-}
-
-.center-col {
-  grid-column: 2;
-  grid-row: 2/4;
-  display: grid;
-  grid-template-rows: 64px minmax(0, 1fr) 92px;
-  gap: 14px;
-  min-width: 0;
-  min-height: 0;
-}
-
-.right-col {
-  grid-column: 3;
-  grid-row: 2/4;
-  display: grid;
-  grid-template-rows: 1fr 1fr .92fr;
-  gap: 16px;
-  min-height: 0;
-}
-
-.timeline-card {
-  grid-column: 1/4;
-  grid-row: 4;
-  position: relative;
-  min-height: 122px;
-}
-
+header { grid-column: 1/4; grid-row: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.left-col { grid-column: 1; grid-row: 2/4; display: grid; grid-template-rows: 1fr 0.92fr; gap: 16px; min-height: 0; }
+.center-col { grid-column: 2; grid-row: 2/4; display: grid; grid-template-rows: 64px minmax(0, 1fr) 92px; gap: 14px; min-width: 0; min-height: 0; }
+.right-col { grid-column: 3; grid-row: 2/4; display: grid; grid-template-rows: 1fr 1fr 0.92fr; gap: 16px; min-height: 0; }
+.timeline-card { grid-column: 1/4; grid-row: 4; position: relative; min-height: 122px; }
 @media (max-width: 1120px) {
-  html,
-  body {
-    overflow: auto;
-  }
-
-  .app {
-    width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    padding: 18px;
-  }
-
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: color-mix(in srgb, var(--bg) 78%, transparent);
-    backdrop-filter: blur(14px);
-    padding: 8px;
-    border-radius: 18px;
-  }
-
-  .left-col,
-  .center-col,
-  .right-col {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .glass {
-    min-height: 220px;
-  }
-
-  .main-map-card {
-    min-height: 460px;
-  }
-
-  .timeline-card {
-    min-height: 124px;
-  }
-
-  .desktop-only {
-    display: none;
-  }
-
-  .modal-kpi-grid {
-    grid-template-columns: 1fr;
-  }
+  html, body { overflow: auto; }
+  .app { width: 100%; height: auto; display: flex; flex-direction: column; padding: 18px; }
+  header { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(14px); border-radius: 18px; }
+  .left-col, .center-col, .right-col { display: flex; flex-direction: column; }
+  .glass { min-height: 220px; }
+  .main-map-card { min-height: 460px; }
+  .timeline-card { min-height: 124px; }
+  .desktop-only { display: none; }
+  .modal-kpi-grid { grid-template-columns: 1fr; }
 }
+.title-mark { width: 2px; height: 56px; background: var(--gold); margin-right: 16px; box-shadow: 0 0 18px rgba(214, 169, 40, 0.5); }
+.term-title { writing-mode: vertical-rl; letter-spacing: 0.35rem; font-size: 58px; font-weight: 900; line-height: 1; text-shadow: 0 10px 26px rgba(0, 0, 0, 0.08); }
+.season-strip { height: 4px; border-radius: 999px; background: linear-gradient(90deg, #9ccc65 0 25%, #ff7043 25% 50%, #fdd835 50% 75%, #b6cbe1 75% 100%); }

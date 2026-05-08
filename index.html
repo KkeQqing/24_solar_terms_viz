@@ -1,14 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>岁时华夏 —— 二十四节气文化与物候数据大屏</title>
+  <!-- 外部库 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-
-  <!-- CSS 引入 -->
+  <!-- 自定义样式 -->
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="assets/css/theme.css">
   <link rel="stylesheet" href="assets/css/layout.css">
@@ -20,6 +20,7 @@
   <div id="toast" class="toast"></div>
 
   <main class="app">
+    <!-- 头部区域 -->
     <header>
       <div class="flex items-center">
         <div class="title-mark"></div>
@@ -28,7 +29,6 @@
           <p class="font-sans text-xs tracking-[.34em]">CHRONICLES OF THE SEASONS</p>
         </div>
       </div>
-
       <div class="flex flex-col items-end gap-3">
         <div class="text-right desktop-only">
           <div id="current-date" class="font-sans text-lg font-bold"></div>
@@ -49,11 +49,10 @@
       </div>
     </header>
 
+    <!-- 左侧列 -->
     <section class="left-col">
       <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="phenology">
-        <div class="card-title">
-          <iconify-icon style="color:var(--gold)" icon="ph:plant-bold"></iconify-icon>
-          <span>南北物候联觉</span>
+        <div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:plant-bold"></iconify-icon><span>南北物候联觉</span>
           <div class="ml-auto flex gap-1" onclick="event.stopPropagation()">
             <button class="btn small-btn region-btn active" type="button" data-region="north">北方</button>
             <button class="btn small-btn region-btn" type="button" data-region="south">南方</button>
@@ -62,30 +61,18 @@
         <div class="chart flex-1" id="phenology-chart"></div>
         <p class="hint mt-1" id="phenology-desc"></p>
       </div>
-
       <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="climate">
-        <div class="card-title">
-          <iconify-icon style="color:var(--gold)" icon="ph:cloud-sun-bold"></iconify-icon>
-          <span>近十年气候变化</span>
-        </div>
+        <div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:cloud-sun-bold"></iconify-icon><span>近十年气候变化</span></div>
         <div class="grid grid-cols-3 gap-2 mt-3 font-sans">
-          <div class="stat-card text-center" data-analysis="climate">
-            <p class="hint">十年均温</p>
-            <div class="text-xl font-black" id="avg-temp">--</div>
-          </div>
-          <div class="stat-card text-center" data-analysis="climate">
-            <p class="hint">均降水</p>
-            <div class="text-xl font-black" id="avg-rain">--</div>
-          </div>
-          <div class="stat-card text-center" data-analysis="climate">
-            <p class="hint">趋势</p>
-            <div class="text-xl font-black" id="climate-trend">--</div>
-          </div>
+          <div class="stat-card text-center"><p class="hint">十年均温</p><div class="text-xl font-black" id="avg-temp">--</div></div>
+          <div class="stat-card text-center"><p class="hint">均降水</p><div class="text-xl font-black" id="avg-rain">--</div></div>
+          <div class="stat-card text-center"><p class="hint">趋势</p><div class="text-xl font-black" id="climate-trend">--</div></div>
         </div>
         <div class="chart flex-1" id="climate-chart"></div>
       </div>
     </section>
 
+    <!-- 中央列 -->
     <section class="center-col">
       <div class="glass p-3 flex items-center gap-2 relative" style="z-index:30">
         <div class="relative flex-1">
@@ -96,158 +83,48 @@
         <button class="btn" id="prev-btn" type="button"><iconify-icon icon="ph:caret-left-bold"></iconify-icon></button>
         <button class="btn" id="next-btn" type="button"><iconify-icon icon="ph:caret-right-bold"></iconify-icon></button>
       </div>
-
       <div class="glass main-map-card module-card" data-analysis="space">
         <div id="main-map" class="w-full h-full"></div>
-
-        <div class="absolute left-8 top-10 pointer-events-none">
-          <div class="term-title" id="solar-title">谷雨</div>
-          <div class="font-sans text-xs tracking-[.28em] mt-4" style="color:var(--sub)" id="solar-pinyin">GU YU</div>
-        </div>
-
+        <div class="absolute left-8 top-10 pointer-events-none"><div class="term-title" id="solar-title">谷雨</div><div class="font-sans text-xs tracking-[.28em] mt-4" style="color:var(--sub)" id="solar-pinyin">GU YU</div></div>
         <div class="absolute right-5 top-5 flex flex-col gap-2" onclick="event.stopPropagation()">
           <button class="btn small-btn" id="fav-btn" type="button"><iconify-icon id="fav-icon" icon="ph:star-bold"></iconify-icon><span id="fav-label">收藏</span></button>
           <button class="btn small-btn" id="compare-btn" type="button"><iconify-icon icon="ph:chart-line-up-bold"></iconify-icon>对比</button>
           <button class="btn small-btn" id="detail-btn" type="button"><iconify-icon icon="ph:book-open-text-bold"></iconify-icon>详情</button>
         </div>
-
         <div class="absolute right-7 bottom-7 flex flex-col items-center" onclick="event.stopPropagation()">
-          <button class="poster-stamp" id="stamp-btn" type="button">
-            <iconify-icon class="text-3xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon>
-          </button>
+          <button class="poster-stamp" id="stamp-btn" type="button"><iconify-icon class="text-3xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon></button>
           <span class="hint mt-2" id="medal-tip">领取·谷雨勋章</span>
         </div>
       </div>
-
       <div class="glass p-4 flex items-center gap-5 module-card" data-analysis="summary">
         <div class="h-full w-1 rounded-full" style="background:var(--gold)"></div>
-        <div class="flex-1 min-w-0">
-          <div class="text-xl italic truncate" id="poem-content">“落花落尽且深藏，最是清明谷雨前。”</div>
-          <div class="hint mt-2 flex flex-wrap gap-x-4" id="three-hou"></div>
-        </div>
-        <div class="desktop-only text-right border-l pl-5" style="border-color:var(--line)">
-          <div class="hint">今日建议</div>
-          <div id="daily-advice" class="font-bold text-sm max-w-[155px]"></div>
-        </div>
+        <div class="flex-1 min-w-0"><div class="text-xl italic truncate" id="poem-content">“落花落尽且深藏，最是清明谷雨前。”</div><div class="hint mt-2 flex flex-wrap gap-x-4" id="three-hou"></div></div>
+        <div class="desktop-only text-right border-l pl-5" style="border-color:var(--line)"><div class="hint">今日建议</div><div id="daily-advice" class="font-bold text-sm max-w-[155px]"></div></div>
       </div>
     </section>
 
+    <!-- 右侧列 -->
     <section class="right-col">
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="folk">
-        <div class="card-title">
-          <iconify-icon style="color:var(--gold)" icon="ph:users-three-bold"></iconify-icon>
-          <span>华夏民俗分布</span>
-        </div>
-        <div class="chart flex-1" id="folk-chart"></div>
-      </div>
-
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="agri">
-        <div class="card-title">
-          <iconify-icon style="color:var(--gold)" icon="ph:sprout-bold"></iconify-icon>
-          <span>农事结构指数</span>
-        </div>
-        <div class="chart flex-1" id="agri-chart"></div>
-      </div>
-
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="travel">
-        <div class="card-title">
-          <iconify-icon style="color:var(--gold)" icon="ph:trend-up-bold"></iconify-icon>
-          <span>文旅热度趋势</span>
-          <span class="ml-auto hint" id="trend-score"></span>
-        </div>
-        <div class="chart flex-1" id="travel-chart"></div>
-      </div>
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="folk"><div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:users-three-bold"></iconify-icon><span>华夏民俗分布</span></div><div class="chart flex-1" id="folk-chart"></div></div>
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="agri"><div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:sprout-bold"></iconify-icon><span>农事结构指数</span></div><div class="chart flex-1" id="agri-chart"></div></div>
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="travel"><div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:trend-up-bold"></iconify-icon><span>文旅热度趋势</span><span class="ml-auto hint" id="trend-score"></span></div><div class="chart flex-1" id="travel-chart"></div></div>
     </section>
 
+    <!-- 底部时间轴 -->
     <section class="glass timeline-card p-4 flex items-center">
-      <div class="absolute left-5 top-4 z-10 px-3 py-1 rounded-full border text-xs font-bold bg-white/70" style="color:var(--gold);border-color:rgba(214,169,40,.45)">
-        24节气轴
-      </div>
+      <div class="absolute left-5 top-4 z-10 px-3 py-1 rounded-full border text-xs font-bold bg-white/70" style="color:var(--gold);border-color:rgba(214,169,40,.45)">24节气轴</div>
       <div class="absolute left-28 right-28 top-6 season-strip"></div>
       <div id="timeline" class="timeline-scroll w-full flex items-center gap-2 px-20 pt-6"></div>
     </section>
   </main>
 
-  <div class="modal" id="analysis-modal">
-    <div class="modal-card">
-      <div class="flex justify-between items-start gap-4 mb-2">
-        <div>
-          <h2 class="text-2xl font-black" id="analysis-title">节气数据分析</h2>
-          <p class="hint" id="analysis-subtitle"></p>
-        </div>
-        <button class="btn small-btn" type="button" data-close="analysis-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
-      </div>
+  <!-- 模态框 -->
+  <div class="modal" id="analysis-modal"><div class="modal-card"><div class="flex justify-between items-start gap-4 mb-2"><div><h2 class="text-2xl font-black" id="analysis-title">节气数据分析</h2><p class="hint" id="analysis-subtitle"></p></div><button class="btn small-btn" type="button" data-close="analysis-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button></div><div class="modal-kpi-grid" id="analysis-kpis"></div><div class="grid md:grid-cols-[1.15fr_.85fr] gap-4"><div class="glass p-4 shadow-none" style="height:420px"><div id="analysis-chart" style="width:100%;height:100%"></div></div><div class="glass p-4 shadow-none font-sans text-sm leading-7"><h3 class="modal-section-title">分析结论</h3><div id="analysis-text"></div><h3 class="modal-section-title mt-5">数据口径</h3><div id="analysis-source"></div></div></div></div></div>
+  <div class="modal" id="detail-modal"><div class="modal-card"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-black" id="detail-title"></h2><button class="btn small-btn" type="button" data-close="detail-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button></div><div class="grid md:grid-cols-2 gap-4 font-sans text-sm leading-7"><div class="glass p-4 shadow-none"><h3 class="font-bold mb-2">节气概览</h3><p id="detail-summary"></p></div><div class="glass p-4 shadow-none"><h3 class="font-bold mb-2">民俗与农事</h3><p id="detail-custom"></p></div></div><div class="glass p-4 shadow-none mt-4 font-sans text-sm leading-7"><h3 class="font-bold mb-2">数据解读</h3><p id="detail-data"></p></div></div></div>
+  <div class="modal" id="compare-modal"><div class="modal-card"><div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-black">节气数据对比</h2><button class="btn small-btn" type="button" data-close="compare-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button></div><div class="grid grid-cols-[1fr_1fr_auto] gap-3 mb-2 font-sans"><select id="compare-a" class="rounded-xl border px-3 py-3 bg-white text-gray-800"></select><select id="compare-b" class="rounded-xl border px-3 py-3 bg-white text-gray-800"></select><button class="btn active px-5" id="compare-render-btn" type="button">对比</button></div><p class="hint mb-2">对比结果包含气温、降雨、物候、农时、文旅五项指标。</p><div id="compare-chart" style="height:390px"></div></div></div>
+  <div class="modal" id="poster-modal"><div class="modal-card" style="max-width:420px;text-align:center"><button class="btn small-btn float-right" type="button" data-close="poster-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button><div style="clear:both"></div><div class="border-4 border-double rounded-2xl p-8 mt-2" style="border-color:var(--gold)"><iconify-icon class="text-8xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon><h2 class="text-3xl font-black mt-4" id="poster-title">谷雨 · 勋章</h2><p class="hint mt-3" id="poster-text"></p><p class="hint mt-8 tracking-[.25em]">岁时华夏</p></div><button class="btn active mt-5" id="copy-btn" type="button"><iconify-icon icon="ph:copy-bold"></iconify-icon>复制分享文案</button></div></div>
 
-      <div class="modal-kpi-grid" id="analysis-kpis"></div>
-
-      <div class="grid md:grid-cols-[1.15fr_.85fr] gap-4">
-        <div class="glass p-4 shadow-none" style="height:420px">
-          <div id="analysis-chart" style="width:100%;height:100%"></div>
-        </div>
-        <div class="glass p-4 shadow-none font-sans text-sm leading-7">
-          <h3 class="modal-section-title">分析结论</h3>
-          <div id="analysis-text"></div>
-          <h3 class="modal-section-title mt-5">数据口径</h3>
-          <div id="analysis-source"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="detail-modal">
-    <div class="modal-card">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-black" id="detail-title"></h2>
-        <button class="btn small-btn" type="button" data-close="detail-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4 font-sans text-sm leading-7">
-        <div class="glass p-4 shadow-none">
-          <h3 class="font-bold mb-2">节气概览</h3>
-          <p id="detail-summary"></p>
-        </div>
-        <div class="glass p-4 shadow-none">
-          <h3 class="font-bold mb-2">民俗与农事</h3>
-          <p id="detail-custom"></p>
-        </div>
-      </div>
-      <div class="glass p-4 shadow-none mt-4 font-sans text-sm leading-7">
-        <h3 class="font-bold mb-2">数据解读</h3>
-        <p id="detail-data"></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="compare-modal">
-    <div class="modal-card">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-black">节气数据对比</h2>
-        <button class="btn small-btn" type="button" data-close="compare-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
-      </div>
-      <div class="grid grid-cols-[1fr_1fr_auto] gap-3 mb-2 font-sans">
-        <select id="compare-a" class="rounded-xl border px-3 py-3 bg-white text-gray-800"></select>
-        <select id="compare-b" class="rounded-xl border px-3 py-3 bg-white text-gray-800"></select>
-        <button class="btn active px-5" id="compare-render-btn" type="button">对比</button>
-      </div>
-      <p class="hint mb-2">对比结果包含气温、降雨、物候、农时、文旅五项指标。</p>
-      <div id="compare-chart" style="height:390px"></div>
-    </div>
-  </div>
-
-  <div class="modal" id="poster-modal">
-    <div class="modal-card" style="max-width:420px;text-align:center">
-      <button class="btn small-btn float-right" type="button" data-close="poster-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
-      <div style="clear:both"></div>
-      <div class="border-4 border-double rounded-2xl p-8 mt-2" style="border-color:var(--gold)">
-        <iconify-icon class="text-8xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon>
-        <h2 class="text-3xl font-black mt-4" id="poster-title">谷雨 · 勋章</h2>
-        <p class="hint mt-3" id="poster-text"></p>
-        <p class="hint mt-8 tracking-[.25em]">岁时华夏</p>
-      </div>
-      <button class="btn active mt-5" id="copy-btn" type="button"><iconify-icon icon="ph:copy-bold"></iconify-icon>复制分享文案</button>
-    </div>
-  </div>
-
-  <!-- JS 引入 -->
+  <!-- 脚本引入 (按模块顺序) -->
   <script src="assets/js/core/data.js"></script>
   <script src="assets/js/core/utils.js"></script>
   <script src="assets/js/core/config.js"></script>
@@ -257,12 +134,14 @@
   <script src="assets/js/charts/folk.js"></script>
   <script src="assets/js/charts/agri.js"></script>
   <script src="assets/js/charts/travel.js"></script>
-  <script src="assets/js/modules/theme.js"></script>
   <script src="assets/js/modules/timeline.js"></script>
   <script src="assets/js/modules/search.js"></script>
   <script src="assets/js/modules/favorite.js"></script>
   <script src="assets/js/modules/autoplay.js"></script>
+  <script src="assets/js/modules/theme.js"></script>
   <script src="assets/js/modules/poster.js"></script>
+  <script src="assets/js/modules/analysis.js"></script>
+  <script src="assets/js/modules/compare.js"></script>
   <script src="assets/js/render.js"></script>
   <script src="assets/js/events.js"></script>
   <script src="assets/js/app.js"></script>

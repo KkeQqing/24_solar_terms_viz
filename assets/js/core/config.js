@@ -1,8 +1,7 @@
-// 全局状态
-let currentTermIndex = 5;
-let currentRegion = 'north';
-let autoTimer = null;
-let compareChart = null;
-let analysisChart = null;
-const charts = {};
-let currentAnalysisType = 'summary';
+// assets/js/core/config.js
+window.currentTermIndex = 5;   // 谷雨索引
+window.currentRegion = 'south';
+window.autoTimer = null;
+window.compareChart = null;
+window.analysisChart = null;
+window.charts = {};

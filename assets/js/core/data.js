@@ -1,5 +1,5 @@
-// 24节气完整数据
-const solarTerms = [
+// assets/js/core/data.js
+window.solarTerms = [
   {name:'立春',pinyin:'LI CHUN',date:'02.04',season:'spring',temp:2,rain:15,folk:['咬春','打春'],agri:'耕地',poem:'一到立春先有雪，阳气潜回万木知。',color:'#C3E88D',color2:'#FFE4E1',hou:['东风解冻','蛰虫始振','鱼陟负冰'],advice:'宜舒展筋骨，尝新芽。',north:'冰消雪融，麦田返青较迟',south:'柳芽初绽，油菜花渐盛'},
   {name:'雨水',pinyin:'YU SHUI',date:'02.19',season:'spring',temp:5,rain:35,folk:['接寿','回娘家'],agri:'选种',poem:'好雨知时节，当春乃发生。',color:'#A7E3C1',color2:'#D8F3DC',hou:['獭祭鱼','鸿雁来','草木萌动'],advice:'宜护脾胃，备春耕。',north:'积雪消融，河冰渐开',south:'春雨连绵，草木萌动'},
   {name:'惊蛰',pinyin:'JING ZHE',date:'03.05',season:'spring',temp:10,rain:45,folk:['吃梨','打小人'],agri:'春灌',poem:'微雨众卉新，一雷惊蛰始。',color:'#B5E48C',color2:'#F1FA8C',hou:['桃始华','仓庚鸣','鹰化为鸠'],advice:'宜早睡早起，防春困。',north:'蛰虫初动，桃花未盛',south:'雷声渐起，桃李始华'},
@@ -25,20 +25,7 @@ const solarTerms = [
   {name:'小寒',pinyin:'XIAO HAN',date:'01.05',season:'winter',temp:-5,rain:8,folk:['探梅','腊八粥'],agri:'积肥',poem:'小寒时节，梅花吐蕊。',color:'#94A3B8',color2:'#E8EEF6',hou:['雁北乡','鹊始巢','雉始雊'],advice:'宜防寒，食粥暖胃。',north:'寒气极盛，冰雪稳定',south:'梅花吐蕊，湿冷明显'},
   {name:'大寒',pinyin:'DA HAN',date:'01.20',season:'winter',temp:-8,rain:5,folk:['尾牙祭','除旧'],agri:'修整',poem:'大寒到顶点，日后天渐暖。',color:'#E8EEF6',color2:'#FFFFFF',hou:['鸡始乳','征鸟厉疾','水泽腹坚'],advice:'宜除旧布新，静待春归。',north:'冰封雪积，农具修整',south:'岁末除旧，花木待春'}
 ];
-
-// 南北区域配置
-const regionProfiles = {
+window.regionProfiles = {
   north:{label:'华夏·北方',tempOffset:-2,rainFactor:.82,activeOffset:-4,lag:8,desc:'北方物候略迟，昼夜温差更明显。'},
   south:{label:'华夏·南方',tempOffset:3,rainFactor:1.22,activeOffset:8,lag:-6,desc:'南方雨水丰沛，花木萌动更早。'}
-};
-
-// 分析模块元数据
-const analysisMeta = {
-  summary:{title:'综合解读',subtitle:'把节气文化、气候、农事、民俗、文旅统一成一个可讲述的数据故事。'},
-  phenology:{title:'南北物候分析',subtitle:'展示同一节气在南北地区的时间差、温度差、植被差。'},
-  climate:{title:'气候变化分析',subtitle:'把近十年均温、降水、日照作为专业数据支撑。'},
-  folk:{title:'民俗分布分析',subtitle:'用民俗参与度、地域覆盖、文化热度表达节气文化。'},
-  agri:{title:'农事适宜分析',subtitle:'突出节气对传统农业生产节奏的指导价值。'},
-  travel:{title:'文旅热度分析',subtitle:'将节气与现代文旅消费、景点热度进行关联。'},
-  space:{title:'空间分异分析',subtitle:'把华北、江南、岭南、西北、青藏、东北差异可视化。'}
 };

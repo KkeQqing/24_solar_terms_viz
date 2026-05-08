@@ -1,3 +1,6 @@
+/* assets/css/theme.css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
 :root {
   --bg: #f8f3e8;
   --ink: #263238;
@@ -5,27 +8,39 @@
   --gold: #d6a928;
   --season: #c3e88d;
   --season2: #ffe4e1;
-  --card: rgba(255, 255, 255, .72);
-  --line: rgba(120, 100, 60, .13);
-  --shadow: 0 20px 60px rgba(80, 60, 30, .11);
+  --card: rgba(255, 255, 255, 0.72);
+  --line: rgba(120, 100, 60, 0.13);
+  --shadow: 0 20px 60px rgba(80, 60, 30, 0.11);
 }
-
 body.dark {
   --bg: #111615;
   --ink: #f5efe4;
   --sub: #b9b0a2;
-  --card: rgba(24, 28, 27, .76);
-  --line: rgba(255, 255, 255, .1);
-  --shadow: 0 22px 80px rgba(0, 0, 0, .35);
-  background:
-    radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 22%, transparent), transparent 36%),
-    linear-gradient(135deg, #0f1110 0%, #171b19 55%, #282118 100%);
+  --card: rgba(24, 28, 27, 0.76);
+  --line: rgba(255, 255, 255, 0.1);
+  --shadow: 0 22px 80px rgba(0, 0, 0, 0.35);
 }
-
 body {
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 30%, transparent), transparent 34%),
-    radial-gradient(circle at 12% 88%, rgba(212, 169, 40, .12), transparent 30%),
-    linear-gradient(135deg, #fffaf0 0%, var(--bg) 55%, #f1e8d9 100%);
+  background: radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 30%, transparent), transparent 34%),
+              radial-gradient(circle at 12% 88%, rgba(212, 169, 40, 0.12), transparent 30%),
+              linear-gradient(135deg, #fffaf0 0%, var(--bg) 55%, #f1e8d9 100%);
+  transition: 0.45s ease;
+}
+body.dark {
+  background: radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 22%, transparent), transparent 36%),
+              linear-gradient(135deg, #0f1110 0%, #171b19 55%, #282118 100%);
+}
+.pattern {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, #000 0%, transparent 78%);
+}
+body.dark .pattern {
+  filter: invert(1);
+  opacity: 0.18;
 }

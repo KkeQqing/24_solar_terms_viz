@@ -1,19 +1,12 @@
-// 打开勋章海报
-function openPoster() {
-  const t = solarTerms[currentTermIndex];
-  $('poster-title').textContent = `${t.name} · 节气勋章`;
-  $('poster-text').innerHTML = `我点亮了“${t.name}”。<br>${t.poem}<br>${t.advice}`;
-  openModal('poster-modal');
-}
-
-// 复制分享文案
-async function copyShare() {
-  const t = solarTerms[currentTermIndex];
+// assets/js/modules/poster.js
+window.openPoster = () => {
+  const t = window.solarTerms[window.currentTermIndex];
+  document.getElementById('poster-title').textContent = `${t.name} · 节气勋章`;
+  document.getElementById('poster-text').innerHTML = `我点亮了“${t.name}”。<br>${t.poem}<br>${t.advice}`;
+  document.getElementById('poster-modal').style.display = 'flex';
+};
+window.copyShare = async () => {
+  const t = window.solarTerms[window.currentTermIndex];
   const text = `我在「岁时华夏」点亮了 ${t.name}：${t.poem} ${t.advice}`;
-  try {
-    await navigator.clipboard.writeText(text);
-    toast('分享文案已复制');
-  } catch (e) {
-    toast(text);
-  }
-}
+  try { await navigator.clipboard.writeText(text); window.toast('分享文案已复制'); } catch(e) { window.toast(text); }
+};

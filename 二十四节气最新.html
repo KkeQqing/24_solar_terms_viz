@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>岁时华夏 —— 二十四节气文化与物候数据大屏 修正版</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+    :root{
+      --bg:#f8f3e8;
+      --ink:#263238;
+      --sub:#8a8276;
+      --gold:#d6a928;
+      --season:#c3e88d;
+      --season2:#ffe4e1;
+      --card:rgba(255,255,255,.72);
+      --line:rgba(120,100,60,.13);
+      --shadow:0 20px 60px rgba(80,60,30,.11);
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;min-height:100%;overflow:hidden}
+    body{
+      font-family:'Noto Serif SC',serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 76% 12%, color-mix(in srgb,var(--season) 30%,transparent), transparent 34%),
+        radial-gradient(circle at 12% 88%, rgba(212,169,40,.12), transparent 30%),
+        linear-gradient(135deg,#fffaf0 0%,var(--bg) 55%,#f1e8d9 100%);
+      transition:.45s ease;
+    }
+    body.dark{
+      --bg:#111615;
+      --ink:#f5efe4;
+      --sub:#b9b0a2;
+      --card:rgba(24,28,27,.76);
+      --line:rgba(255,255,255,.1);
+      --shadow:0 22px 80px rgba(0,0,0,.35);
+      background:
+        radial-gradient(circle at 76% 12%, color-mix(in srgb,var(--season) 22%,transparent), transparent 36%),
+        linear-gradient(135deg,#0f1110 0%,#171b19 55%,#282118 100%);
+    }
+
+    .font-sans{font-family:'Noto Sans SC',sans-serif}
+    .pattern{
+      position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px);
+      background-size:42px 42px;
+      mask-image:radial-gradient(circle at center,#000 0%,transparent 78%);
+    }
+    body.dark .pattern{filter:invert(1);opacity:.18}
+
+    .glass{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+    }
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      border:1px solid rgba(214,169,40,.35);
+      background:rgba(255,255,255,.5);
+      color:var(--ink);
+      border-radius:999px;
+      padding:8px 12px;
+      font:500 13px 'Noto Sans SC',sans-serif;
+      cursor:pointer;
+      transition:.18s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:var(--gold);box-shadow:0 8px 22px rgba(214,169,40,.15)}
+    .btn.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+    body.dark .btn{background:rgba(255,255,255,.08)}
+    .small-btn{padding:6px 11px;font-size:12px}
+
+    .app{
+      width:min(100vw,1540px);
+      height:100vh;
+      margin:auto;
+      padding:18px 26px 14px;
+      display:grid;
+      grid-template-columns:285px minmax(0,1fr) 320px;
+      grid-template-rows:72px 64px minmax(0,1fr) 122px;
+      gap:14px 16px;
+      position:relative;
+      z-index:2;
+    }
+    header{grid-column:1/4;grid-row:1;display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+    .left-col{grid-column:1;grid-row:2/4;display:grid;grid-template-rows:1fr .92fr;gap:16px;min-height:0}
+    .center-col{grid-column:2;grid-row:2/4;display:grid;grid-template-rows:64px minmax(0,1fr) 92px;gap:14px;min-width:0;min-height:0}
+    .right-col{grid-column:3;grid-row:2/4;display:grid;grid-template-rows:1fr 1fr .92fr;gap:16px;min-height:0}
+    .timeline-card{grid-column:1/4;grid-row:4;position:relative;min-height:122px}
+
+    .title-mark{width:2px;height:56px;background:var(--gold);margin-right:16px;box-shadow:0 0 18px rgba(214,169,40,.5)}
+    .chart{width:100%;height:100%;min-height:0}
+    .card-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:900;padding-bottom:10px;border-bottom:1px solid var(--line)}
+    .hint{font:12px/1.75 'Noto Sans SC',sans-serif;color:var(--sub)}
+    .main-map-card{position:relative;overflow:hidden;min-height:0}
+    .term-title{writing-mode:vertical-rl;letter-spacing:.35rem;font-size:58px;font-weight:900;line-height:1;text-shadow:0 10px 26px rgba(0,0,0,.08)}
+    .poster-stamp{
+      width:66px;height:66px;border:2px solid var(--gold);border-radius:50%;
+      display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.54);
+      box-shadow:0 12px 30px rgba(120,90,20,.16);cursor:pointer;animation:float 3s ease-in-out infinite;
+    }
+    @keyframes float{50%{transform:translateY(-8px)}}
+
+    .timeline-scroll{overflow-x:auto;scroll-behavior:smooth}
+    .timeline-scroll::-webkit-scrollbar{height:5px}
+    .timeline-scroll::-webkit-scrollbar-thumb{background:rgba(214,169,40,.5);border-radius:8px}
+    .timeline-item{width:64px;min-width:64px;border:0;background:transparent;color:var(--sub);cursor:pointer;transition:.18s ease;padding:0}
+    .timeline-item.active{color:var(--ink);transform:scale(1.12)}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(120,120,120,.22);margin:5px auto 8px}
+    .timeline-item.active .dot{background:var(--gold);box-shadow:0 0 0 8px rgba(214,169,40,.12)}
+    .season-strip{height:4px;border-radius:999px;background:linear-gradient(90deg,#9ccc65 0 25%,#ff7043 25% 50%,#fdd835 50% 75%,#b6cbe1 75% 100%)}
+
+    .search-panel{
+      position:absolute;left:0;right:0;top:56px;z-index:40;
+      background:rgba(255,255,255,.96);border:1px solid rgba(214,169,40,.22);border-radius:20px;
+      box-shadow:0 18px 50px rgba(70,50,20,.16);padding:12px;display:none;max-height:330px;overflow:auto;
+    }
+    body.dark .search-panel{background:rgba(30,34,32,.97)}
+    .search-card{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:16px;border:1px solid rgba(214,169,40,.16);background:rgba(255,255,255,.45);margin-bottom:8px}
+    body.dark .search-card{background:rgba(255,255,255,.06)}
+
+    .module-card{cursor:pointer;transition:.18s ease;position:relative;overflow:hidden}
+    .module-card:hover{transform:translateY(-2px);border-color:rgba(214,169,40,.5)}
+    .module-card::after{
+      content:'点击查看该模块分析';
+      position:absolute;right:14px;bottom:12px;
+      color:var(--gold);font:12px 'Noto Sans SC',sans-serif;opacity:0;
+      transform:translateY(4px);transition:.18s ease;pointer-events:none;
+    }
+    .module-card:hover::after{opacity:.9;transform:translateY(0)}
+    .stat-card{border:1px solid var(--line);background:rgba(255,255,255,.42);border-radius:18px;padding:12px;cursor:pointer;transition:.18s ease}
+    .stat-card:hover{border-color:var(--gold)}
+    body.dark .stat-card{background:rgba(255,255,255,.06)}
+
+    .toast{
+      position:fixed;left:50%;top:24px;transform:translate(-50%,-14px);
+      background:rgba(20,20,20,.82);color:#fff;padding:10px 18px;border-radius:999px;
+      font:13px 'Noto Sans SC',sans-serif;opacity:0;pointer-events:none;transition:.22s;z-index:99;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .particle{position:fixed;width:7px;height:7px;border-radius:999px;background:var(--season);opacity:.22;pointer-events:none;animation:drift linear infinite;z-index:0}
+    @keyframes drift{from{transform:translateY(105vh) translateX(0)}to{transform:translateY(-10vh) translateX(70px)}}
+
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:80;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px)}
+    .modal-card{width:min(1020px,96vw);max-height:92vh;overflow:auto;background:#fff;color:#263238;border-radius:26px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+    body.dark .modal-card{background:#1f2422;color:#f5efe4}
+    .modal-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+    .modal-kpi{border:1px solid var(--line);background:rgba(255,255,255,.42);border-radius:18px;padding:14px;font-family:'Noto Sans SC',sans-serif}
+    body.dark .modal-kpi{background:rgba(255,255,255,.06)}
+    .modal-section-title{font:900 20px 'Noto Sans SC',sans-serif;margin-bottom:10px}
+    .risk-tag{display:inline-block;border-radius:999px;padding:4px 9px;margin:3px;background:rgba(214,169,40,.12);border:1px solid rgba(214,169,40,.2);font:12px 'Noto Sans SC'}
+    .data-table{width:100%;border-collapse:separate;border-spacing:0 8px;font:13px 'Noto Sans SC'}
+    .data-table td,.data-table th{padding:10px 12px;background:rgba(130,130,130,.08)}
+    .data-table th{text-align:left;color:var(--sub);font-weight:500}
+
+    @media(max-width:1120px){
+      html,body{overflow:auto}
+      .app{width:100%;height:auto;display:flex;flex-direction:column;padding:18px}
+      header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px);padding:8px;border-radius:18px}
+      .left-col,.center-col,.right-col{display:flex;flex-direction:column}
+      .glass{min-height:220px}
+      .main-map-card{min-height:460px}
+      .timeline-card{min-height:124px}
+      .desktop-only{display:none}
+      .modal-kpi-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="pattern"></div>
+  <div id="particles"></div>
+  <div id="toast" class="toast"></div>
+
+  <main class="app">
+    <header>
+      <div class="flex items-center">
+        <div class="title-mark"></div>
+        <div>
+          <h1 class="text-3xl font-black tracking-tighter">岁时华夏</h1>
+          <p class="font-sans text-xs tracking-[.34em]">CHRONICLES OF THE SEASONS</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col items-end gap-3">
+        <div class="text-right desktop-only">
+          <div id="current-date" class="font-sans text-lg font-bold"></div>
+          <div class="font-sans text-sm flex items-center justify-end gap-2" style="color:var(--sub)">
+            <iconify-icon icon="ph:map-pin-bold"></iconify-icon>
+            <span id="region-label">华夏·北方</span>
+            <span>|</span>
+            <span id="current-solar-term">谷雨</span>
+            <span id="next-term-label"></span>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-end gap-2">
+          <button class="btn small-btn" id="data-story-btn" type="button"><iconify-icon icon="ph:chart-donut-bold"></iconify-icon>综合故事</button>
+          <button class="btn small-btn" id="auto-btn" type="button"><iconify-icon icon="ph:play-bold"></iconify-icon>自动轮播</button>
+          <button class="btn small-btn" id="theme-btn" type="button"><iconify-icon icon="ph:moon-stars-bold"></iconify-icon>昼夜</button>
+          <button class="btn small-btn" id="fullscreen-btn" type="button"><iconify-icon icon="ph:corners-out-bold"></iconify-icon>全屏</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="left-col">
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="phenology">
+        <div class="card-title">
+          <iconify-icon style="color:var(--gold)" icon="ph:plant-bold"></iconify-icon>
+          <span>南北物候联觉</span>
+          <div class="ml-auto flex gap-1" onclick="event.stopPropagation()">
+            <button class="btn small-btn region-btn active" type="button" data-region="north">北方</button>
+            <button class="btn small-btn region-btn" type="button" data-region="south">南方</button>
+          </div>
+        </div>
+        <div class="chart flex-1" id="phenology-chart"></div>
+        <p class="hint mt-1" id="phenology-desc"></p>
+      </div>
+
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="climate">
+        <div class="card-title">
+          <iconify-icon style="color:var(--gold)" icon="ph:cloud-sun-bold"></iconify-icon>
+          <span>近十年气候变化</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 mt-3 font-sans">
+          <div class="stat-card text-center" data-analysis="climate">
+            <p class="hint">十年均温</p>
+            <div class="text-xl font-black" id="avg-temp">--</div>
+          </div>
+          <div class="stat-card text-center" data-analysis="climate">
+            <p class="hint">均降水</p>
+            <div class="text-xl font-black" id="avg-rain">--</div>
+          </div>
+          <div class="stat-card text-center" data-analysis="climate">
+            <p class="hint">趋势</p>
+            <div class="text-xl font-black" id="climate-trend">--</div>
+          </div>
+        </div>
+        <div class="chart flex-1" id="climate-chart"></div>
+      </div>
+    </section>
+
+    <section class="center-col">
+      <div class="glass p-3 flex items-center gap-2 relative" style="z-index:30">
+        <div class="relative flex-1">
+          <iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2" icon="ph:magnifying-glass-bold" style="color:var(--sub)"></iconify-icon>
+          <input id="search-input" class="w-full rounded-full bg-white/45 border border-white/40 pl-10 pr-4 py-3 font-sans text-sm outline-none" placeholder="搜索节气、民俗、农事、诗句，如：牡丹 / 插秧 / 冬至" />
+          <div id="search-panel" class="search-panel font-sans text-sm"></div>
+        </div>
+        <button class="btn" id="prev-btn" type="button"><iconify-icon icon="ph:caret-left-bold"></iconify-icon></button>
+        <button class="btn" id="next-btn" type="button"><iconify-icon icon="ph:caret-right-bold"></iconify-icon></button>
+      </div>
+
+      <div class="glass main-map-card module-card" data-analysis="space">
+        <div id="main-map" class="w-full h-full"></div>
+
+        <div class="absolute left-8 top-10 pointer-events-none">
+          <div class="term-title" id="solar-title">谷雨</div>
+          <div class="font-sans text-xs tracking-[.28em] mt-4" style="color:var(--sub)" id="solar-pinyin">GU YU</div>
+        </div>
+
+        <div class="absolute right-5 top-5 flex flex-col gap-2" onclick="event.stopPropagation()">
+          <button class="btn small-btn" id="fav-btn" type="button"><iconify-icon id="fav-icon" icon="ph:star-bold"></iconify-icon><span id="fav-label">收藏</span></button>
+          <button class="btn small-btn" id="compare-btn" type="button"><iconify-icon icon="ph:chart-line-up-bold"></iconify-icon>对比</button>
+          <button class="btn small-btn" id="detail-btn" type="button"><iconify-icon icon="ph:book-open-text-bold"></iconify-icon>详情</button>
+        </div>
+
+        <div class="absolute right-7 bottom-7 flex flex-col items-center" onclick="event.stopPropagation()">
+          <button class="poster-stamp" id="stamp-btn" type="button">
+            <iconify-icon class="text-3xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon>
+          </button>
+          <span class="hint mt-2" id="medal-tip">领取·谷雨勋章</span>
+        </div>
+      </div>
+
+      <div class="glass p-4 flex items-center gap-5 module-card" data-analysis="summary">
+        <div class="h-full w-1 rounded-full" style="background:var(--gold)"></div>
+        <div class="flex-1 min-w-0">
+          <div class="text-xl italic truncate" id="poem-content">“落花落尽且深藏，最是清明谷雨前。”</div>
+          <div class="hint mt-2 flex flex-wrap gap-x-4" id="three-hou"></div>
+        </div>
+        <div class="desktop-only text-right border-l pl-5" style="border-color:var(--line)">
+          <div class="hint">今日建议</div>
+          <div id="daily-advice" class="font-bold text-sm max-w-[155px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="right-col">
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="folk">
+        <div class="card-title">
+          <iconify-icon style="color:var(--gold)" icon="ph:users-three-bold"></iconify-icon>
+          <span>华夏民俗分布</span>
+        </div>
+        <div class="chart flex-1" id="folk-chart"></div>
+      </div>
+
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="agri">
+        <div class="card-title">
+          <iconify-icon style="color:var(--gold)" icon="ph:sprout-bold"></iconify-icon>
+          <span>农事结构指数</span>
+        </div>
+        <div class="chart flex-1" id="agri-chart"></div>
+      </div>
+
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="travel">
+        <div class="card-title">
+          <iconify-icon style="color:var(--gold)" icon="ph:trend-up-bold"></iconify-icon>
+          <span>文旅热度趋势</span>
+          <span class="ml-auto hint" id="trend-score"></span>
+        </div>
+        <div class="chart flex-1" id="travel-chart"></div>
+      </div>
+    </section>
+
+    <section class="glass timeline-card p-4 flex items-center">
+      <div class="absolute left-5 top-4 z-10 px-3 py-1 rounded-full border text-xs font-bold bg-white/70" style="color:var(--gold);border-color:rgba(214,169,40,.45)">
+        24节气轴
+      </div>
+      <div class="absolute left-28 right-28 top-6 season-strip"></div>
+      <div id="timeline" class="timeline-scroll w-full flex items-center gap-2 px-20 pt-6"></div>
+    </section>
+  </main>
+
+  <div class="modal" id="analysis-modal">
+    <div class="modal-card">
+      <div class="flex justify-between items-start gap-4 mb-2">
+        <div>
+          <h2 class="text-2xl font-black" id="analysis-title">节气数据分析</h2>
+          <p class="hint" id="analysis-subtitle"></p>
+        </div>
+        <button class="btn small-btn" type="button" data-close="analysis-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
+      </div>
+
+      <div class="modal-kpi-grid" id="analysis-kpis"></div>
+
+      <div class="grid md:grid-cols-[1.15fr_.85fr] gap-4">
+        <div class="glass p-4 shadow-none" style="height:420px">
+          <div id="analysis-chart" style="width:100%;height:100%"></div>
+        </div>
+        <div class="glass p-4 shadow-none font-sans text-sm leading-7">
+          <h3 class="modal-section-title">分析结论</h3>
+          <div id="analysis-text"></div>
+          <h3 class="modal-section-title mt-5">数据口径</h3>
+          <div id="analysis-source"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="detail-modal">
+    <div class="modal-card">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-black" id="detail-title"></h2>
+        <button class="btn small-btn" type="button" data-close="detail-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 font-sans text-sm leading-7">
+        <div class="glass p-4 shadow-none">
+          <h3 class="font-bold mb-2">节气概览</h3>
+          <p id="detail-summary"></p>
+        </div>
+        <div class="glass p-4 shadow-none">
+          <h3 class="font-bold mb-2">民俗与农事</h3>
+          <p id="detail-custom"></p>
+        </div>
+      </div>
+      <div class="glass p-4 shadow-none mt-4 font-sans text-sm leading-7">
+        <h3 class="font-bold mb-2">数据解读</h3>
+        <p id="detail-data"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="compare-modal">
+    <div class="modal-card">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-black">节气数据对比</h2>
+        <button class="btn small-btn" type="button" data-close="compare-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
+      </div>
+      <div class="grid grid-cols-[1fr_1fr_auto] gap-3 mb-2 font-sans">
+        <select id="compare-a" class="rounded-xl border px-3 py-3 bg-white text-gray-800"></select>
+        <select id="compare-b" class="rounded-xl border px-3 py-3 bg-white text-gray-800"></select>
+        <button class="btn active px-5" id="compare-render-btn" type="button">对比</button>
+      </div>
+      <p class="hint mb-2">对比结果包含气温、降雨、物候、农时、文旅五项指标。</p>
+      <div id="compare-chart" style="height:390px"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="poster-modal">
+    <div class="modal-card" style="max-width:420px;text-align:center">
+      <button class="btn small-btn float-right" type="button" data-close="poster-modal"><iconify-icon icon="ph:x-bold"></iconify-icon></button>
+      <div style="clear:both"></div>
+      <div class="border-4 border-double rounded-2xl p-8 mt-2" style="border-color:var(--gold)">
+        <iconify-icon class="text-8xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon>
+        <h2 class="text-3xl font-black mt-4" id="poster-title">谷雨 · 勋章</h2>
+        <p class="hint mt-3" id="poster-text"></p>
+        <p class="hint mt-8 tracking-[.25em]">岁时华夏</p>
+      </div>
+      <button class="btn active mt-5" id="copy-btn" type="button"><iconify-icon icon="ph:copy-bold"></iconify-icon>复制分享文案</button>
+    </div>
+  </div>
+
+<script>
+const solarTerms = [
+  {name:'立春',pinyin:'LI CHUN',date:'02.04',season:'spring',temp:2,rain:15,folk:['咬春','打春'],agri:'耕地',poem:'一到立春先有雪，阳气潜回万木知。',color:'#C3E88D',color2:'#FFE4E1',hou:['东风解冻','蛰虫始振','鱼陟负冰'],advice:'宜舒展筋骨，尝新芽。',north:'冰消雪融，麦田返青较迟',south:'柳芽初绽，油菜花渐盛'},
+  {name:'雨水',pinyin:'YU SHUI',date:'02.19',season:'spring',temp:5,rain:35,folk:['接寿','回娘家'],agri:'选种',poem:'好雨知时节，当春乃发生。',color:'#A7E3C1',color2:'#D8F3DC',hou:['獭祭鱼','鸿雁来','草木萌动'],advice:'宜护脾胃，备春耕。',north:'积雪消融，河冰渐开',south:'春雨连绵，草木萌动'},
+  {name:'惊蛰',pinyin:'JING ZHE',date:'03.05',season:'spring',temp:10,rain:45,folk:['吃梨','打小人'],agri:'春灌',poem:'微雨众卉新，一雷惊蛰始。',color:'#B5E48C',color2:'#F1FA8C',hou:['桃始华','仓庚鸣','鹰化为鸠'],advice:'宜早睡早起，防春困。',north:'蛰虫初动，桃花未盛',south:'雷声渐起，桃李始华'},
+  {name:'春分',pinyin:'CHUN FEN',date:'03.20',season:'spring',temp:14,rain:50,folk:['竖蛋','吃春菜'],agri:'播种',poem:'仲春初九日，春色正中分。',color:'#AED581',color2:'#FFF1A8',hou:['玄鸟至','雷乃发声','始电'],advice:'宜踏青，保持阴阳平衡。',north:'春麦返青，燕归渐近',south:'百花繁盛，茶园萌芽'},
+  {name:'清明',pinyin:'QING MING',date:'04.04',season:'spring',temp:16,rain:55,folk:['祭祖','踏青'],agri:'采茶',poem:'清明时节雨纷纷，路上行人欲断魂。',color:'#9CCC65',color2:'#C8E6C9',hou:['桐始华','田鼠化为鴽','虹始见'],advice:'宜慎终追远，少食寒凉。',north:'梨花始开，草色渐浓',south:'桃李盛放，新茶开采'},
+  {name:'谷雨',pinyin:'GU YU',date:'04.20',season:'spring',temp:18,rain:62,folk:['赏牡丹','喝茶'],agri:'水稻插秧',poem:'落花落尽且深藏，最是清明谷雨前。',color:'#C3E88D',color2:'#E9FFC2',hou:['萍始生','鸣鸠拂其羽','戴胜降于桑'],advice:'宜饮谷雨茶，赏牡丹。',north:'牡丹盛放，春播加快',south:'雨生百谷，秧苗入田'},
+  {name:'立夏',pinyin:'LI XIA',date:'05.05',season:'summer',temp:22,rain:70,folk:['称人','斗蛋'],agri:'锄草',poem:'立夏渐知春已去，雨余更见绿方成。',color:'#FFB4A2',color2:'#87CEEB',hou:['蝼蝈鸣','蚯蚓出','王瓜生'],advice:'宜养心，午间小憩。',north:'槐花初放，麦苗拔节',south:'稻田返青，湿热渐显'},
+  {name:'小满',pinyin:'XIAO MAN',date:'05.20',season:'summer',temp:25,rain:75,folk:['祭车神','动三车'],agri:'管水',poem:'夜莺啼绿柳，皓月醒高楼。',color:'#FF9F80',color2:'#BDE0FE',hou:['苦菜秀','靡草死','麦秋至'],advice:'宜清热祛湿，不贪满。',north:'小麦灌浆，籽粒渐满',south:'江河水满，梅雨初临'},
+  {name:'芒种',pinyin:'MANG ZHONG',date:'06.05',season:'summer',temp:28,rain:80,folk:['送花神','安苗'],agri:'抢种',poem:'五月芒种到，农家收麦忙。',color:'#FF8A65',color2:'#90CAF9',hou:['螳螂生','鵙始鸣','反舌无声'],advice:'宜防暑，珍惜农时。',north:'麦收繁忙，夏播紧接',south:'梅雨绵密，稻禾旺长'},
+  {name:'夏至',pinyin:'XIA ZHI',date:'06.21',season:'summer',temp:31,rain:85,folk:['吃面','消暑'],agri:'防旱',poem:'昼晷已云极，宵漏自此长。',color:'#FF7043',color2:'#80DEEA',hou:['鹿角解','蜩始鸣','半夏生'],advice:'宜静心避暑，清淡饮食。',north:'日照最长，麦收收尾',south:'蝉鸣荷开，雨热同期'},
+  {name:'小暑',pinyin:'XIAO SHU',date:'07.07',season:'summer',temp:33,rain:82,folk:['食新','晾晒'],agri:'抗旱',poem:'倏忽温风至，因循小暑来。',color:'#EF5350',color2:'#81D4FA',hou:['温风至','蟋蟀居宇','鹰始鸷'],advice:'宜防暑湿，少熬夜。',north:'暑热增强，作物需水',south:'湿热交蒸，稻花渐香'},
+  {name:'大暑',pinyin:'DA SHU',date:'07.22',season:'summer',temp:36,rain:78,folk:['饮伏茶','烧伏香'],agri:'防虫',poem:'赤日几时过，清风无处寻。',color:'#FF6B6B',color2:'#87CEEB',hou:['腐草为萤','土润溽暑','大雨时行'],advice:'宜补水，避烈日。',north:'伏热当令，防旱防涝',south:'雷雨频繁，湿热极盛'},
+  {name:'立秋',pinyin:'LI QIU',date:'08.07',season:'autumn',temp:28,rain:60,folk:['贴秋膘','啃秋'],agri:'收割',poem:'一叶落知天下秋。',color:'#FFF3B0',color2:'#D2B48C',hou:['凉风至','白露降','寒蝉鸣'],advice:'宜润燥，慢补秋膘。',north:'昼热夜凉，早熟作物收获',south:'暑气未退，晚稻抽穗'},
+  {name:'处暑',pinyin:'CHU SHU',date:'08.23',season:'autumn',temp:26,rain:55,folk:['放河灯','吃鸭子'],agri:'晾晒',poem:'离离暑云散，袅袅凉风起。',color:'#FFE082',color2:'#D7CCC8',hou:['鹰乃祭鸟','天地始肃','禾乃登'],advice:'宜早睡，收敛心神。',north:'暑退风凉，禾谷登场',south:'台风仍扰，稻田防涝'},
+  {name:'白露',pinyin:'BAI LU',date:'09.07',season:'autumn',temp:22,rain:45,folk:['喝白露茶','酿酒'],agri:'秋播',poem:'露从今夜白，月是故乡明。',color:'#FFF176',color2:'#E6C79C',hou:['鸿雁来','玄鸟归','群鸟养羞'],advice:'宜添衣，饮温茶。',north:'晨露渐白，秋播准备',south:'桂香初起，秋茶采摘'},
+  {name:'秋分',pinyin:'QIU FEN',date:'09.22',season:'autumn',temp:18,rain:40,folk:['吃秋菜','送秋牛'],agri:'秋收',poem:'金气秋分，风清露冷。',color:'#FFEE58',color2:'#D2B48C',hou:['雷始收声','蛰虫坯户','水始涸'],advice:'宜登高赏月，平补。',north:'玉米谷物集中收获',south:'秋菜上市，稻谷渐黄'},
+  {name:'寒露',pinyin:'HAN LU',date:'10.08',season:'autumn',temp:15,rain:30,folk:['登高','饮菊花酒'],agri:'播麦',poem:'寒露惊秋晚，朝看菊渐黄。',color:'#FDD835',color2:'#C9A66B',hou:['鸿雁来宾','雀入大水为蛤','菊有黄华'],advice:'宜护足保暖，赏菊。',north:'露冷霜近，冬麦播种',south:'菊黄蟹肥，秋意渐浓'},
+  {name:'霜降',pinyin:'SHUANG JIANG',date:'10.23',season:'autumn',temp:12,rain:25,folk:['吃柿子','登高'],agri:'翻耕',poem:'霜降水痕收，浅碧鳞鳞露远洲。',color:'#FFE066',color2:'#C2A878',hou:['豺乃祭兽','草木黄落','蛰虫咸俯'],advice:'宜防燥寒，吃熟柿。',north:'初霜显现，草木凋黄',south:'昼暖夜凉，柿果成熟'},
+  {name:'立冬',pinyin:'LI DONG',date:'11.07',season:'winter',temp:8,rain:20,folk:['补冬','吃饺子'],agri:'冬储',poem:'细雨生寒未有霜，庭前木叶半青黄。',color:'#DCEAF7',color2:'#FFFFFF',hou:['水始冰','地始冻','雉入大水为蜃'],advice:'宜早卧晚起，温补。',north:'水面初冰，冬藏开始',south:'秋色未尽，入冬较缓'},
+  {name:'小雪',pinyin:'XIAO XUE',date:'11.22',season:'winter',temp:4,rain:15,folk:['腌肉','吃糍粑'],agri:'冬灌',poem:'荷尽已无擎雨盖，菊残犹有傲霜枝。',color:'#CFE0F2',color2:'#F7F7F7',hou:['虹藏不见','天气上升','闭塞成冬'],advice:'宜藏阳，少辛辣。',north:'小雪初临，土壤封冻',south:'腌腊渐起，湿冷增强'},
+  {name:'大雪',pinyin:'DA XUE',date:'12.07',season:'winter',temp:1,rain:10,folk:['赏雪','进补'],agri:'积肥',poem:'大雪飞鹅毛，冬耕不等劳。',color:'#B6CBE1',color2:'#FFFFFF',hou:['鹖鴠不鸣','虎始交','荔挺出'],advice:'宜御寒，适度进补。',north:'积雪增多，田间休整',south:'冷雨频繁，农田蓄水'},
+  {name:'冬至',pinyin:'DONG ZHI',date:'12.21',season:'winter',temp:-2,rain:5,folk:['吃汤圆','祭祖'],agri:'防寒',poem:'天时人事日相催，冬至阳生春又来。',color:'#A9BCD0',color2:'#F0F4F8',hou:['蚯蚓结','麋角解','水泉动'],advice:'宜团圆，养藏阳气。',north:'严寒加深，河湖封冻',south:'寒潮南下，汤圆团聚'},
+  {name:'小寒',pinyin:'XIAO HAN',date:'01.05',season:'winter',temp:-5,rain:8,folk:['探梅','腊八粥'],agri:'积肥',poem:'小寒时节，梅花吐蕊。',color:'#94A3B8',color2:'#E8EEF6',hou:['雁北乡','鹊始巢','雉始雊'],advice:'宜防寒，食粥暖胃。',north:'寒气极盛，冰雪稳定',south:'梅花吐蕊，湿冷明显'},
+  {name:'大寒',pinyin:'DA HAN',date:'01.20',season:'winter',temp:-8,rain:5,folk:['尾牙祭','除旧'],agri:'修整',poem:'大寒到顶点，日后天渐暖。',color:'#E8EEF6',color2:'#FFFFFF',hou:['鸡始乳','征鸟厉疾','水泽腹坚'],advice:'宜除旧布新，静待春归。',north:'冰封雪积，农具修整',south:'岁末除旧，花木待春'}
+];
+
+const regionProfiles = {
+  north:{label:'华夏·北方',tempOffset:-2,rainFactor:.82,activeOffset:-4,lag:8,desc:'北方物候略迟，昼夜温差更明显。'},
+  south:{label:'华夏·南方',tempOffset:3,rainFactor:1.22,activeOffset:8,lag:-6,desc:'南方雨水丰沛，花木萌动更早。'}
+};
+
+let currentTermIndex = 5;
+let currentRegion = 'north';
+let autoTimer = null;
+let compareChart = null;
+let analysisChart = null;
+const charts = {};
+const $ = id => document.getElementById(id);
+
+function fmt(n,d=2){ return Number(n).toFixed(d); }
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t.timer);t.timer=setTimeout(()=>t.classList.remove('show'),1600)}
+function todayCN(){const d=new Date();return `${d.getFullYear()}年${String(d.getMonth()+1).padStart(2,'0')}月${String(d.getDate()).padStart(2,'0')}日`}
+function daysToNextTerm(index){const now=new Date();const term=solarTerms[(index+1)%24];const [m,d]=term.date.split('.').map(Number);let target=new Date(now.getFullYear(),m-1,d);if(target<now)target=new Date(now.getFullYear()+1,m-1,d);return Math.max(0,Math.ceil((target-now)/86400000))}
+function adjusted(term){const r=regionProfiles[currentRegion];return {...term,temp:Math.round((term.temp+r.tempOffset)*10)/10,rain:Math.max(0,Math.min(100,Math.round(term.rain*r.rainFactor))),active:Math.max(5,Math.min(100,64+r.activeOffset+Math.round(term.rain/4))),lag:r.lag}}
+function textColor(){return document.body.classList.contains('dark')?'#f5efe4':'#263238'}
+function subColor(){return document.body.classList.contains('dark')?'#b9b0a2':'#8a8276'}
+
+function climateSeries(term){
+  const d=adjusted(term);
+  const years=Array.from({length:10},(_,i)=>2016+i);
+  const regionBias=currentRegion==='south'?1.6:-1.1;
+  const temp=years.map((y,i)=>Number((d.temp+(i-4.5)*0.16+Math.sin((i+currentTermIndex)*0.8)*0.55+regionBias*.15).toFixed(1)));
+  const rain=years.map((y,i)=>Math.max(2,Math.round(d.rain*.78+i*1.6+Math.cos(i*1.5+currentTermIndex)*5+(currentRegion==='south'?8:-4))));
+  const sun=years.map((y,i)=>Math.max(3,Number((7+Math.cos(i+currentTermIndex/3)*1.4+(24-currentTermIndex%12)/12-(currentRegion==='south'?.5:0)).toFixed(1))));
+  return {years,temp,rain,sun};
+}
+function trendSeries(term){
+  const d=adjusted(term);
+  const base=22 + currentTermIndex*2.1 + d.rain*.18 + (currentRegion==='south'?6:0);
+  return [0,8,-2,12,7,16,22].map((v,i)=>Number(Math.max(10,Math.min(100,base+v+i*.9)).toFixed(2)));
+}
+function moduleScores(term){
+  const d=adjusted(term), cs=climateSeries(term), trend=cs.temp.at(-1)-cs.temp[0];
+  const folkScore=Math.round((d.active+d.rain+trendSeries(term).at(-1))/3);
+  const agriScore=Math.round((d.active+d.rain+Math.max(10,92-Math.abs(d.temp-24)*2))/3);
+  const travelScore=trendSeries(term).at(-1);
+  return {temp:d.temp,rain:d.rain,active:d.active,lag:d.lag,trend:Number(trend.toFixed(2)),folk:folkScore,travel:travelScore,agri:agriScore,sun:Number((cs.sun.reduce((a,b)=>a+b,0)/cs.sun.length).toFixed(1)),avgTemp:Number((cs.temp.reduce((a,b)=>a+b,0)/cs.temp.length).toFixed(1)),avgRain:Math.round(cs.rain.reduce((a,b)=>a+b,0)/cs.rain.length)};
+}
+
+function initCharts(){['phenology-chart','main-map','folk-chart','agri-chart','travel-chart','climate-chart'].forEach(id=>charts[id]=echarts.init($(id)));window.addEventListener('resize',resizeCharts)}
+function resizeCharts(){Object.values(charts).forEach(c=>c.resize());if(compareChart)compareChart.resize();if(analysisChart)analysisChart.resize()}
+function chartTooltipValue(params){
+  if(Array.isArray(params)){return params.map(p=>`${p.marker}${p.seriesName}：${typeof p.value==='number'?fmt(p.value,2):p.value}`).join('<br>')}
+  return `${params.marker}${params.name}<br>${params.seriesName||'数值'}：${typeof params.value==='number'?fmt(params.value,2):params.value}`;
+}
+
+function updatePhenology(raw){
+  const d=adjusted(raw), color=raw.color, tc=textColor();
+  charts['phenology-chart'].setOption({
+    tooltip:{formatter:p=>chartTooltipValue(p)},
+    radar:{radius:'62%',indicator:[{name:'气温',max:46},{name:'湿度',max:100},{name:'日照',max:100},{name:'物候活跃',max:100},{name:'降雨',max:100}],axisName:{color:tc,fontSize:10},splitLine:{lineStyle:{color:'rgba(128,128,128,.16)'}},axisLine:{lineStyle:{color:'rgba(128,128,128,.16)'}},splitArea:{areaStyle:{color:['rgba(255,255,255,.03)','rgba(255,255,255,.09)']}}},
+    series:[{name:'物候指数',type:'radar',data:[{value:[Math.abs(d.temp)+10,Math.min(95,d.rain+20),Math.max(25,74-Math.abs(d.temp-22)),d.active,d.rain],areaStyle:{color,opacity:.32},lineStyle:{color,width:2},itemStyle:{color}}]}]
+  });
+  $('phenology-desc').textContent=`${raw.name}至，${regionProfiles[currentRegion].desc}${raw.folk.join('、')}正当时，农事以“${raw.agri}”为要。`;
+}
+function updateMainMap(raw){
+  const d=adjusted(raw), color=raw.color, tc=textColor();
+  const points=[{name:'华北',value:[30,58,d.temp+18],custom:`北方：${raw.north}`},{name:'江南',value:[58,72,d.rain],custom:`南方：${raw.south}`},{name:'岭南',value:[72,78,Math.max(10,d.rain-2)],custom:`岭南：湿热更早，民俗游赏活跃`},{name:'西北',value:[22,42,d.active],custom:`西北：干旱少雨，农时依赖灌溉`},{name:'青藏',value:[36,78,Math.max(8,d.active-10)],custom:`青藏：高寒物候滞后，昼夜温差大`},{name:'东北',value:[46,30,d.temp+24],custom:`东北：积温不足，物候整体偏迟`}];
+  charts['main-map'].setOption({
+    tooltip:{formatter:p=>`${p.name}<br>节律指数：${fmt(p.value[2],2)}<br>${p.data.custom}`},
+    grid:{left:10,right:10,top:10,bottom:10},xAxis:{min:0,max:100,show:false},yAxis:{min:0,max:100,show:false},
+    series:[{type:'lines',coordinateSystem:'cartesian2d',data:[[[30,58],[58,72]],[[58,72],[72,78]],[[22,42],[36,78]],[[46,30],[30,58]],[[30,58],[36,78]]].map(coords=>({coords})),lineStyle:{color,opacity:.25,width:2,curveness:.22},effect:{show:true,symbolSize:5,color,period:5}},
+      {type:'effectScatter',coordinateSystem:'cartesian2d',data:points,symbolSize:v=>Math.max(15,v[2]/2.2),rippleEffect:{brushType:'stroke',scale:3},label:{show:true,formatter:'{b}',color:tc,fontSize:12},itemStyle:{color,opacity:.75}}]
+  });
+}
+function updateFolk(raw){
+  const tc=textColor(), color=raw.color, d=adjusted(raw);
+  charts['folk-chart'].setOption({
+    tooltip:{trigger:'item',formatter:p=>`${p.name}<br>占比：${fmt(p.percent,2)}%`},
+    series:[{type:'pie',radius:['42%','70%'],center:['50%','53%'],itemStyle:{borderRadius:10,borderColor:'rgba(255,255,255,.78)',borderWidth:2},label:{color:tc,fontSize:10},data:[{value:42,name:raw.folk[0],itemStyle:{color}},{value:33,name:raw.folk[1],itemStyle:{color:'#d6a928'}},{value:25,name:'时令游赏',itemStyle:{color:'rgba(150,150,150,.32)'}}]}],
+    graphic:[{type:'text',left:'center',top:'center',style:{text:`民俗\n${Math.round((d.active+d.rain)/2)}`,textAlign:'center',fill:tc,font:'700 14px Noto Sans SC'}}]
+  });
+}
+function updateAgri(raw){
+  const d=adjusted(raw), color=raw.color, tc=textColor();
+  const agri=[d.active,Math.max(10,d.rain-8),Math.max(10,92-Math.abs(d.temp-24)*2),45+(currentTermIndex%6)*8];
+  charts['agri-chart'].setOption({
+    tooltip:{formatter:p=>`${p.name}<br>指数：${fmt(p.value,2)}`},
+    xAxis:{type:'category',data:['农时','水分','适耕','管护'],axisLine:{show:false},axisTick:{show:false},axisLabel:{color:tc,fontSize:10}},
+    yAxis:{show:false,max:100},grid:{left:10,right:10,top:18,bottom:24},
+    series:[{name:'农事结构指数',type:'bar',data:agri,barWidth:18,itemStyle:{borderRadius:[10,10,0,0],color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color},{offset:1,color:'rgba(255,255,255,0)'}])}}]
+  });
+}
+function updateTravel(raw){
+  const color=raw.color, trend=trendSeries(raw);
+  charts['travel-chart'].setOption({
+    tooltip:{trigger:'axis',formatter:chartTooltipValue},
+    xAxis:{type:'category',boundaryGap:false,data:['一','二','三','四','五','六','日'],show:false},
+    yAxis:{show:false,max:100},grid:{left:6,right:8,top:16,bottom:10},
+    series:[{name:'文旅热度',type:'line',smooth:true,data:trend,areaStyle:{opacity:.14,color},lineStyle:{color,width:3},symbolSize:5,itemStyle:{color}}]
+  });
+  $('trend-score').textContent=`热度 ${fmt(trend.at(-1),2)}`;
+}
+function updateClimate(raw){
+  const series=climateSeries(raw), tc=textColor(), color=raw.color;
+  const avgT=series.temp.reduce((a,b)=>a+b,0)/series.temp.length, avgR=series.rain.reduce((a,b)=>a+b,0)/series.rain.length, trend=series.temp.at(-1)-series.temp[0];
+  $('avg-temp').textContent=`${fmt(avgT,1)}°C`; $('avg-rain').textContent=`${fmt(avgR,0)}%`; $('climate-trend').textContent=`${trend>=0?'+':''}${fmt(trend,1)}°C`;
+  charts['climate-chart'].setOption({
+    tooltip:{trigger:'axis',formatter:chartTooltipValue},
+    legend:{top:2,textStyle:{color:tc,fontSize:10},data:['平均气温','降水指数']},
+    grid:{left:36,right:34,top:38,bottom:28},
+    xAxis:{type:'category',data:series.years,axisLabel:{color:tc,fontSize:9},axisLine:{lineStyle:{color:'rgba(128,128,128,.2)'}}},
+    yAxis:[{type:'value',name:'°C',axisLabel:{color:tc,fontSize:9},splitLine:{lineStyle:{color:'rgba(128,128,128,.12)'}}},{type:'value',name:'降水',axisLabel:{color:tc,fontSize:9},splitLine:{show:false}}],
+    series:[{name:'降水指数',type:'bar',yAxisIndex:1,data:series.rain,barWidth:10,itemStyle:{borderRadius:[6,6,0,0],color:'rgba(92,173,255,.62)'}},{name:'平均气温',type:'line',smooth:true,data:series.temp,symbolSize:5,lineStyle:{color,width:3},itemStyle:{color}}]
+  });
+}
+function updateCharts(raw){updatePhenology(raw);updateMainMap(raw);updateFolk(raw);updateAgri(raw);updateTravel(raw);updateClimate(raw)}
+
+function initTimeline(){const box=$('timeline');box.innerHTML='';solarTerms.forEach((t,i)=>{const b=document.createElement('button');b.type='button';b.className='timeline-item font-sans text-xs';b.title=`${t.name}：${t.hou.join(' / ')}`;b.innerHTML=`<div style="font-size:10px">${t.date}</div><div class="dot"></div><div>${t.name}</div>`;b.addEventListener('click',()=>selectTerm(i));box.appendChild(b)})}
+function refreshTimeline(){document.querySelectorAll('.timeline-item').forEach((b,i)=>b.classList.toggle('active',i===currentTermIndex));document.querySelectorAll('.timeline-item')[currentTermIndex]?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}
+function refreshRegions(){document.querySelectorAll('.region-btn').forEach(b=>b.classList.toggle('active',b.dataset.region===currentRegion))}
+function selectRegion(region){currentRegion=region;$('region-label').textContent=regionProfiles[region].label;refreshRegions();selectTerm(currentTermIndex);toast(`已切换到${regionProfiles[region].label}`)}
+function selectTerm(i){
+  currentTermIndex=(i+24)%24;
+  const raw=solarTerms[currentTermIndex];
+  document.documentElement.style.setProperty('--season',raw.color);document.documentElement.style.setProperty('--season2',raw.color2);
+  $('solar-title').textContent=raw.name;$('solar-pinyin').textContent=raw.pinyin;$('current-solar-term').textContent=raw.name;
+  $('next-term-label').textContent=`| 距${solarTerms[(currentTermIndex+1)%24].name}约${daysToNextTerm(currentTermIndex)}天`;
+  $('poem-content').textContent=`“${raw.poem}”`;
+  $('three-hou').innerHTML=raw.hou.map((h,idx)=>`<span>${['一','二','三'][idx]}候 · ${h}</span>`).join('');
+  $('daily-advice').textContent=raw.advice;$('medal-tip').textContent=`领取·${raw.name}勋章`;
+  refreshTimeline();updateFavoriteUI();updateCharts(raw);
+}
+
+function buildSearchResult(t){
+  const d=adjusted(t);
+  return `<div class="search-card"><div class="text-center"><div class="text-2xl font-black">${t.name}</div><div class="hint">${t.date}</div></div><div><div class="font-bold mb-1">${t.folk.join(' / ')} · ${t.agri}</div><div class="hint">${t.poem}</div><div class="hint">气温 ${fmt(d.temp,1)}°C · 降水 ${fmt(d.rain,0)}% · 三候：${t.hou.join('、')}</div></div><div class="flex flex-col gap-2"><button type="button" class="btn small-btn search-go" data-index="${t.i}">查看</button><button type="button" class="btn small-btn search-analysis" data-index="${t.i}">综合分析</button><button type="button" class="btn small-btn search-compare" data-index="${t.i}">对比</button></div></div>`;
+}
+function doSearch(){
+  const key=$('search-input').value.trim().toLowerCase(), panel=$('search-panel');
+  if(!key){panel.style.display='none';return}
+  const hits=solarTerms.map((t,i)=>({...t,i})).filter(t=>[t.name,t.pinyin,t.agri,t.poem,t.advice,t.north,t.south,...t.folk,...t.hou].join(' ').toLowerCase().includes(key));
+  if(!hits.length) panel.innerHTML='<div style="color:var(--sub);padding:8px">没有找到结果，可以试试：茶、牡丹、插秧、汤圆、登高。</div>';
+  else{
+    panel.innerHTML=hits.slice(0,6).map(buildSearchResult).join('');
+    panel.querySelectorAll('.search-go').forEach(b=>b.addEventListener('click',()=>{selectTerm(Number(b.dataset.index));$('search-input').value=solarTerms[Number(b.dataset.index)].name;panel.style.display='none'}));
+    panel.querySelectorAll('.search-analysis').forEach(b=>b.addEventListener('click',()=>{selectTerm(Number(b.dataset.index));panel.style.display='none';openAnalysis('summary')}));
+    panel.querySelectorAll('.search-compare').forEach(b=>b.addEventListener('click',()=>{panel.style.display='none';openCompare(Number(b.dataset.index))}));
+  }
+  panel.style.display='block';
+}
+
+function favorites(){return JSON.parse(localStorage.getItem('solarTermFavorites')||'[]')}
+function setFavorites(list){localStorage.setItem('solarTermFavorites',JSON.stringify(list))}
+function toggleFavorite(){const name=solarTerms[currentTermIndex].name;let list=favorites();list=list.includes(name)?list.filter(x=>x!==name):[...list,name];setFavorites(list);updateFavoriteUI();toast(list.includes(name)?`已收藏 ${name}`:`已取消收藏 ${name}`)}
+function updateFavoriteUI(){const liked=favorites().includes(solarTerms[currentTermIndex].name);$('fav-label').textContent=liked?'已收藏':'收藏';$('fav-icon').setAttribute('icon',liked?'ph:star-fill':'ph:star-bold')}
+function toggleAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null;$('auto-btn').classList.remove('active');$('auto-btn').innerHTML='<iconify-icon icon="ph:play-bold"></iconify-icon>自动轮播';toast('已停止自动轮播')}else{autoTimer=setInterval(()=>selectTerm(currentTermIndex+1),2800);$('auto-btn').classList.add('active');$('auto-btn').innerHTML='<iconify-icon icon="ph:pause-bold"></iconify-icon>轮播中';toast('已开启自动轮播')}}
+function toggleTheme(){document.body.classList.toggle('dark');updateCharts(solarTerms[currentTermIndex]);if(compareChart)renderCompare();if(analysisChart)renderAnalysisChart(currentAnalysisType)}
+function toggleFullscreen(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()}
+
+let currentAnalysisType='summary';
+const analysisMeta = {
+  summary:{title:'综合解读',subtitle:'把节气文化、气候、农事、民俗、文旅统一成一个可讲述的数据故事。'},
+  phenology:{title:'南北物候分析',subtitle:'展示同一节气在南北地区的时间差、温度差、植被差。'},
+  climate:{title:'气候变化分析',subtitle:'把近十年均温、降水、日照作为专业数据支撑。'},
+  folk:{title:'民俗分布分析',subtitle:'用民俗参与度、地域覆盖、文化热度表达节气文化。'},
+  agri:{title:'农事适宜分析',subtitle:'突出节气对传统农业生产节奏的指导价值。'},
+  travel:{title:'文旅热度分析',subtitle:'将节气与现代文旅消费、景点热度进行关联。'},
+  space:{title:'空间分异分析',subtitle:'把华北、江南、岭南、西北、青藏、东北差异可视化。'}
+};
+function kpiHtml(label,value,desc){return `<div class="modal-kpi"><p class="hint">${label}</p><div class="text-2xl font-black">${value}</div><p class="hint">${desc}</p></div>`}
+function analysisKpis(type,t,s){
+  const map={
+    summary:[['综合指数',fmt((s.folk+s.agri+s.travel)/3,2),'文化、生产、文旅三维均值'],['物候活跃',fmt(s.active,0),'反映植被与候鸟等节律'],['核心农事',t.agri,`关联${t.name}生产节奏`]],
+    phenology:[['南北时差',`${s.lag>0?'+':''}${s.lag}天`,'正数表示北方相对滞后'],['物候活跃',fmt(s.active,0),regionProfiles[currentRegion].label],['区域降水',`${fmt(s.rain,0)}%`,'影响萌发、开花与农事']],
+    climate:[['十年均温',`${fmt(s.avgTemp,1)}°C`,'由当前节气序列计算'],['十年均降水',`${fmt(s.avgRain,0)}%`,'南北区域参数已修正'],['升温趋势',`${s.trend>=0?'+':''}${fmt(s.trend,2)}°C`,'末年均温减首年均温']],
+    folk:[['民俗热度',fmt(s.folk,0),'参与度与传播度合成'],['代表民俗',t.folk.join('、'),`与${t.name}直接关联`],['地域覆盖',currentRegion==='south'?'南方更强':'北方更强','受气候与农时影响']],
+    agri:[['农事适宜',fmt(s.agri,0),'农时、水分、适耕综合'],['主要农事',t.agri,`对应${t.name}阶段`],['水分条件',`${fmt(s.rain,0)}%`,'决定灌溉、防涝或晾晒']],
+    travel:[['文旅热度',fmt(s.travel,2),'周度热度模型末值'],['推荐主题',t.folk[0],`与${t.name}民俗绑定`],['传播潜力',fmt((s.travel+s.folk)/2,2),'民俗与旅游联合指标']],
+    space:[['最高区域',currentRegion==='south'?'岭南/江南':'华北/东北','当前区域设定下的强势区'],['空间差值',`${Math.abs(s.rain-s.active)}点`,'降水与物候活跃差'],['区域标签',regionProfiles[currentRegion].label,'影响地图点位强弱']]
+  };
+  return map[type].map(x=>kpiHtml(x[0],x[1],x[2])).join('');
+}
+function analysisText(type,t,s){
+  const map={
+    summary:`<p>${t.name}的综合解读应围绕“物候现象—气候条件—农事行动—民俗传播”展开。当前综合指数为 ${fmt((s.folk+s.agri+s.travel)/3,2)}，说明该节气既有自然节律，也具备文化转译价值。</p><p class="mt-2">在页面讲解中，可以先用主地图说明地域差异，再用左右两侧卡片补充气候、农事、民俗和文旅热度，形成完整叙事链。</p>`,
+    phenology:`<p>${t.name}在北方表现为“${t.north}”，在南方表现为“${t.south}”。当前区域为${regionProfiles[currentRegion].label}，物候活跃度为 ${fmt(s.active,0)}，南北时差估计为 ${s.lag>0?'+':''}${s.lag} 天。</p><p class="mt-2">这个模块重点解释“同一节气为什么在不同地区表现不同”，不再跳转到其他模块。</p>`,
+    climate:`<p>${t.name}阶段近十年模拟均温为 ${fmt(s.avgTemp,1)}°C，均降水指数为 ${fmt(s.avgRain,0)}%，温度趋势为 ${s.trend>=0?'+':''}${fmt(s.trend,2)}°C。折线与柱状数据会随节气和南北区域切换实时变化。</p><p class="mt-2">该模块只解释气温、降水、日照与趋势，不混入农事和文旅页面的切换入口。</p>`,
+    folk:`<p>${t.name}的代表民俗是“${t.folk.join('、')}”。民俗热度为 ${fmt(s.folk,0)}，反映民俗参与度、文化识别度与区域传播强度。</p><p class="mt-2">该模块适合说明节气如何从自然经验转化为民间仪式、饮食习俗和地方记忆。</p>`,
+    agri:`<p>${t.name}的主要农事是“${t.agri}”。当前农事适宜指数为 ${fmt(s.agri,0)}，由农时、水分、适耕和管护四类指标合成。</p><p class="mt-2">该模块突出节气对传统农业生产节奏的指导价值，适合在作品答辩中说明实用性。</p>`,
+    travel:`<p>${t.name}当前文旅热度为 ${fmt(s.travel,2)}，推荐围绕“${t.folk[0]}”设计节庆活动、研学路线或城市文化 IP。</p><p class="mt-2">该模块说明传统节气如何在现代语境下转化为旅游消费、景点热度和文化传播。</p>`,
+    space:`<p>空间分异模块展示同一节气在华北、江南、岭南、西北、青藏、东北的差异。当前区域设定为${regionProfiles[currentRegion].label}，会影响地图点位大小和指数强弱。</p><p class="mt-2">这个页面用于解释“同一节气，不同中国”，比单纯展示一张地图更有分析层次。</p>`
+  };
+  return map[type];
+}
+function analysisSource(type,t,s){
+  const base=`<p>当前数据为演示型指数数据，已随“节气序号 + 南北区域参数”动态计算。节气：${t.name}；区域：${regionProfiles[currentRegion].label}；基础温度：${t.temp}°C；基础降水：${t.rain}%。</p>`;
+  const extra={
+    summary:'<p class="mt-2">综合指数 = 民俗热度、农事适宜、文旅热度的均值，用于首页总述。</p>',
+    phenology:'<p class="mt-2">物候指数 = 温度、降水、日照、物候活跃度与区域时差的合成表达。</p>',
+    climate:'<p class="mt-2">气候序列由当前节气基础温度、区域偏移、年份趋势和周期扰动生成，因此不同节气与区域不会出现同一条死数据。</p>',
+    folk:'<p class="mt-2">民俗结构采用代表民俗、时令游赏和传播热度三类构成。</p>',
+    agri:'<p class="mt-2">农事指数由农时、水分、适耕和管护构成，适合解释生产指导价值。</p>',
+    travel:'<p class="mt-2">文旅热度由节气时段、民俗热度和区域参数合成，周度折线随节气变化。</p>',
+    space:'<p class="mt-2">空间点位用于表达地域节律差异，不同区域依据温度、降水和物候活跃度重新赋值。</p>'
+  };
+  return base + extra[type];
+}
+function openAnalysis(type='summary'){
+  currentAnalysisType=type;
+  const t=solarTerms[currentTermIndex], s=moduleScores(t), meta=analysisMeta[type] || analysisMeta.summary;
+  $('analysis-title').textContent = `${t.name} · ${meta.title}`;
+  $('analysis-subtitle').textContent = meta.subtitle;
+  $('analysis-kpis').innerHTML = analysisKpis(type,t,s);
+  $('analysis-text').innerHTML = analysisText(type,t,s);
+  $('analysis-source').innerHTML = analysisSource(type,t,s);
+  openModal('analysis-modal');
+  setTimeout(()=>renderAnalysisChart(type),60);
+}
+function renderAnalysisChart(type='summary'){
+  const t=solarTerms[currentTermIndex], s=moduleScores(t), tc=textColor(), cs=climateSeries(t), d=adjusted(t);
+  if(!analysisChart) analysisChart=echarts.init($('analysis-chart'));
+  analysisChart.clear();
+  const common={tooltip:{trigger:'axis',formatter:chartTooltipValue}, textStyle:{color:tc}};
+  if(type==='climate'){
+    analysisChart.setOption({...common,legend:{data:['平均气温','降水指数','日照时长'],textStyle:{color:tc}},grid:{left:45,right:40,top:45,bottom:35},xAxis:{type:'category',data:cs.years,axisLabel:{color:tc}},yAxis:[{type:'value',name:'°C/小时',axisLabel:{color:tc}},{type:'value',name:'降水',axisLabel:{color:tc}}],series:[{name:'降水指数',type:'bar',yAxisIndex:1,data:cs.rain,itemStyle:{color:'rgba(92,173,255,.65)'}},{name:'平均气温',type:'line',smooth:true,data:cs.temp,itemStyle:{color:t.color}},{name:'日照时长',type:'line',smooth:true,data:cs.sun,itemStyle:{color:'#d6a928'}}]});
+  }else if(type==='phenology'){
+    const north={...regionProfiles.north}, south={...regionProfiles.south};
+    const old=currentRegion;
+    currentRegion='north'; const n=adjusted(t);
+    currentRegion='south'; const so=adjusted(t);
+    currentRegion=old;
+    analysisChart.setOption({tooltip:{},legend:{data:['北方','南方'],textStyle:{color:tc}},radar:{indicator:[{name:'气温',max:46},{name:'降水',max:100},{name:'物候活跃',max:100},{name:'日照',max:100},{name:'农事窗口',max:100}],axisName:{color:tc}},series:[{type:'radar',data:[{name:'北方',value:[Math.abs(n.temp)+10,n.rain,n.active,70,62],areaStyle:{opacity:.12}},{name:'南方',value:[Math.abs(so.temp)+10,so.rain,so.active,62,76],areaStyle:{opacity:.12}}]}]});
+  }else if(type==='folk'){
+    analysisChart.setOption({tooltip:{trigger:'item',formatter:p=>`${p.name}<br>占比：${fmt(p.percent,2)}%`},series:[{type:'pie',radius:['35%','68%'],data:[{name:t.folk[0],value:42},{name:t.folk[1],value:33},{name:'时令游赏',value:25},{name:'文创传播',value:18}],label:{color:tc}}]});
+  }else if(type==='agri'){
+    analysisChart.setOption({...common,grid:{left:45,right:25,top:35,bottom:35},xAxis:{type:'category',data:['农时','水分','适耕','管护','风险抵御'],axisLabel:{color:tc}},yAxis:{type:'value',max:100,axisLabel:{color:tc}},series:[{name:'农业适宜度',type:'bar',data:[s.active,s.rain,s.agri,68,Math.max(20,100-s.rain/2)],itemStyle:{borderRadius:[10,10,0,0],color:t.color}}]});
+  }else if(type==='travel'){
+    analysisChart.setOption({...common,grid:{left:45,right:25,top:35,bottom:35},xAxis:{type:'category',data:['周一','周二','周三','周四','周五','周六','周日'],axisLabel:{color:tc}},yAxis:{type:'value',max:100,axisLabel:{color:tc}},series:[{name:'文旅热度',type:'line',smooth:true,areaStyle:{opacity:.16},data:trendSeries(t),itemStyle:{color:t.color}},{name:'民俗传播',type:'line',smooth:true,data:trendSeries(t).map((x,i)=>Math.max(10,Math.min(100,x-8+i*2))),itemStyle:{color:'#d6a928'}}]});
+  }else if(type==='space'){
+    const points=[['华北',30,60,d.temp+35],['江南',60,72,d.rain],['岭南',75,78,Math.min(100,d.rain+8)],['西北',24,43,Math.max(20,d.active-15)],['青藏',38,80,Math.max(20,d.active-25)],['东北',46,31,d.temp+28]];
+    analysisChart.setOption({tooltip:{formatter:p=>`${p.name}<br>节律指数：${fmt(p.value[2],2)}`},grid:{left:10,right:10,top:10,bottom:10},xAxis:{min:0,max:100,show:false},yAxis:{min:0,max:100,show:false},series:[{type:'effectScatter',coordinateSystem:'cartesian2d',data:points.map(x=>({name:x[0],value:[x[1],x[2],x[3]]})),symbolSize:v=>Math.max(16,v[2]/2),label:{show:true,formatter:'{b}',color:tc},itemStyle:{color:t.color}}]});
+  }else{
+    analysisChart.setOption({tooltip:{},radar:{indicator:[{name:'气候',max:100},{name:'物候',max:100},{name:'民俗',max:100},{name:'农事',max:100},{name:'文旅',max:100}],axisName:{color:tc}},series:[{type:'radar',data:[{name:t.name,value:[Math.min(100,Math.abs(s.temp)+30),s.active,s.folk,s.agri,s.travel],areaStyle:{opacity:.22},lineStyle:{width:3},itemStyle:{color:t.color}}]}]});
+  }
+  analysisChart.resize();
+}
+
+function openDetail(){
+  const t=solarTerms[currentTermIndex], d=adjusted(t), cs=climateSeries(t);
+  const avgT=(cs.temp.reduce((a,b)=>a+b,0)/cs.temp.length), avgR=cs.rain.reduce((a,b)=>a+b,0)/cs.rain.length;
+  $('detail-title').textContent=`${t.name} · ${t.pinyin}`;
+  $('detail-summary').textContent=`${t.name}通常在 ${t.date} 前后。当前选择为${regionProfiles[currentRegion].label}，估算平均气温 ${fmt(d.temp,1)}°C，降水指数 ${fmt(d.rain,0)}%。诗意表达：${t.poem}`;
+  $('detail-custom').textContent=`代表民俗：${t.folk.join('、')}。主要农事：${t.agri}。三候：${t.hou.join('、')}。今日建议：${t.advice}`;
+  $('detail-data').textContent=`南北物候差异：北方表现为“${t.north}”，南方表现为“${t.south}”。模拟近十年均温约 ${fmt(avgT,1)}°C，均降水指数约 ${fmt(avgR,0)}，适合用于大赛演示中的趋势说明与数据联动展示。`;
+  openModal('detail-modal');
+}
+function openCompare(compareIndex){
+  const a=$('compare-a'), b=$('compare-b');
+  a.innerHTML=b.innerHTML=solarTerms.map((t,i)=>`<option value="${i}">${t.name}</option>`).join('');
+  a.value=currentTermIndex;b.value=typeof compareIndex==='number'?compareIndex:(currentTermIndex+6)%24;if(Number(a.value)===Number(b.value))b.value=(Number(a.value)+6)%24;
+  openModal('compare-modal');setTimeout(()=>{if(!compareChart)compareChart=echarts.init($('compare-chart'));renderCompare()},60);
+}
+function renderCompare(){
+  const ai=Number($('compare-a').value), bi=Number($('compare-b').value), a=adjusted(solarTerms[ai]), b=adjusted(solarTerms[bi]), tc=textColor();
+  compareChart.setOption({tooltip:{},legend:{data:[a.name,b.name],bottom:0,left:'center',textStyle:{color:tc,fontSize:13}},radar:{center:['50%','50%'],radius:'56%',nameGap:22,indicator:[{name:'气温',max:46},{name:'文旅',max:100},{name:'农时',max:100},{name:'物候',max:100},{name:'降雨',max:100}],axisName:{color:tc,fontSize:14,padding:[4,6]},splitLine:{lineStyle:{color:'rgba(120,130,150,.22)'}},axisLine:{lineStyle:{color:'rgba(120,130,150,.22)'}}},series:[{type:'radar',data:[{name:a.name,value:[Math.abs(a.temp)+10,trendSeries(solarTerms[ai]).at(-1),72,a.active,a.rain],areaStyle:{opacity:.12},lineStyle:{width:3}},{name:b.name,value:[Math.abs(b.temp)+10,trendSeries(solarTerms[bi]).at(-1),68,b.active,b.rain],areaStyle:{opacity:.12},lineStyle:{width:3}}]}]});
+  setTimeout(()=>compareChart.resize(),80);
+}
+function openPoster(){const t=solarTerms[currentTermIndex];$('poster-title').textContent=`${t.name} · 节气勋章`;$('poster-text').innerHTML=`我点亮了“${t.name}”。<br>${t.poem}<br>${t.advice}`;openModal('poster-modal')}
+async function copyShare(){const t=solarTerms[currentTermIndex], text=`我在「岁时华夏」点亮了 ${t.name}：${t.poem} ${t.advice}`;try{await navigator.clipboard.writeText(text);toast('分享文案已复制')}catch(e){toast(text)}}
+function openModal(id){$(id).style.display='flex';resizeCharts()}
+function closeModal(id){$(id).style.display='none'}
+function createParticles(){const box=$('particles');box.innerHTML='';for(let i=0;i<26;i++){const p=document.createElement('span');p.className='particle';p.style.left=`${Math.random()*100}%`;p.style.animationDuration=`${10+Math.random()*15}s`;p.style.animationDelay=`${Math.random()*-18}s`;box.appendChild(p)}}
+
+function bindEvents(){
+  document.querySelectorAll('.region-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();selectRegion(b.dataset.region)}));
+  $('search-input').addEventListener('input',doSearch);$('search-input').addEventListener('focus',doSearch);$('search-input').addEventListener('keydown',e=>{if(e.key==='Enter'){const first=document.querySelector('.search-go');if(first)first.click()}});
+  document.addEventListener('click',e=>{if(!$('search-input').contains(e.target)&&!$('search-panel').contains(e.target))$('search-panel').style.display='none'});
+  $('prev-btn').onclick=()=>selectTerm(currentTermIndex-1);$('next-btn').onclick=()=>selectTerm(currentTermIndex+1);$('auto-btn').onclick=toggleAuto;$('theme-btn').onclick=toggleTheme;$('fullscreen-btn').onclick=toggleFullscreen;
+  $('fav-btn').onclick=e=>{e.stopPropagation();toggleFavorite()};$('compare-btn').onclick=e=>{e.stopPropagation();openCompare()};$('detail-btn').onclick=e=>{e.stopPropagation();openDetail()};$('stamp-btn').onclick=e=>{e.stopPropagation();openPoster()};
+  $('compare-render-btn').onclick=renderCompare;$('copy-btn').onclick=copyShare;$('data-story-btn').onclick=()=>openAnalysis('summary');
+  document.querySelectorAll('[data-analysis]').forEach(el=>el.addEventListener('click',e=>{if(e.target.closest('button,input,select'))return;e.stopPropagation();openAnalysis(el.dataset.analysis)}));
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
+  document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)}));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')selectTerm(currentTermIndex+1);if(e.key==='ArrowLeft')selectTerm(currentTermIndex-1);if(e.key==='Escape')document.querySelectorAll('.modal').forEach(m=>m.style.display='none')});
+}
+window.addEventListener('load',()=>{$('current-date').textContent=todayCN();initCharts();initTimeline();createParticles();bindEvents();selectRegion('south');selectTerm(1);setTimeout(resizeCharts,180)});
+</script>
+</body>
+</html>

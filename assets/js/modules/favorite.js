@@ -1,37 +1,26 @@
-import { $, toast } from '../core/utils.js';
-
-let favList = JSON.parse(localStorage.getItem('solarFav') || '[]');
-
-export function initFav() {
-  const btn = $('fav-btn');
-  const icon = $('fav-icon');
-  const label = $('fav-label');
-
-  refreshFavUI();
-
-  btn.onclick = () => {
-    const name = $('solar-title').innerText;
-    if(favList.includes(name)) {
-      favList = favList.filter(x => x !== name);
-      toast('已取消收藏');
-    } else {
-      favList.push(name);
-      toast('收藏成功');
-    }
-    localStorage.setItem('solarFav', JSON.stringify(favList));
-    refreshFavUI();
-  };
+// 获取收藏列表
+function favorites() {
+  return JSON.parse(localStorage.getItem('solarTermFavorites') || '[]');
 }
 
-export function refreshFavUI() {
-  const name = $('solar-title').innerText;
-  const icon = $('fav-icon');
-  const label = $('fav-label');
-  if(favList.includes(name)) {
-    icon.setAttribute('icon','ph:star-fill');
-    label.innerText = '已收藏';
-  } else {
-    icon.setAttribute('icon','ph:star-bold');
-    label.innerText = '收藏';
-  }
+// 保存收藏列表
+function setFavorites(list) {
+  localStorage.setItem('solarTermFavorites', JSON.stringify(list));
+}
+
+// 切换收藏
+function toggleFavorite() {
+  const name = solarTerms[currentTermIndex].name;
+  let list = favorites();
+  list = list.includes(name) ? list.filter(x => x !== name) : [...list, name];
+  setFavorites(list);
+  updateFavoriteUI();
+  toast(list.includes(name) ? `已收藏 ${name}` : `已取消收藏 ${name}`);
+}
+
+// 更新收藏UI
+function updateFavoriteUI() {
+  const liked = favorites().includes(solarTerms[currentTermIndex].name);
+  $('fav-label').textContent = liked ? '已收藏' : '收藏';
+  $('fav-icon').setAttribute('icon', liked ? 'ph:star-fill' : 'ph:star-bold');
 }

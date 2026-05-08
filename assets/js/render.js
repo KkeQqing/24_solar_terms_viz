@@ -1,44 +1,72 @@
-import { $, currentTermIndex, moduleScores, daysToNextTerm } from './core/utils.js';
-import { solarTerms, regionProfiles } from './core/data.js';
-import { updatePhenologyChart } from './charts/phenology';
-import { updateClimateChart } from './charts/climate';
-import { updateFolkChart } from './charts/folk';
-import { updateAgriChart } from './charts/agri';
-import { updateTravelChart } from './charts/travel';
-import { updateTimelineActive } from './modules/timeline';
-import { refreshFavUI } from './modules/favorite';
+// 初始化图表实例
+function initCharts() {
+  ['phenology-chart', 'main-map', 'folk-chart', 'agri-chart', 'travel-chart', 'climate-chart'].forEach(id => charts[id] = echarts.init($(id)));
+  window.addEventListener('resize', resizeCharts);
+}
 
-export function renderAll(index) {
-  currentTermIndex = index;
-  const term = solarTerms[index];
-  const score = moduleScores(term);
+// 图表自适应
+function resizeCharts() {
+  Object.values(charts).forEach(c => c.resize());
+  if (compareChart) compareChart.resize();
+  if (analysisChart) analysisChart.resize();
+}
 
-  // 头部文字
-  $('solar-title').innerText = term.name;
-  $('solar-pinyin').innerText = term.pinyin;
-  $('region-label').innerText = regionProfiles.north.label;
-  $('current-solar-term').innerText = term.name;
-  $('next-term-label').innerText = `｜ 距下一节气还有 ${daysToNextTerm(index)} 天`;
+// 切换节气
+function selectTerm(i) {
+  currentTermIndex = (i + 24) % 24;
+  const raw = solarTerms[currentTermIndex];
+  document.documentElement.style.setProperty('--season', raw.color);
+  document.documentElement.style.setProperty('--season2', raw.color2);
+  $('solar-title').textContent = raw.name;
+  $('solar-pinyin').textContent = raw.pinyin;
+  $('current-solar-term').textContent = raw.name;
+  $('next-term-label').textContent = `| 距${solarTerms[(currentTermIndex + 1) % 24].name}约${daysToNextTerm(currentTermIndex)}天`;
+  $('poem-content').textContent = `“${raw.poem}”`;
+  $('three-hou').innerHTML = raw.hou.map((h, idx) => `<span>${['一', '二', '三'][idx]}候 · ${h}</span>`).join('');
+  $('daily-advice').textContent = raw.advice;
+  $('medal-tip').textContent = `领取·${raw.name}勋章`;
+  refreshTimeline();
+  updateFavoriteUI();
+  updateCharts(raw);
+}
 
-  // 诗句物候
-  $('poem-content').innerText = `“${term.poem}”`;
-  $('three-hou').innerHTML = term.hou.map(h => `<span>• ${h}</span>`).join('');
-  $('daily-advice').innerText = term.advice;
+// 更新所有图表
+function updateCharts(raw) {
+  updatePhenology(raw);
+  updateMainMap(raw);
+  updateFolk(raw);
+  updateAgri(raw);
+  updateTravel(raw);
+  updateClimate(raw);
+}
 
-  // 统计数值
-  $('avg-temp').innerText = `${score.avgTemp} ℃`;
-  $('avg-rain').innerText = `${score.avgRain} mm`;
-  $('climate-trend').innerText = score.trend > 0 ? '升温↑' : '降温↓';
-  $('trend-score').innerText = `热度值 ${score.travel}`;
+// 打开模态框
+function openModal(id) {
+  $(id).style.display = 'flex';
+  resizeCharts();
+}
 
-  // 图表更新
-  updatePhenologyChart(index);
-  updateClimateChart(index);
-  updateFolkChart(index);
-  updateAgriChart(index);
-  updateTravelChart(index);
+// 关闭模态框
+function closeModal(id) {
+  $(id).style.display = 'none';
+}
 
-  // 时间轴、收藏状态
-  updateTimelineActive(index);
-  refreshFavUI();
+// 创建粒子背景
+function createParticles() {
+  const box = $('particles');
+  box.innerHTML = '';
+  for (let i = 0; i < 26; i++) {
+    const p = document.createElement('span');
+    p.className = 'particle';
+    p.style.left = `${Math.random() * 100}%`;
+    p.style.animationDuration = `${10 + Math.random() * 15}s`;
+    p.style.animationDelay = `${Math.random() * -18}s`;
+    box.appendChild(p);
+  }
+}
+
+// 全屏切换
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
 }

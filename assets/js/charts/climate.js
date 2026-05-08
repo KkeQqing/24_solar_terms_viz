@@ -1,69 +1,25 @@
-import { $, charts, climateSeries, textColor, subColor } from '../core/utils.js';
-import { solarTerms } from '../core/data.js';
-
-export function initClimateChart(idx) {
-  const dom = $('climate-chart');
-  const myChart = echarts.init(dom);
-  charts.climate = myChart;
-
-  const ser = climateSeries(solarTerms[idx]);
-  const option = {
-    tooltip: { trigger: 'axis' },
-    legend: {
-      data: ['年均温', '降水量', '日照指数'],
-      textStyle: { color: textColor() },
-      top: 0
-    },
-    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-    xAxis: {
-      type: 'category',
-      data: ser.years,
-      axisLine: { lineStyle: { color: subColor() } },
-      axisLabel: { color: subColor() }
-    },
-    yAxis: {
-      type: 'value',
-      splitLine: { lineStyle: { color: 'rgba(214,169,40,0.1)' } },
-      axisLine: { show: false },
-      axisLabel: { color: subColor() }
-    },
+function updateClimate(raw) {
+  const series = climateSeries(raw), tc = textColor(), color = raw.color;
+  const avgT = series.temp.reduce((a, b) => a + b, 0) / series.temp.length;
+  const avgR = series.rain.reduce((a, b) => a + b, 0) / series.rain.length;
+  const trend = series.temp.at(-1) - series.temp[0];
+  
+  $('avg-temp').textContent = `${fmt(avgT, 1)}°C`;
+  $('avg-rain').textContent = `${fmt(avgR, 0)}%`;
+  $('climate-trend').textContent = `${trend >= 0 ? '+' : ''}${fmt(trend, 1)}°C`;
+  
+  charts['climate-chart'].setOption({
+    tooltip: { trigger: 'axis', formatter: chartTooltipValue },
+    legend: { top: 2, textStyle: { color: tc, fontSize: 10 }, data: ['平均气温', '降水指数'] },
+    grid: { left: 36, right: 34, top: 38, bottom: 28 },
+    xAxis: { type: 'category', data: series.years, axisLabel: { color: tc, fontSize: 9 }, axisLine: { lineStyle: { color: 'rgba(128,128,128,.2)' } } },
+    yAxis: [
+      { type: 'value', name: '°C', axisLabel: { color: tc, fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(128,128,128,.12)' } } },
+      { type: 'value', name: '降水', axisLabel: { color: tc, fontSize: 9 }, splitLine: { show: false } }
+    ],
     series: [
-      {
-        name: '年均温',
-        type: 'line',
-        smooth: true,
-        data: ser.temp,
-        itemStyle: { color: '#d6a928' },
-        areaStyle: { color: 'rgba(214,169,40,0.15)' }
-      },
-      {
-        name: '降水量',
-        type: 'line',
-        smooth: true,
-        data: ser.rain,
-        itemStyle: { color: '#9CCC65' },
-        areaStyle: { color: 'rgba(156,204,101,0.15)' }
-      },
-      {
-        name: '日照指数',
-        type: 'line',
-        smooth: true,
-        data: ser.sun,
-        itemStyle: { color: '#FF7043' },
-        areaStyle: { color: 'rgba(255,112,67,0.15)' }
-      }
+      { name: '降水指数', type: 'bar', yAxisIndex: 1, data: series.rain, barWidth: 10, itemStyle: { borderRadius: [6, 6, 0, 0], color: 'rgba(92,173,255,.62)' } },
+      { name: '平均气温', type: 'line', smooth: true, data: series.temp, symbolSize: 5, lineStyle: { color, width: 3 }, itemStyle: { color } }
     ]
-  };
-
-  myChart.setOption(option);
-  window.addEventListener('resize', () => myChart.resize());
-}
-
-export function updateClimateChart(idx) {
-  const ser = climateSeries(solarTerms[idx]);
-  const opt = charts.climate.getOption();
-  opt.series[0].data = ser.temp;
-  opt.series[1].data = ser.rain;
-  opt.series[2].data = ser.sun;
-  charts.climate.setOption(opt);
+  });
 }

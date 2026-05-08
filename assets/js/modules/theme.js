@@ -1,9 +1,7 @@
-import { $, resizeCharts } from '../core/utils.js';
-
-export function bindThemeBtn() {
-  const btn = $('theme-btn');
-  btn.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    resizeCharts();
-  });
+// 主题切换
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  updateCharts(solarTerms[currentTermIndex]);
+  if (compareChart) renderCompare();
+  if (analysisChart) renderAnalysisChart(currentAnalysisType);
 }

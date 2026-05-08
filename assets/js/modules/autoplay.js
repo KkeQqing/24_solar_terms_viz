@@ -1,23 +1,15 @@
-import { $, autoTimer, toast } from '../core/utils.js';
-import { solarTerms } from '../core/data.js';
-import { renderAllByIndex } from '../app.js';
-
-export function initAutoPlay() {
-  const btn = $('auto-btn');
-  let flag = false;
-
-  btn.onclick = () => {
-    flag = !flag;
-    if(flag) {
-      toast('自动轮播已开启');
-      let idx = 0;
-      autoTimer = setInterval(() => {
-        idx = (idx + 1) % solarTerms.length;
-        renderAllByIndex(idx);
-      }, 3500);
-    } else {
-      clearInterval(autoTimer);
-      toast('自动轮播已关闭');
-    }
-  };
+// 自动轮播
+function toggleAuto() {
+  if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+    $('auto-btn').classList.remove('active');
+    $('auto-btn').innerHTML = '<iconify-icon icon="ph:play-bold"></iconify-icon>自动轮播';
+    toast('已停止自动轮播');
+  } else {
+    autoTimer = setInterval(() => selectTerm(currentTermIndex + 1), 2800);
+    $('auto-btn').classList.add('active');
+    $('auto-btn').innerHTML = '<iconify-icon icon="ph:pause-bold"></iconify-icon>轮播中';
+    toast('已开启自动轮播');
+  }
 }

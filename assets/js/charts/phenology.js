@@ -1,76 +1,25 @@
-import { $, charts, adjusted, textColor, subColor } from '../core/utils.js';
-import { solarTerms } from '../core/data.js';
-
-export function initPhenologyChart(idx) {
-  const dom = $('phenology-chart');
-  const myChart = echarts.init(dom);
-  charts.phenology = myChart;
-
-  const term = solarTerms[idx];
-  const data = adjusted(term);
-
-  const option = {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: { type: 'shadow' }
+function updatePhenology(raw) {
+  const d = adjusted(raw), color = raw.color, tc = textColor();
+  charts['phenology-chart'].setOption({
+    tooltip: { formatter: p => chartTooltipValue(p) },
+    radar: {
+      radius: '62%',
+      indicator: [{ name: '气温', max: 46 }, { name: '湿度', max: 100 }, { name: '日照', max: 100 }, { name: '物候活跃', max: 100 }, { name: '降雨', max: 100 }],
+      axisName: { color: tc, fontSize: 10 },
+      splitLine: { lineStyle: { color: 'rgba(128,128,128,.16)' } },
+      axisLine: { lineStyle: { color: 'rgba(128,128,128,.16)' } },
+      splitArea: { areaStyle: { color: ['rgba(255,255,255,.03)', 'rgba(255,255,255,.09)'] } }
     },
-    legend: {
-      data: ['气温', '降水', '物候活跃度'],
-      textStyle: { color: textColor() },
-      top: 0
-    },
-    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-    xAxis: {
-      type: 'category',
-      data: ['气温℃', '降水指数', '物候活跃', '南北时差'],
-      axisLine: { lineStyle: { color: subColor() } },
-      axisLabel: { color: subColor() }
-    },
-    yAxis: {
-      type: 'value',
-      splitLine: { lineStyle: { color: 'rgba(214,169,40,0.1)' } },
-      axisLine: { show: false },
-      axisLabel: { color: subColor() }
-    },
-    series: [
-      {
-        name: '气温',
-        type: 'bar',
-        data: [data.temp, 0, 0, 0],
-        itemStyle: { color: term.color }
-      },
-      {
-        name: '降水',
-        type: 'bar',
-        data: [0, data.rain, 0, 0],
-        itemStyle: { color: term.color2 }
-      },
-      {
-        name: '物候活跃度',
-        type: 'bar',
-        data: [0, 0, data.active, 0],
-        itemStyle: { color: '#d6a928' }
-      },
-      {
-        name: '南北时差',
-        type: 'bar',
-        data: [0, 0, 0, Math.abs(data.lag)],
-        itemStyle: { color: '#87CEEB' }
-      }
-    ]
-  };
-
-  myChart.setOption(option);
-  window.addEventListener('resize', () => myChart.resize());
-}
-
-export function updatePhenologyChart(idx) {
-  const term = solarTerms[idx];
-  const data = adjusted(term);
-  const opt = charts.phenology.getOption();
-  opt.series[0].data = [data.temp, 0, 0, 0];
-  opt.series[1].data = [0, data.rain, 0, 0];
-  opt.series[2].data = [0, 0, data.active, 0];
-  opt.series[3].data = [0, 0, 0, Math.abs(data.lag)];
-  charts.phenology.setOption(opt);
+    series: [{
+      name: '物候指数',
+      type: 'radar',
+      data: [{
+        value: [Math.abs(d.temp) + 10, Math.min(95, d.rain + 20), Math.max(25, 74 - Math.abs(d.temp - 22)), d.active, d.rain],
+        areaStyle: { color, opacity: .32 },
+        lineStyle: { color, width: 2 },
+        itemStyle: { color }
+      }]
+    }]
+  });
+  $('phenology-desc').textContent = `${raw.name}至，${regionProfiles[currentRegion].desc}${raw.folk.join('、')}正当时，农事以“${raw.agri}”为要。`;
 }

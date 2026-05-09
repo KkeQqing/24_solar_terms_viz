@@ -1,59 +1,317 @@
-/* assets/css/ui.css */
+/* assets/css/ui.css - 全局UI组件样式 */
+
+/* 毛玻璃卡片（所有模块的基础样式） */
 .glass {
+  /* 半透明背景（来自主题变量） */
   background: var(--card);
+  /* 边框线 */
   border: 1px solid var(--line);
+  /* 大圆角，国风柔和感 */
   border-radius: 22px;
+  /* 阴影，悬浮感 */
   box-shadow: var(--shadow);
+  /* 背景模糊 → 真正的毛玻璃效果 */
   backdrop-filter: blur(18px);
 }
+
+/* 主按钮通用样式 */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 6px;               /* 图标与文字间距 */
   border: 1px solid rgba(214, 169, 40, 0.35);
   background: rgba(255, 255, 255, 0.5);
   color: var(--ink);
-  border-radius: 999px;
+  border-radius: 999px;    /* 完全圆角 */
   padding: 8px 12px;
   font: 500 13px 'Noto Sans SC', sans-serif;
+  cursor: pointer;        /* 鼠标移上去变手指 */
+  transition: 0.18s ease; /* 平滑动画 */
+  user-select: none;      /* 禁止选中文字 */
+  white-space: nowrap;    /* 文字不换行 */
+}
+
+/* 按钮悬浮效果：上移 + 金边 + 阴影 */
+.btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--gold);
+  box-shadow: 0 8px 22px rgba(214, 169, 40, 0.15);
+}
+
+/* 按钮激活（选中）状态：金色背景 */
+.btn.active {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
+}
+
+/* 深色模式下按钮背景 */
+body.dark .btn {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 小按钮（更小的内边距 + 更小字号） */
+.small-btn {
+  padding: 6px 11px;
+  font-size: 12px;
+}
+
+/* 模块卡片标题 */
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 900;          /* 粗体 */
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line); /* 底部横线 */
+}
+
+/* 小字提示文本 */
+.hint {
+  font: 12px/1.75 'Noto Sans SC', sans-serif;
+  color: var(--sub);
+}
+
+/* 统计数字小卡片 */
+.stat-card {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.42);
+  border-radius: 18px;
+  padding: 12px;
   cursor: pointer;
   transition: 0.18s ease;
-  user-select: none;
-  white-space: nowrap;
 }
-.btn:hover { transform: translateY(-1px); border-color: var(--gold); box-shadow: 0 8px 22px rgba(214, 169, 40, 0.15); }
-.btn.active { background: var(--gold); color: #fff; border-color: var(--gold); }
-body.dark .btn { background: rgba(255, 255, 255, 0.08); }
-.small-btn { padding: 6px 11px; font-size: 12px; }
-.card-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 900; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
-.hint { font: 12px/1.75 'Noto Sans SC', sans-serif; color: var(--sub); }
-.stat-card { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.42); border-radius: 18px; padding: 12px; cursor: pointer; transition: 0.18s ease; }
-.stat-card:hover { border-color: var(--gold); }
-.poster-stamp { width: 66px; height: 66px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.54); box-shadow: 0 12px 30px rgba(120, 90, 20, 0.16); cursor: pointer; animation: float 3s ease-in-out infinite; }
-@keyframes float { 50% { transform: translateY(-8px); } }
-.timeline-scroll { overflow-x: auto; scroll-behavior: smooth; }
-.timeline-scroll::-webkit-scrollbar { height: 5px; }
-.timeline-scroll::-webkit-scrollbar-thumb { background: rgba(214, 169, 40, 0.5); border-radius: 8px; }
-.timeline-item { width: 64px; min-width: 64px; border: 0; background: transparent; color: var(--sub); cursor: pointer; transition: 0.18s ease; padding: 0; }
-.timeline-item.active { color: var(--ink); transform: scale(1.12); }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(120, 120, 120, 0.22); margin: 5px auto 8px; }
-.timeline-item.active .dot { background: var(--gold); box-shadow: 0 0 0 8px rgba(214, 169, 40, 0.12); }
-.search-panel { position: absolute; left: 0; right: 0; top: 56px; z-index: 40; background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(214, 169, 40, 0.22); border-radius: 20px; box-shadow: 0 18px 50px rgba(70, 50, 20, 0.16); padding: 12px; display: none; max-height: 330px; overflow: auto; }
-body.dark .search-panel { background: rgba(30, 34, 32, 0.97); }
-.search-card { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; align-items: center; padding: 10px; border-radius: 16px; border: 1px solid rgba(214, 169, 40, 0.16); background: rgba(255, 255, 255, 0.45); margin-bottom: 8px; }
-.module-card { cursor: pointer; transition: 0.18s ease; position: relative; overflow: hidden; }
-.module-card:hover { transform: translateY(-2px); border-color: rgba(214, 169, 40, 0.5); }
-.module-card::after { content: '点击查看该模块分析'; position: absolute; right: 14px; bottom: 12px; color: var(--gold); font: 12px 'Noto Sans SC', sans-serif; opacity: 0; transform: translateY(4px); transition: 0.18s ease; pointer-events: none; }
-.module-card:hover::after { opacity: 0.9; transform: translateY(0); }
-.toast { position: fixed; left: 50%; top: 24px; transform: translate(-50%, -14px); background: rgba(20, 20, 20, 0.82); color: #fff; padding: 10px 18px; border-radius: 999px; font: 13px 'Noto Sans SC', sans-serif; opacity: 0; pointer-events: none; transition: 0.22s; z-index: 99; }
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
-.particle { position: fixed; width: 7px; height: 7px; border-radius: 999px; background: var(--season); opacity: 0.22; pointer-events: none; animation: drift linear infinite; z-index: 0; }
-@keyframes drift { from { transform: translateY(105vh) translateX(0); } to { transform: translateY(-10vh) translateX(70px); } }
-.modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); z-index: 80; display: none; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(8px); }
-.modal-card { width: min(1020px, 96vw); max-height: 92vh; overflow: auto; background: #fff; color: #263238; border-radius: 26px; padding: 24px; box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35); }
-body.dark .modal-card { background: #1f2422; color: #f5efe4; }
-.modal-kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 18px 0; }
-.modal-kpi { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.42); border-radius: 18px; padding: 14px; font-family: 'Noto Sans SC', sans-serif; }
-.modal-section-title { font: 900 20px 'Noto Sans SC', sans-serif; margin-bottom: 10px; }
-.chart { width: 100%; height: 100%; min-height: 0; }
+.stat-card:hover {
+  border-color: var(--gold);
+}
+
+/* 节气印章按钮（圆形、悬浮动画） */
+.poster-stamp {
+  width: 66px;
+  height: 66px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.54);
+  box-shadow: 0 12px 30px rgba(120, 90, 20, 0.16);
+  cursor: pointer;
+  /* 上下浮动动画 */
+  animation: float 3s ease-in-out infinite;
+}
+
+/* 印章浮动动画 */
+@keyframes float {
+  50% { transform: translateY(-8px); }
+}
+
+/* 时间轴滚动容器 */
+.timeline-scroll {
+  overflow-x: auto;          /* 横向滚动 */
+  scroll-behavior: smooth;   /* 平滑滚动 */
+}
+/* 时间轴滚动条样式 */
+.timeline-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+.timeline-scroll::-webkit-scrollbar-thumb {
+  background: rgba(214, 169, 40, 0.5);
+  border-radius: 8px;
+}
+
+/* 时间轴单个节气项 */
+.timeline-item {
+  width: 64px;
+  min-width: 64px;
+  border: 0;
+  background: transparent;
+  color: var(--sub);
+  cursor: pointer;
+  transition: 0.18s ease;
+  padding: 0;
+}
+/* 时间轴选中项：变色 + 放大 */
+.timeline-item.active {
+  color: var(--ink);
+  transform: scale(1.12);
+}
+
+/* 时间轴小圆点 */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(120, 120, 120, 0.22);
+  margin: 5px auto 8px;
+}
+/* 选中时小圆点变成金色 + 光晕 */
+.timeline-item.active .dot {
+  background: var(--gold);
+  box-shadow: 0 0 0 8px rgba(214, 169, 40, 0.12);
+}
+
+/* 搜索下拉面板 */
+.search-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 56px;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(214, 169, 40, 0.22);
+  border-radius: 20px;
+  box-shadow: 0 18px 50px rgba(70, 50, 20, 0.16);
+  padding: 12px;
+  display: none;        /* 默认隐藏 */
+  max-height: 330px;
+  overflow: auto;
+}
+/* 深色模式搜索面板 */
+body.dark .search-panel {
+  background: rgba(30, 34, 32, 0.97);
+}
+
+/* 搜索结果卡片 */
+.search-card {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(214, 169, 40, 0.16);
+  background: rgba(255, 255, 255, 0.45);
+  margin-bottom: 8px;
+}
+
+/* 可点击分析模块卡片 */
+.module-card {
+  cursor: pointer;
+  transition: 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+/* 悬浮上移 + 金边 */
+.module-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(214, 169, 40, 0.5);
+}
+/* 悬浮提示文字：点击查看该模块分析 */
+.module-card::after {
+  content: '点击查看该模块分析';
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  color: var(--gold);
+  font: 12px 'Noto Sans SC', sans-serif;
+  opacity: 0;               /* 默认隐藏 */
+  transform: translateY(4px);
+  transition: 0.18s ease;
+  pointer-events: none;
+}
+/* 悬浮时显示提示文字 */
+.module-card:hover::after {
+  opacity: 0.9;
+  transform: translateY(0);
+}
+
+/* 顶部消息提示框 toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  top: 24px;
+  transform: translate(-50%, -14px);
+  background: rgba(20, 20, 20, 0.82);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font: 13px 'Noto Sans SC', sans-serif;
+  opacity: 0;            /* 默认隐藏 */
+  pointer-events: none;
+  transition: 0.22s;
+  z-index: 99;          /* 最顶层 */
+}
+/* 显示状态 */
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* 背景漂浮粒子 */
+.particle {
+  position: fixed;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--season);
+  opacity: 0.22;
+  pointer-events: none;
+  animation: drift linear infinite;
+  z-index: 0;
+}
+/* 粒子从下往上漂移动画 */
+@keyframes drift {
+  from { transform: translateY(105vh) translateX(0); }
+  to   { transform: translateY(-10vh) translateX(70px); }
+}
+
+/* 弹窗遮罩层 */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 80;
+  display: none;         /* 默认隐藏 */
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+
+/* 弹窗内容卡片 */
+.modal-card {
+  width: min(1020px, 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  background: #fff;
+  color: #263238;
+  border-radius: 26px;
+  padding: 24px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+}
+/* 深色模式弹窗 */
+body.dark .modal-card {
+  background: #1f2422;
+  color: #f5efe4;
+}
+
+/* 弹窗数据指标网格 */
+.modal-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 18px 0;
+}
+.modal-kpi {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.42);
+  border-radius: 18px;
+  padding: 14px;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+/* 弹窗章节标题 */
+.modal-section-title {
+  font: 900 20px 'Noto Sans SC', sans-serif;
+  margin-bottom: 10px;
+}
+
+/* 图表容器 */
+.chart {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}

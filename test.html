@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>岁时轮转 · 七十二候 · 华夏时序图谱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #f9f3e3;
+            background-image: radial-gradient(circle at 20% 30%, rgba(200, 170, 120, 0.12) 3%, transparent 3.5%);
+            background-size: 32px 32px;
+            font-family: 'Noto Serif SC', 'Times New Roman', '宋体', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        .dashboard {
+            max-width: 1500px;
+            width: 100%;
+            background: rgba(250, 244, 232, 0.78);
+            backdrop-filter: blur(3px);
+            border-radius: 56px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            padding: 22px 28px 32px;
+            transition: all 0.2s;
+        }
+
+        .main-row {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* 左侧竖版视觉区 */
+        .left-vertical {
+            width: 180px;
+            background: rgba(245, 235, 210, 0.75);
+            border-radius: 48px 20px 48px 20px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 12px;
+            border: 1px solid #e7d5b0;
+            box-shadow: inset 0 1px 4px rgba(255, 250, 225, 0.9), 6px 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .current-season-icon {
+            font-size: 3.2rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(2px 6px 8px rgba(0,0,0,0.1));
+        }
+
+        .current-term-ch {
+            font-size: 3.6rem;
+            font-weight: 800;
+            color: #8b5a2b;
+            letter-spacing: 6px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 2px rgba(180, 130, 70, 0.2);
+        }
+
+        .current-term-py {
+            font-size: 1rem;
+            color: #b57942;
+            letter-spacing: 2px;
+            margin-top: 12px;
+            border-top: 1px dashed #dbbc87;
+            padding-top: 8px;
+        }
+
+        .season-tag {
+            margin-top: 22px;
+            background: #fff2e0;
+            border-radius: 60px;
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #b27d4a;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 560px;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 720px;
+            height: auto;
+            background: #fef9ed;
+            border-radius: 50%;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2), 0 0 0 6px #f8efda, 0 0 0 12px #e3d1ae;
+            transition: all 0.2s;
+            cursor: grab;
+            display: block;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        .right-functions {
+            width: 220px;
+            background: #fcf5e6;
+            border-radius: 36px;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            border: 1px solid #e8d6b4;
+            box-shadow: 0 6px 14px rgba(70, 40, 20, 0.06);
+        }
+
+        .btn-gold {
+            background: linear-gradient(145deg, #f7e7c6, #eedbba);
+            border: none;
+            padding: 14px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #6e4b28;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            border: 1px solid #fbefcf;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn-gold:hover {
+            background: #f0dfb5;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .seasonal-note {
+            font-size: 0.75rem;
+            text-align: center;
+            color: #b58753;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .bottom-area {
+            margin-top: 32px;
+        }
+
+        .timeline-slider {
+            background: #ebe0c6;
+            padding: 12px 24px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .slider-label {
+            font-weight: bold;
+            color: #7a582f;
+            font-size: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: #cfb787;
+            border-radius: 3px;
+        }
+
+        input[type="range"]:focus {
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #b57934;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fcf0d5;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .humanity-board {
+            display: flex;
+            background: #fffcf3;
+            border-radius: 36px;
+            margin-top: 20px;
+            padding: 18px 28px;
+            gap: 24px;
+            border-left: 12px solid #e9cb95;
+        }
+
+        .poem-area {
+            flex: 1;
+            border-right: 1px solid #e7dbbc;
+            padding-right: 22px;
+        }
+
+        .poem-text {
+            font-size: 1rem;
+            color: #7d603c;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .health-area {
+            flex: 1;
+            color: #7e623f;
+        }
+
+        .health-tip {
+            font-size: 0.95rem;
+        }
+
+        .phenology-card {
+            margin-top: 20px;
+            background: #fef7e9;
+            border-radius: 40px;
+            padding: 14px 20px;
+            border: 1px solid #dfca99;
+            transition: all 0.15s;
+        }
+
+        .card-title {
+            font-weight: bold;
+            border-left: 5px solid #dcae6b;
+            padding-left: 12px;
+            margin-bottom: 10px;
+            color: #b56124;
+            font-size: 1rem;
+        }
+
+        .flex-detail {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .motion-icon {
+            width: 60px;
+            height: 60px;
+            background: #f7ebd4;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff9ef;
+            max-width: 580px;
+            width: 90%;
+            border-radius: 48px;
+            padding: 28px;
+            border: 2px solid #e3c48b;
+        }
+
+        .compare-row {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .sidebar-detail {
+            position: fixed;
+            right: -440px;
+            top: 0;
+            width: 400px;
+            height: 100%;
+            background: #fffbf0;
+            box-shadow: -6px 0 32px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+            transition: right 0.3s ease;
+            padding: 32px 24px;
+            overflow-y: auto;
+            border-left: 10px solid #e6bc7e;
+        }
+
+        .sidebar-detail.open {
+            right: 0;
+        }
+
+        .overlay-side {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1050;
+            display: none;
+        }
+
+        .overlay-side.active {
+            display: block;
+        }
+
+        .icon-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            float: right;
+            cursor: pointer;
+            color: #9b6e3e;
+        }
+
+        @media (max-width: 1000px) {
+            .canvas-wrapper {
+                min-width: 380px;
+            }
+            .left-vertical {
+                width: 140px;
+            }
+            .current-term-ch {
+                font-size: 2.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="main-row">
+        <div class="left-vertical">
+            <div class="current-season-icon" id="seasonIcon">🌾</div>
+            <div class="current-solar-term">
+                <div class="current-term-ch" id="leftTermCh">夏至</div>
+                <div class="current-term-py" id="leftTermPy">XIA ZHI</div>
+            </div>
+            <div class="season-tag" id="seasonTag">仲夏 · 朱明</div>
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="wheelCanvas" width="800" height="800" style="width:100%; height:auto; max-width:720px; aspect-ratio:1/1"></canvas>
+        </div>
+
+        <div class="right-functions">
+            <button class="btn-gold" id="compareBtn">🌸 节气对比</button>
+            <button class="btn-gold" id="detailViewBtn">📖 详情查看</button>
+            <div class="seasonal-note">✨ 点击节气区域 · 即刻跳转时序<br>✨ 轻点扇形候 · 细观物候民俗</div>
+        </div>
+    </div>
+
+    <div class="bottom-area">
+        <div class="timeline-slider">
+            <span class="slider-label">📅 岁时流转</span>
+            <input type="range" id="timeline" min="0" max="23" step="1" value="9">
+            <span id="timelineLabel" style="min-width: 75px; font-weight:500;">夏至</span>
+        </div>
+        <div class="humanity-board">
+            <div class="poem-area">
+                <div style="font-size:1.1rem;">✍️ 节气诗咏</div>
+                <div class="poem-text" id="poemText">杨柳青青江水平，闻郎江上踏歌声。</div>
+            </div>
+            <div class="health-area">
+                <div style="font-size:1.1rem;">🍵 养生古训</div>
+                <div class="health-tip" id="healthTip">宜清心静养，清淡饮食，顺时消暑。</div>
+            </div>
+        </div>
+        <div class="phenology-card" id="phenoCard">
+            <div class="card-title">🌼 候应 · 民俗精粹</div>
+            <div class="flex-detail">
+                <div class="motion-icon" id="motionAnimIcon">🦌</div>
+                <div id="houDetailText">鹿角解 · 夏至食面 (阳极阴生)</div>
+            </div>
+            <div id="houExtra" style="margin-top:8px; font-size:0.85rem; color:#b5793b;">鹿角脱落，蝉鸣半夏，民间吃面祈福消暑。</div>
+        </div>
+    </div>
+</div>
+
+<div id="compareModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h3>📜 节气双生 · 对比观候</h3>
+        <div class="compare-row">
+            <select id="termA" style="padding:8px; border-radius:32px;"></select>
+            <select id="termB" style="padding:8px; border-radius:32px;"></select>
+        </div>
+        <div id="compareResult" style="margin-top:20px;"></div>
+    </div>
+</div>
+
+<div id="detailSidebar" class="sidebar-detail">
+    <button class="icon-close" id="closeSidebar">&times;</button>
+    <div id="sidebarContent">载入中...</div>
+</div>
+<div id="overlaySide" class="overlay-side"></div>
+
+<script>
+    // ======================= 完整七十二候·岁时数据 ========================
+    const solarTerms = [
+        "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
+        "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪",
+        "大雪", "冬至", "小寒", "大寒"
+    ];
+    const solarTermsPinyin = [
+        "LI CHUN", "YU SHUI", "JING ZHE", "CHUN FEN", "QING MING", "GU YU", "LI XIA", "XIAO MAN",
+        "MANG ZHONG", "XIA ZHI", "XIAO SHU", "DA SHU", "LI QIU", "CHU SHU", "BAI LU", "QIU FEN",
+        "HAN LU", "SHUANG JIANG", "LI DONG", "XIAO XUE", "DA XUE", "DONG ZHI", "XIAO HAN", "DA HAN"
+    ];
+
+    const houData = [
+        ["东风解冻","🌸","春饼"],["蛰虫始振","🐛","春饼"],["鱼陟负冰","🐟","春饼"],
+        ["獭祭鱼","🦦","龙须饼"],["鸿雁来","🦆","罐罐肉"],["草木萌动","🌱","雨水粥"],
+        ["桃始华","🌸","吃梨"],["仓庚鸣","🐦","吃梨"],["鹰化为鸠","🦅","炒虫"],
+        ["玄鸟至","🐦","春菜"],["雷乃发声","⚡","太阳糕"],["始电","⚡","春菜"],
+        ["桐始华","🌼","青团"],["田鼠化为鴽","🐭","青团"],["虹始见","🌈","青团"],
+        ["萍始生","🌿","香椿"],["鸣鸠拂其羽","🐦","谷雨茶"],["戴胜降于桑","🐦","香椿"],
+        ["蝼蝈鸣","🦗","立夏蛋"],["蚯蚓出","🪱","立夏饭"],["王瓜生","🥒","尝新"],
+        ["苦菜秀","🥬","苦菜"],["靡草死","🌾","小满祭"],["麦秋至","🌾","小满糕"],
+        ["螳螂生","🦗","送花神"],["鵙始鸣","🐦","煮梅"],["反舌无声","🐦","芒种粽"],
+        ["鹿角解","🦌","夏至面"],["蜩始鸣","🦗","夏至面"],["半夏生","🌿","夏至馄饨"],
+        ["温风至","🍃","食藕"],["蟋蟀居壁","🦗","尝新米"],["鹰始鸷","🦅","小暑黄鳝"],
+        ["腐草为萤","✨","喝暑羊"],["土润溽暑","💧","烧仙草"],["大雨时行","☔","伏茶"],
+        ["凉风至","🍃","贴秋膘"],["白露降","💧","咬秋"],["寒蝉鸣","🦗","立秋瓜"],
+        ["鹰乃祭鸟","🦅","鸭子"],["天地始肃","🍂","处暑鸭"],["禾乃登","🌾","龙眼"],
+        ["鸿雁来","🦆","白露茶"],["玄鸟归","🐦","白露米酒"],["群鸟养羞","🐦","龙眼"],
+        ["雷始收声","⚡","秋菜"],["蛰虫坯户","🐛","桂花糕"],["水始涸","💧","秋分梨"],
+        ["鸿雁来宾","🦆","菊花酒"],["雀入大水为蛤","🐚","芝麻"],["菊有黄华","🌼","寒露茶"],
+        ["豺乃祭兽","🐺","柿子"],["草木黄落","🍂","柿子"],["蛰虫咸俯","🐛","霜降柿"],
+        ["水始冰","❄️","饺子"],["地始冻","❄️","饺子"],["雉入大水为蜃","🦚","立冬羹"],
+        ["虹藏不见","🌈","糍粑"],["天气上升","☁️","腊肉"],["闭塞成冬","❄️","小雪腌菜"],
+        ["鹖鴠不鸣","🐦","腌肉"],["虎始交","🐯","红薯粥"],["荔挺出","🌿","大雪糕"],
+        ["蚯蚓结","🪱","饺子"],["麋角解","🦌","汤圆"],["水泉动","💧","冬至面"],
+        ["雁北乡","🦆","腊八粥"],["鹊始巢","🐦","糯米饭"],["雉始鸲","🐦","小寒养生"],
+        ["鸡乳","🐔","腊味"],["征鸟厉疾","🦅","八宝饭"],["水泽腹坚","❄️","大寒糕"]
+    ];
+
+    const termFoods = solarTerms.map((_, i) => ["春饼","雨水粥","吃梨","春菜","青团","香椿","立夏蛋","苦菜","粽子","夏至面","食藕","烧仙草","贴秋膘","鸭子","白露茶","桂花糕","菊花酒","柿子","饺子","糍粑","腌肉","汤圆","腊八粥","八宝饭"][i]);
+    const termHealthTips = [
+        "升阳疏肝","健脾祛湿","润肺止咳","调和阴阳","柔肝养血","清热利湿","养心安神","清热祛湿","消暑生津","清心静养",
+        "健脾化湿","清热利水","滋阴润肺","润燥生津","润肺止咳","养阴健脾","润肺益胃","暖胃驱寒","温肾助阳","温补脾肾",
+        "温阳暖身","滋阴潜阳","温补脾肾","健脾暖胃"
+    ];
+    const poemLib = [
+        "律回岁晚冰霜少，春到人间草木知。","天街小雨润如酥，草色遥看近却无。","微雨众卉新，一雷惊蛰始。","仲春初四日，春色正中分。",
+        "清明时节雨纷纷，路上行人欲断魂。","谷雨如丝复似尘，煮瓶浮蜡正尝新。","绿树阴浓夏日长，楼台倒影入池塘。","夜莺啼绿柳，皓月醒长空。",
+        "时雨及芒种，四野皆插秧。","杨柳青青江水平，闻郎江上踏歌声。","倏忽温风至，因循小暑来。","炎蒸乃如许，那更惜分阴。",
+        "乳鸦啼散玉屏空，一枕新凉一扇风。","疾风驱急雨，残暑扫除空。","露从今夜白，月是故乡明。","秋分客尚在，竹露夕微微。",
+        "袅袅凉风动，凄凄寒露零。","霜降鸿声切，秋深客思迷。","冻笔新诗懒写，寒炉美酒时温。","小雪晴沙不作泥，疏帘红日弄朝晖。",
+        "大雪江南见未曾，今年方始是严凝。","邯郸驿里逢冬至，抱膝灯前影伴身。","小寒连大吕，欢鹊垒新巢。","旧雪未及消，新雪又拥户。"
+    ];
+
+    const termDetailsArr = solarTerms.map((t, idx) => {
+        const h1 = houData[idx*3][0], h2 = houData[idx*3+1][0], h3 = houData[idx*3+2][0];
+        return `<h3>${t} · ${solarTermsPinyin[idx]}</h3>
+                <p><strong>🌾 节气渊源：</strong>太阳黄经${idx*15}°，时令${t}，天地气交，万物华实。</p>
+                <p><strong>🍃 七十二候：</strong>${h1} · ${h2} · ${h3}</p>
+                <p><strong>🍜 民俗食俗：</strong> ${termFoods[idx]}，民间有祭祖、尝新、${idx%2===0?"踏青":"祈福"}等传统。</p>
+                <p><strong>🧘 养生精要：</strong> ${termHealthTips[idx]}，宜${idx<6?"升发":idx<12?"养心":"润燥"}，顺时调摄。</p>`;
+    });
+
+    let canvas = document.getElementById('wheelCanvas');
+    let ctx = canvas.getContext('2d');
+    let width, height, centerX, centerY;
+    let radiusOuter = 350;
+
+    function resizeCanvas() {
+        canvas.width = 800;
+        canvas.height = 800;
+        width = 800; height = 800;
+        centerX = 400; centerY = 400;
+        radiusOuter = 350;
+        drawWheel();
+    }
+
+    let currentTermIdx = 9;
+    let offsetAngle = 0;
+    let dragFlag = false, dragStartMouseAngle = 0;
+    let hoveredHou = null;
+    let fixedHou = null;
+
+    function getTermFromOffset() {
+        let angleStep = Math.PI * 2 / 24;
+        let ref = -Math.PI/2 - offsetAngle;
+        let raw = ((ref % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
+        let idx = Math.floor(raw / angleStep) % 24;
+        return idx;
+    }
+
+    function updateAllFromTerm(termIdx, syncSlider = true) {
+        if (termIdx < 0) termIdx = 0;
+        if (termIdx > 23) termIdx = 23;
+        currentTermIdx = termIdx;
+        let targetAngle = - ( (currentTermIdx * Math.PI * 2 / 24) + Math.PI/2 );
+        offsetAngle = targetAngle;
+        if (syncSlider) {
+            document.getElementById('timeline').value = currentTermIdx;
+            document.getElementById('timelineLabel').innerText = solarTerms[currentTermIdx];
+        }
+        document.getElementById('leftTermCh').innerText = solarTerms[currentTermIdx];
+        document.getElementById('leftTermPy').innerText = solarTermsPinyin[currentTermIdx];
+        let seasonIdx = Math.floor(currentTermIdx / 6);
+        let seasonIcons = ["🌱","☀️","🍂","❄️"];
+        document.getElementById('seasonIcon').innerHTML = seasonIcons[seasonIdx];
+        document.getElementById('seasonTag').innerHTML = ["孟春·启蛰", "仲夏·朱明", "素秋·金天", "玄冬·安宁"][seasonIdx];
+        document.getElementById('poemText').innerText = poemLib[currentTermIdx];
+        document.getElementById('healthTip').innerHTML = `✨ ${termHealthTips[currentTermIdx]} · 顺时颐养，${currentTermIdx<6?"升发阳气":currentTermIdx<12?"清心宁神":"润燥收藏"}`;
+        fixedHou = currentTermIdx * 3;
+        updatePhenologyCard(fixedHou);
+        drawWheel();
+    }
+
+    function updatePhenologyCard(houIndex) {
+        if (houIndex === undefined || houIndex === null) return;
+        let [hName, icon, food] = houData[houIndex];
+        let termIdx = Math.floor(houIndex / 3);
+        let termName = solarTerms[termIdx];
+        document.getElementById('houDetailText').innerHTML = `${hName} · ${termName}时令 · ${food}`;
+        document.getElementById('motionAnimIcon').innerHTML = icon;
+        document.getElementById('houExtra').innerHTML = `📜 民俗食趣：「${food}」 · 物候之象「${hName}」 · 古谚“${poemLib[termIdx].slice(0,22)}…”`;
+    }
+
+    function drawWheel() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        let rCenter = 70;
+        let ring2_in = 76, ring2_out = 152;
+        let ring3_in = 156, ring3_out = 332;
+
+        // 1. 中心圆盘
+        let seasonFill = ["#cde6c4", "#fadbbc", "#fcf0bf", "#e0e9fa"][Math.floor(currentTermIdx/6)];
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, rCenter, 0, Math.PI*2);
+        ctx.fillStyle = seasonFill;
+        ctx.fill();
+        ctx.font = "bold 22px 'Noto Serif SC'";
+        ctx.fillStyle = "#4a3320";
+        ctx.textAlign = "center";
+        ctx.fillText(solarTerms[currentTermIdx], centerX, centerY-6);
+        ctx.font = "13px 'Noto Serif SC'";
+        ctx.fillStyle = "#7b5836";
+        ctx.fillText(solarTermsPinyin[currentTermIdx], centerX, centerY+16);
+        ctx.font = "28px serif";
+        ctx.fillStyle = "#946b3e80";
+        let flora = ["🌿","🌻","🍁","❄️"][Math.floor(currentTermIdx/6)];
+        ctx.fillText(flora, centerX+38, centerY-26);
+
+        // 2. 内环 24节气 (加粗文字)
+        let angleStep = Math.PI*2/24;
+        for (let i=0; i<24; i++) {
+            let ang = i * angleStep + offsetAngle;
+            let x1 = centerX + Math.cos(ang)*ring2_in;
+            let y1 = centerY + Math.sin(ang)*ring2_in;
+            let x2 = centerX + Math.cos(ang)*ring2_out;
+            let y2 = centerY + Math.sin(ang)*ring2_out;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.lineWidth = (i === currentTermIdx) ? 5 : 2.2;
+            ctx.strokeStyle = (i === currentTermIdx) ? "#e5aa46" : "#b8864b";
+            ctx.stroke();
+            let textR = ring2_in + 22;
+            let tx = centerX + Math.cos(ang)*textR;
+            let ty = centerY + Math.sin(ang)*textR;
+            ctx.font = (i === currentTermIdx) ? "bold 17px 'Noto Serif SC'" : "15px 'Noto Serif SC'";
+            ctx.fillStyle = (i === currentTermIdx) ? "#c5762e" : "#6b4a2a";
+            ctx.shadowBlur = (i===currentTermIdx)?3:0;
+            ctx.fillText(solarTerms[i], tx, ty);
+        }
+
+        // 3. 七十二候扇形 (增强文字尺寸)
+        let subAngle = Math.PI*2 / 72;
+        for (let i=0; i<72; i++) {
+            let termBelong = Math.floor(i/3);
+            let seasonIdx = Math.floor(termBelong/6);
+            let base = ["#9fc18b", "#edbc86", "#f5de9c", "#bdcfdf"][seasonIdx];
+            let start = i * subAngle + offsetAngle;
+            let end = (i+1) * subAngle + offsetAngle;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, ring3_out, start, end);
+            ctx.fillStyle = base + "66";
+            ctx.fill();
+            ctx.strokeStyle = "#ddbb77";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            let midAng = start + subAngle/2;
+            let labelX = centerX + Math.cos(midAng) * (ring3_in + 54);
+            let labelY = centerY + Math.sin(midAng) * (ring3_in + 48);
+            ctx.font = "12px 'Noto Serif SC'";
+            ctx.fillStyle = "#3c2a19";
+            let shortName = houData[i][0].length > 2 ? houData[i][0].slice(0,3) : houData[i][0];
+            ctx.fillText(shortName, labelX-8, labelY-6);
+            ctx.font = "19px 'Segoe UI Emoji'";
+            ctx.fillText(houData[i][1], labelX-8, labelY+12);
+            ctx.font = "11px 'Noto Serif SC'";
+            ctx.fillStyle = "#b45f2a";
+            ctx.fillText(houData[i][2], labelX+2, labelY+24);
+            if (fixedHou === i || (hoveredHou === i && fixedHou===null)) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, ring3_out, start, end);
+                ctx.strokeStyle = "#ffcd6b";
+                ctx.lineWidth = 3.5;
+                ctx.stroke();
+            }
+        }
+
+        // 外围纹样 (清晰)
+        let pattern = ["🌸", "🌼", "🍁", "❄️"][Math.floor(currentTermIdx/6)];
+        for (let i=0; i<48; i++) {
+            let ang = i * (Math.PI*2/48);
+            let r = radiusOuter + 12;
+            let x = centerX + Math.cos(ang)*r;
+            let y = centerY + Math.sin(ang)*r;
+            ctx.globalAlpha = 0.25;
+            ctx.font = "20px serif";
+            ctx.fillStyle = "#b28046";
+            ctx.fillText(pattern, x, y);
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    function getHouFromCoord(mx, my) {
+        let dx = mx - centerX, dy = my - centerY;
+        let dist = Math.hypot(dx, dy);
+        if (dist < 148 || dist > 338) return null;
+        let angle = Math.atan2(dy, dx) - offsetAngle;
+        let idx = Math.floor(((angle + 2*Math.PI) % (2*Math.PI)) / (Math.PI*2/72));
+        return idx % 72;
+    }
+
+    function getTermFromClickArea(mx, my) {
+        let dx = mx - centerX, dy = my - centerY;
+        let dist = Math.hypot(dx, dy);
+        if (dist > 85 && dist < 190) {
+            let ang = Math.atan2(dy, dx) - offsetAngle;
+            let idx = Math.floor(((ang + 2*Math.PI) % (2*Math.PI)) / (Math.PI*2/24)) % 24;
+            return idx;
+        }
+        return null;
+    }
+
+    function onCanvasMove(e) {
+        let rect = canvas.getBoundingClientRect();
+        let sx = canvas.width / rect.width;
+        let sy = canvas.height / rect.height;
+        let mouseX = (e.clientX - rect.left) * sx;
+        let mouseY = (e.clientY - rect.top) * sy;
+        let idx = getHouFromCoord(mouseX, mouseY);
+        if (idx !== null && fixedHou === null) {
+            if (hoveredHou !== idx) {
+                hoveredHou = idx;
+                updatePhenologyCard(idx);
+                drawWheel();
+            }
+        } else if (idx === null && hoveredHou !== null && fixedHou===null) {
+            hoveredHou = null;
+            drawWheel();
+        }
+    }
+
+    function onCanvasClick(e) {
+        let rect = canvas.getBoundingClientRect();
+        let sx = canvas.width / rect.width;
+        let sy = canvas.height / rect.height;
+        let mouseX = (e.clientX - rect.left) * sx;
+        let mouseY = (e.clientY - rect.top) * sy;
+        let houIdx = getHouFromCoord(mouseX, mouseY);
+        if (houIdx !== null) {
+            fixedHou = houIdx;
+            updatePhenologyCard(houIdx);
+            drawWheel();
+            return;
+        }
+        let termIdx = getTermFromClickArea(mouseX, mouseY);
+        if (termIdx !== null && termIdx !== currentTermIdx) {
+            updateAllFromTerm(termIdx, true);
+        } else if (termIdx !== null && termIdx === currentTermIdx) {
+            // 如果点击当前节气区域，打开侧边栏
+            openSidebar(currentTermIdx);
+        }
+    }
+
+    function startDrag(e) {
+        dragFlag = true;
+        let rect = canvas.getBoundingClientRect();
+        let cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+        let ang = Math.atan2(e.clientY - cy, e.clientX - cx);
+        dragStartMouseAngle = ang;
+        canvas.style.cursor = 'grabbing';
+    }
+
+    function onDragMove(e) {
+        if (!dragFlag) return;
+        let rect = canvas.getBoundingClientRect();
+        let cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+        let cur = Math.atan2(e.clientY - cy, e.clientX - cx);
+        let delta = cur - dragStartMouseAngle;
+        offsetAngle += delta;
+        dragStartMouseAngle = cur;
+        let newIdx = getTermFromOffset();
+        if (newIdx !== currentTermIdx) {
+            currentTermIdx = newIdx;
+            document.getElementById('timeline').value = currentTermIdx;
+            document.getElementById('timelineLabel').innerText = solarTerms[currentTermIdx];
+            let sIdx = Math.floor(currentTermIdx/6);
+            document.getElementById('seasonIcon').innerHTML = ["🌱","☀️","🍂","❄️"][sIdx];
+            document.getElementById('seasonTag').innerHTML = ["孟春·启蛰", "仲夏·朱明", "素秋·金天", "玄冬·安宁"][sIdx];
+            document.getElementById('poemText').innerText = poemLib[currentTermIdx];
+            document.getElementById('healthTip').innerHTML = `✨ ${termHealthTips[currentTermIdx]} · 顺时颐养`;
+            fixedHou = currentTermIdx * 3;
+            updatePhenologyCard(fixedHou);
+        }
+        drawWheel();
+    }
+
+    function endDrag() { dragFlag = false; canvas.style.cursor = 'grab'; }
+
+    function openSidebar(termIdx) {
+        document.getElementById('sidebarContent').innerHTML = termDetailsArr[termIdx];
+        document.getElementById('detailSidebar').classList.add('open');
+        document.getElementById('overlaySide').classList.add('active');
+    }
+
+    window.addEventListener('load', () => {
+        resizeCanvas();
+        updateAllFromTerm(9, true);
+        canvas.addEventListener('mousemove', onCanvasMove);
+        canvas.addEventListener('click', onCanvasClick);
+        canvas.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', endDrag);
+        document.getElementById('timeline').addEventListener('input', (e) => {
+            let idx = parseInt(e.target.value);
+            updateAllFromTerm(idx, true);
+        });
+        let termSelectA = document.getElementById('termA'), termSelectB = document.getElementById('termB');
+        solarTerms.forEach((t,i) => { termSelectA.add(new Option(t,i)); termSelectB.add(new Option(t,i)); });
+        termSelectA.value = '9'; termSelectB.value = '2';
+        document.getElementById('compareBtn').onclick = () => {
+            let a = parseInt(termSelectA.value), b = parseInt(termSelectB.value);
+            let compHtml = `<div style="border-bottom:1px solid #e6cf9a;margin:10px 0"><b>${solarTerms[a]}</b><br>三候：${houData[a*3][0]} · ${houData[a*3+1][0]} · ${houData[a*3+2][0]}<br>食俗：${termFoods[a]}<br>养生：${termHealthTips[a]}</div>
+                            <div><b>${solarTerms[b]}</b><br>三候：${houData[b*3][0]} · ${houData[b*3+1][0]} · ${houData[b*3+2][0]}<br>食俗：${termFoods[b]}<br>养生：${termHealthTips[b]}</div>`;
+            document.getElementById('compareResult').innerHTML = compHtml;
+            document.getElementById('compareModal').style.display = 'flex';
+        };
+        document.querySelector('.close-modal').onclick = () => document.getElementById('compareModal').style.display = 'none';
+        document.getElementById('detailViewBtn').onclick = () => openSidebar(currentTermIdx);
+        document.getElementById('closeSidebar').onclick = () => { document.getElementById('detailSidebar').classList.remove('open'); document.getElementById('overlaySide').classList.remove('active'); };
+        document.getElementById('overlaySide').onclick = () => { document.getElementById('detailSidebar').classList.remove('open'); document.getElementById('overlaySide').classList.remove('active'); };
+    });
+</script>
+</body>
+</html>

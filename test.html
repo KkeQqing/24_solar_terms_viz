@@ -2,780 +2,1597 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>岁时轮转 · 七十二候 · 华夏时序图谱</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>岁时轮转 · 七十二候</title>
     <style>
+        :root {
+            --spring: #6B9B4A;
+            --spring-light: #8DB76B;
+            --summer: #C44D3D;
+            --summer-light: #E0705E;
+            --autumn: #C8893D;
+            --autumn-light: #DBA960;
+            --winter: #7A9BB5;
+            --winter-light: #A3C0D6;
+            --gold: #C9A96E;
+            --gold-bright: #E0C68C;
+            --bg: #1a1a16;
+            --panel-bg: #1f1e18;
+            --text: #e8e0d0;
+            --text-dim: #b0a890;
+            --card-bg: #27251d;
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
-
         body {
-            background: #f9f3e3;
-            background-image: radial-gradient(circle at 20% 30%, rgba(200, 170, 120, 0.12) 3%, transparent 3.5%);
-            background-size: 32px 32px;
-            font-family: 'Noto Serif SC', 'Times New Roman', '宋体', serif;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', 'KaiTi', '楷体', '华文楷体', serif;
+            overflow-x: hidden;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-        }
-
-        .dashboard {
-            max-width: 1500px;
-            width: 100%;
-            background: rgba(250, 244, 232, 0.78);
-            backdrop-filter: blur(3px);
-            border-radius: 56px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            padding: 22px 28px 32px;
-            transition: all 0.2s;
-        }
-
-        .main-row {
-            display: flex;
-            gap: 28px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        /* 左侧竖版视觉区 */
-        .left-vertical {
-            width: 180px;
-            background: rgba(245, 235, 210, 0.75);
-            border-radius: 48px 20px 48px 20px;
-            backdrop-filter: blur(4px);
+            user-select: none;
+            -webkit-user-select: none;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 32px 12px;
-            border: 1px solid #e7d5b0;
-            box-shadow: inset 0 1px 4px rgba(255, 250, 225, 0.9), 6px 10px 20px rgba(0,0,0,0.05);
+            background-image: radial-gradient(ellipse at center, #2a2820 0%, #141410 70%);
         }
-
-        .current-season-icon {
-            font-size: 3.2rem;
-            margin-bottom: 1rem;
-            filter: drop-shadow(2px 6px 8px rgba(0,0,0,0.1));
-        }
-
-        .current-term-ch {
-            font-size: 3.6rem;
-            font-weight: 800;
-            color: #8b5a2b;
-            letter-spacing: 6px;
-            line-height: 1.2;
-            text-shadow: 2px 2px 2px rgba(180, 130, 70, 0.2);
-        }
-
-        .current-term-py {
-            font-size: 1rem;
-            color: #b57942;
-            letter-spacing: 2px;
-            margin-top: 12px;
-            border-top: 1px dashed #dbbc87;
-            padding-top: 8px;
-        }
-
-        .season-tag {
-            margin-top: 22px;
-            background: #fff2e0;
-            border-radius: 60px;
-            padding: 6px 18px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #b27d4a;
-        }
-
-        .canvas-wrapper {
-            flex: 1;
+        .main-container {
             display: flex;
-            justify-content: center;
+            width: 100%;
+            max-width: 1400px;
+            height: 85vh;
+            min-height: 700px;
             align-items: center;
-            min-width: 560px;
+            justify-content: center;
+            gap: 16px;
+            padding: 10px 20px;
             position: relative;
         }
-
-        canvas {
-            width: 100%;
-            max-width: 720px;
-            height: auto;
-            background: #fef9ed;
-            border-radius: 50%;
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2), 0 0 0 6px #f8efda, 0 0 0 12px #e3d1ae;
-            transition: all 0.2s;
-            cursor: grab;
-            display: block;
-        }
-
-        canvas:active {
-            cursor: grabbing;
-        }
-
-        .right-functions {
-            width: 220px;
-            background: #fcf5e6;
-            border-radius: 36px;
-            padding: 28px 18px;
+        .left-panel {
+            width: 180px;
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            gap: 32px;
-            border: 1px solid #e8d6b4;
-            box-shadow: 0 6px 14px rgba(70, 40, 20, 0.06);
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
         }
-
-        .btn-gold {
-            background: linear-gradient(145deg, #f7e7c6, #eedbba);
-            border: none;
-            padding: 14px 0;
-            font-size: 1.1rem;
+        .left-panel .season-visual {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 2.4rem;
             font-weight: bold;
-            color: #6e4b28;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-            border: 1px solid #fbefcf;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+            letter-spacing: 8px;
+            color: var(--gold-bright);
+            text-shadow: 0 0 30px rgba(201, 169, 110, 0.5);
+            transition: all 0.6s ease;
+            line-height: 1.6;
+            background: linear-gradient(180deg, transparent 0%, rgba(201, 169, 110, 0.08) 50%, transparent 100%);
+            padding: 20px 10px;
+            border-radius: 12px;
+            border-left: 2px solid rgba(201, 169, 110, 0.3);
         }
-
-        .btn-gold:hover {
-            background: #f0dfb5;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.1);
-        }
-
-        .seasonal-note {
-            font-size: 0.75rem;
-            text-align: center;
-            color: #b58753;
+        .left-panel .season-visual .pinyin {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: var(--text-dim);
             margin-top: 10px;
-            line-height: 1.4;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
-
-        .bottom-area {
-            margin-top: 32px;
+        .left-panel .mini-icon {
+            font-size: 3rem;
+            opacity: 0.7;
+            animation: floatIcon 3s ease-in-out infinite;
         }
-
-        .timeline-slider {
-            background: #ebe0c6;
-            padding: 12px 24px;
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            flex-wrap: wrap;
+        @keyframes floatIcon {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
         }
-
-        .slider-label {
-            font-weight: bold;
-            color: #7a582f;
-            font-size: 1rem;
-        }
-
-        input[type="range"] {
-            flex: 1;
-            height: 4px;
-            -webkit-appearance: none;
-            background: #cfb787;
-            border-radius: 3px;
-        }
-
-        input[type="range"]:focus {
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #b57934;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid #fcf0d5;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-        }
-
-        .humanity-board {
-            display: flex;
-            background: #fffcf3;
-            border-radius: 36px;
-            margin-top: 20px;
-            padding: 18px 28px;
-            gap: 24px;
-            border-left: 12px solid #e9cb95;
-        }
-
-        .poem-area {
-            flex: 1;
-            border-right: 1px solid #e7dbbc;
-            padding-right: 22px;
-        }
-
-        .poem-text {
-            font-size: 1rem;
-            color: #7d603c;
-            line-height: 1.5;
-            font-style: italic;
-        }
-
-        .health-area {
-            flex: 1;
-            color: #7e623f;
-        }
-
-        .health-tip {
-            font-size: 0.95rem;
-        }
-
-        .phenology-card {
-            margin-top: 20px;
-            background: #fef7e9;
-            border-radius: 40px;
-            padding: 14px 20px;
-            border: 1px solid #dfca99;
-            transition: all 0.15s;
-        }
-
-        .card-title {
-            font-weight: bold;
-            border-left: 5px solid #dcae6b;
-            padding-left: 12px;
-            margin-bottom: 10px;
-            color: #b56124;
-            font-size: 1rem;
-        }
-
-        .flex-detail {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .motion-icon {
-            width: 60px;
-            height: 60px;
-            background: #f7ebd4;
-            border-radius: 60px;
+        .canvas-wrapper {
+            position: relative;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
         }
-
-        .modal {
-            display: none;
+        canvas#wheelCanvas {
+            cursor: grab;
+            display: block;
+            filter: drop-shadow(0 0 40px rgba(180, 150, 100, 0.25));
+            transition: filter 0.8s ease;
+        }
+        canvas#wheelCanvas:active {
+            cursor: grabbing;
+        }
+        canvas#wheelCanvas:hover {
+            filter: drop-shadow(0 0 60px rgba(200, 170, 110, 0.4));
+        }
+        .right-panel {
+            width: 160px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            z-index: 10;
+        }
+        .btn-gold {
+            width: 130px;
+            padding: 13px 16px;
+            background: linear-gradient(135deg, #3d3525 0%, #524630 100%);
+            border: 1.5px solid var(--gold);
+            color: var(--gold-bright);
+            border-radius: 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            transition: all 0.35s ease;
+            text-align: center;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #524630 0%, #6b5940 100%);
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 25px rgba(201, 169, 110, 0.35);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+        .btn-gold:active {
+            transform: scale(0.95);
+            transition: all 0.1s ease;
+        }
+        .btn-gold .btn-icon {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+        .detail-card-outer {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 20px 18px;
+            z-index: 20;
+            pointer-events: auto;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: translateY(-50%) translateX(20px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .detail-card-outer.visible {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+        .detail-card-outer h3 {
+            color: var(--gold-bright);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        .detail-card-outer .detail-item {
+            margin: 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+        .detail-card-outer .detail-item strong {
+            color: var(--text);
+            display: inline-block;
+            min-width: 50px;
+        }
+        .detail-card-outer .detail-icon {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 10px 0;
+            animation: floatIcon 2.5s ease-in-out infinite;
+        }
+        .bottom-bar {
+            width: 100%;
+            max-width: 1300px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 12px 30px;
+            background: var(--panel-bg);
+            border-top: 1px solid rgba(201, 169, 110, 0.25);
+            border-radius: 16px 16px 0 0;
+            min-height: 90px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .bottom-bar .poem {
+            flex: 1;
+            min-width: 200px;
+            font-style: italic;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-align: center;
+            line-height: 1.7;
+        }
+        .bottom-bar .health-tip {
+            flex: 1;
+            min-width: 200px;
+            color: #c9b896;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.7;
+            border-left: 1px solid rgba(201, 169, 110, 0.3);
+            padding-left: 20px;
+            letter-spacing: 1px;
+        }
+        .timeline-row {
+            width: 100%;
+            max-width: 1300px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+        .timeline-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: #ccc;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .timeline-dot:hover {
+            transform: scale(1.3);
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 14px rgba(201, 169, 110, 0.5);
+            z-index: 5;
+        }
+        .timeline-dot.active {
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 20px rgba(201, 169, 110, 0.7);
+            transform: scale(1.25);
+            z-index: 5;
+            animation: pulseDot 1.5s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(201, 169, 110, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(240, 200, 130, 1);
+            }
+        }
+        .season-spring {
+            background: var(--spring);
+        }
+        .season-summer {
+            background: var(--summer);
+        }
+        .season-autumn {
+            background: var(--autumn);
+        }
+        .season-winter {
+            background: var(--winter);
+        }
+        .overlay-compare {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.55);
-            z-index: 1000;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 100;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
         }
-
-        .modal-content {
-            background: #fff9ef;
-            max-width: 580px;
+        .overlay-compare.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .compare-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 28px 24px;
             width: 90%;
-            border-radius: 48px;
-            padding: 28px;
-            border: 2px solid #e3c48b;
-        }
-
-        .compare-row {
+            max-width: 700px;
             display: flex;
             gap: 20px;
-            margin: 20px 0;
+            flex-wrap: wrap;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
         }
-
-        .close-modal {
-            float: right;
-            font-size: 28px;
+        .compare-col {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            border: 1px dashed rgba(201, 169, 110, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .compare-col h4 {
+            color: var(--gold-bright);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .compare-col p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin: 4px 0;
+            line-height: 1.5;
+        }
+        .compare-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
             cursor: pointer;
+            z-index: 101;
         }
-
         .sidebar-detail {
             position: fixed;
-            right: -440px;
+            right: -420px;
             top: 0;
             width: 400px;
             height: 100%;
-            background: #fffbf0;
-            box-shadow: -6px 0 32px rgba(0, 0, 0, 0.2);
-            z-index: 1100;
-            transition: right 0.3s ease;
-            padding: 32px 24px;
+            background: var(--panel-bg);
+            border-left: 2px solid var(--gold);
+            z-index: 90;
+            padding: 30px 22px;
             overflow-y: auto;
-            border-left: 10px solid #e6bc7e;
+            transition: right 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
         }
-
         .sidebar-detail.open {
             right: 0;
         }
-
-        .overlay-side {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 1050;
-            display: none;
+        .sidebar-detail h3 {
+            color: var(--gold-bright);
+            letter-spacing: 3px;
+            text-align: center;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
         }
-
-        .overlay-side.active {
-            display: block;
+        .sidebar-detail .section {
+            margin: 14px 0;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border-left: 3px solid var(--gold);
         }
-
-        .icon-close {
+        .sidebar-detail .section h5 {
+            color: #e0c68c;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .sidebar-detail .section p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .sidebar-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
             background: none;
             border: none;
-            font-size: 28px;
-            float: right;
+            color: #fff;
+            font-size: 1.8rem;
             cursor: pointer;
-            color: #9b6e3e;
+            z-index: 5;
         }
-
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #141410;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+            pointer-events: all;
+        }
+        .loading-overlay.done {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-ring {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(201, 169, 110, 0.3);
+            border-top-color: var(--gold-bright);
+            border-radius: 50%;
+            animation: spinLoad 1s linear infinite;
+        }
+        @keyframes spinLoad {
+            to {
+                transform: rotate(360deg);
+            }
+        }
         @media (max-width: 1000px) {
-            .canvas-wrapper {
-                min-width: 380px;
+            .main-container {
+                flex-direction: column;
+                height: auto;
+                gap: 10px;
             }
-            .left-vertical {
-                width: 140px;
+            .left-panel {
+                width: 100%;
+                flex-direction: row;
+                writing-mode: horizontal-tb;
             }
-            .current-term-ch {
-                font-size: 2.4rem;
+            .left-panel .season-visual {
+                writing-mode: horizontal-tb;
+                text-orientation: mixed;
+                font-size: 1.6rem;
+                letter-spacing: 4px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .btn-gold {
+                width: auto;
+                padding: 10px 14px;
+                font-size: 0.8rem;
+            }
+            .detail-card-outer {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                width: 90%;
+                margin: 10px auto;
+            }
+            .detail-card-outer.visible {
+                transform: none;
+            }
+            canvas#wheelCanvas {
+                width: 90vw;
+                height: auto;
             }
         }
     </style>
 </head>
 <body>
-<div class="dashboard">
-    <div class="main-row">
-        <div class="left-vertical">
-            <div class="current-season-icon" id="seasonIcon">🌾</div>
-            <div class="current-solar-term">
-                <div class="current-term-ch" id="leftTermCh">夏至</div>
-                <div class="current-term-py" id="leftTermPy">XIA ZHI</div>
+    <div class="loading-overlay" id="loadingOverlay"><div class="loading-ring"></div></div>
+    <div class="main-container" id="mainContainer">
+        <div class="left-panel" id="leftPanel">
+            <div class="mini-icon" id="seasonMiniIcon">🌿</div>
+            <div class="season-visual" id="seasonVisual">立夏<span class="pinyin">LI XIA</span></div>
+        </div>
+        <div class="canvas-wrapper" id="canvasWrapper">
+            <canvas id="wheelCanvas"></canvas>
+            <div class="detail-card-outer" id="detailCardOuter">
+                <h3 id="detailTitle">候名</h3>
+                <div class="detail-icon" id="detailIcon">🦌</div>
+                <div class="detail-item"><strong>序号：</strong><span id="detailIndex">-</span></div>
+                <div class="detail-item"><strong>物候：</strong><span id="detailDesc">-</span></div>
+                <div class="detail-item"><strong>诗句：</strong><span id="detailPoem">-</span></div>
+                <div class="detail-item"><strong>农谚：</strong><span id="detailProverb">-</span></div>
+                <div class="detail-item"><strong>吃食：</strong><span id="detailFood">-</span></div>
             </div>
-            <div class="season-tag" id="seasonTag">仲夏 · 朱明</div>
         </div>
-
-        <div class="canvas-wrapper">
-            <canvas id="wheelCanvas" width="800" height="800" style="width:100%; height:auto; max-width:720px; aspect-ratio:1/1"></canvas>
-        </div>
-
-        <div class="right-functions">
-            <button class="btn-gold" id="compareBtn">🌸 节气对比</button>
-            <button class="btn-gold" id="detailViewBtn">📖 详情查看</button>
-            <div class="seasonal-note">✨ 点击节气区域 · 即刻跳转时序<br>✨ 轻点扇形候 · 细观物候民俗</div>
+        <div class="right-panel" id="rightPanel">
+            <button class="btn-gold" id="btnCompare" title="选择两个节气进行对比"><span class="btn-icon">⚖️</span>节气对比</button>
+            <button class="btn-gold" id="btnDetail" title="查看当前节气详情"><span class="btn-icon">📜</span>详情查看</button>
+            <button class="btn-gold" id="btnReset" title="回到当前时节"><span class="btn-icon">🔄</span>回到今时</button>
         </div>
     </div>
-
-    <div class="bottom-area">
-        <div class="timeline-slider">
-            <span class="slider-label">📅 岁时流转</span>
-            <input type="range" id="timeline" min="0" max="23" step="1" value="9">
-            <span id="timelineLabel" style="min-width: 75px; font-weight:500;">夏至</span>
-        </div>
-        <div class="humanity-board">
-            <div class="poem-area">
-                <div style="font-size:1.1rem;">✍️ 节气诗咏</div>
-                <div class="poem-text" id="poemText">杨柳青青江水平，闻郎江上踏歌声。</div>
-            </div>
-            <div class="health-area">
-                <div style="font-size:1.1rem;">🍵 养生古训</div>
-                <div class="health-tip" id="healthTip">宜清心静养，清淡饮食，顺时消暑。</div>
-            </div>
-        </div>
-        <div class="phenology-card" id="phenoCard">
-            <div class="card-title">🌼 候应 · 民俗精粹</div>
-            <div class="flex-detail">
-                <div class="motion-icon" id="motionAnimIcon">🦌</div>
-                <div id="houDetailText">鹿角解 · 夏至食面 (阳极阴生)</div>
-            </div>
-            <div id="houExtra" style="margin-top:8px; font-size:0.85rem; color:#b5793b;">鹿角脱落，蝉鸣半夏，民间吃面祈福消暑。</div>
-        </div>
+    <div class="timeline-row" id="timelineRow"></div>
+    <div class="bottom-bar" id="bottomBar">
+        <div class="poem" id="bottomPoem">蝼蝈鸣兮夏气升，蚯蚓出壤王瓜生。</div>
+        <div class="health-tip" id="bottomHealth">🍵 立夏养生：宜清心静养、清淡饮食、顺时消暑，多食酸味以固表。</div>
     </div>
-</div>
-
-<div id="compareModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h3>📜 节气双生 · 对比观候</h3>
-        <div class="compare-row">
-            <select id="termA" style="padding:8px; border-radius:32px;"></select>
-            <select id="termB" style="padding:8px; border-radius:32px;"></select>
-        </div>
-        <div id="compareResult" style="margin-top:20px;"></div>
+    <div class="overlay-compare" id="overlayCompare">
+        <button class="compare-close" id="compareClose">✕</button>
+        <div class="compare-card" id="compareCard"></div>
     </div>
-</div>
+    <div class="sidebar-detail" id="sidebarDetail">
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+        <h3 id="sidebarTitle">节气详情</h3>
+        <div id="sidebarContent"></div>
+    </div>
+    <script>
+        (function() {
+            const allData = buildAllData();
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const wrapper = document.getElementById('canvasWrapper');
+            const detailCard = document.getElementById('detailCardOuter');
+            const overlayCompare = document.getElementById('overlayCompare');
+            const compareCard = document.getElementById('compareCard');
+            const sidebarDetail = document.getElementById('sidebarDetail');
+            const sidebarContent = document.getElementById('sidebarContent');
+            const sidebarTitle = document.getElementById('sidebarTitle');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const timelineRow = document.getElementById('timelineRow');
+            const bottomPoem = document.getElementById('bottomPoem');
+            const bottomHealth = document.getElementById('bottomHealth');
+            const seasonVisual = document.getElementById('seasonVisual');
+            const seasonMiniIcon = document.getElementById('seasonMiniIcon');
+            const detailTitle = document.getElementById('detailTitle');
+            const detailIcon = document.getElementById('detailIcon');
+            const detailIndex = document.getElementById('detailIndex');
+            const detailDesc = document.getElementById('detailDesc');
+            const detailPoem = document.getElementById('detailPoem');
+            const detailProverb = document.getElementById('detailProverb');
+            const detailFood = document.getElementById('detailFood');
+            const btnCompare = document.getElementById('btnCompare');
+            const btnDetail = document.getElementById('btnDetail');
+            const btnReset = document.getElementById('btnReset');
+            const compareClose = document.getElementById('compareClose');
+            const sidebarClose = document.getElementById('sidebarClose');
 
-<div id="detailSidebar" class="sidebar-detail">
-    <button class="icon-close" id="closeSidebar">&times;</button>
-    <div id="sidebarContent">载入中...</div>
-</div>
-<div id="overlaySide" class="overlay-side"></div>
+            let canvasSize = 0;
+            let centerX = 0,
+                centerY = 0;
+            let currentSolarIndex = allData.solarTerms.findIndex(s => s.isCurrent) || 6;
+            let currentHouIndex = allData.solarTerms[currentSolarIndex].currentHouIndex || 0;
+            let rotationOffset = 0;
+            let targetRotation = 0;
+            let selectedHouGlobal = null;
+            let isDragging = false;
+            let dragStartAngle = 0;
+            let dragStartRotation = 0;
+            let animationId = null;
+            let compareMode = false;
+            let compareFirst = null;
+            let compareSecond = null;
+            let hoveredHouGlobal = null;
+            let mouseX = 0,
+                mouseY = 0;
+            let detailCardTimer = null;
+            let detailCardLocked = false;
 
-<script>
-    // ======================= 完整七十二候·岁时数据 ========================
-    const solarTerms = [
-        "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
-        "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪",
-        "大雪", "冬至", "小寒", "大寒"
-    ];
-    const solarTermsPinyin = [
-        "LI CHUN", "YU SHUI", "JING ZHE", "CHUN FEN", "QING MING", "GU YU", "LI XIA", "XIAO MAN",
-        "MANG ZHONG", "XIA ZHI", "XIAO SHU", "DA SHU", "LI QIU", "CHU SHU", "BAI LU", "QIU FEN",
-        "HAN LU", "SHUANG JIANG", "LI DONG", "XIAO XUE", "DA XUE", "DONG ZHI", "XIAO HAN", "DA HAN"
-    ];
+            function buildAllData() {
+                const solarTerms = [
+                    { name: '立春', pinyin: 'LI CHUN', season: 'spring', huangjing: 315, foods: '春饼、咬春萝卜',
+                        health: '宜养肝护阳、少酸多甘、早睡早起，食韭菜、豆芽以助阳气升发。',
+                        poem: '东风解冻蛰虫振，鱼陟负冰春气新。', origin: '立春为二十四节气之首，太阳到达黄经315°，标志着春季的开始。',
+                        customs: '迎春、咬春、打春牛、贴春联。', month: 2, emoji: '🌸' },
+                    { name: '雨水', pinyin: 'YU SHUI', season: 'spring', huangjing: 330, foods: '龙须面、春笋',
+                        health: '宜健脾祛湿、养护脾胃，食红枣、山药、薏仁粥。', poem: '獭祭鱼时鸿雁来，草木萌动雨丝裁。',
+                        origin: '太阳到达黄经330°，降水渐增，冰雪融化。', customs: '回娘家、拉保保、接寿。', month: 2,
+                    emoji: '🌧️' },
+                    { name: '惊蛰', pinyin: 'JING ZHE', season: 'spring', huangjing: 345, foods: '梨、炒豆',
+                        health: '宜疏肝理气、润肺防燥，食梨润喉、菠菜养血。', poem: '桃始华时仓庚鸣，鹰化为鸠春雷惊。',
+                        origin: '太阳到达黄经345°，春雷乍动，万物复苏。', customs: '吃梨、打小人、祭白虎。', month: 3, emoji: '⚡' },
+                    { name: '春分', pinyin: 'CHUN FEN', season: 'spring', huangjing: 0, foods: '春菜、太阳糕',
+                        health: '宜阴阳平衡、调和气血，食春菜、蜂蜜、红枣。', poem: '玄鸟至兮雷乃声，始电划破昼夜平。',
+                        origin: '太阳到达黄经0°，昼夜等长，春季的中点。', customs: '竖蛋、送春牛、粘雀嘴。', month: 3, emoji: '🥚' },
+                    { name: '清明', pinyin: 'QING MING', season: 'spring', huangjing: 15, foods: '青团、馓子',
+                        health: '宜清肝明目、祛湿防寒，食青团、荠菜、菊花茶。', poem: '桐始华时田鼠化，虹始见处雨初晴。',
+                        origin: '太阳到达黄经15°，气清景明，万物皆显。', customs: '扫墓、踏青、放风筝、插柳。', month: 4, emoji: '🪁' },
+                    { name: '谷雨', pinyin: 'GU YU', season: 'spring', huangjing: 30, foods: '谷雨茶、香椿',
+                        health: '宜养肝护脾、祛湿清热，饮谷雨茶、食香椿炒蛋。', poem: '萍始生时鸠拂羽，戴胜降桑春将去。',
+                        origin: '太阳到达黄经30°，雨生百谷，春将尽。', customs: '喝谷雨茶、赏牡丹、祭海。', month: 4, emoji: '🍵' },
+                    { name: '立夏', pinyin: 'LI XIA', season: 'summer', huangjing: 45, foods: '立夏蛋、尝三鲜',
+                        health: '宜清心静养、清淡饮食、顺时消暑，多食酸味以固表。', poem: '蝼蝈鸣兮夏气升，蚯蚓出壤王瓜生。',
+                        origin: '太阳到达黄经45°，夏季开始，万物繁茂。', customs: '吃立夏蛋、秤人、尝新。', month: 5, emoji: '🌿',
+                        isCurrent: true, currentHouIndex: 2 },
+                    { name: '小满', pinyin: 'XIAO MAN', season: 'summer', huangjing: 60, foods: '苦菜、麦糕',
+                        health: '宜清热利湿、养心健脾，食苦菜、冬瓜、薏仁。', poem: '苦菜秀时靡草死，麦秋至处籽粒实。',
+                        origin: '太阳到达黄经60°，麦类等夏熟作物籽粒渐满。', customs: '祭车神、祈蚕节。', month: 5, emoji: '🌾' },
+                    { name: '芒种', pinyin: 'MANG ZHONG', season: 'summer', huangjing: 75, foods: '梅子、粽子',
+                        health: '宜清热解暑、健脾祛湿，食梅子、绿豆汤、茯苓。', poem: '螳螂生时鵙始鸣，反舌无声麦收忙。',
+                        origin: '太阳到达黄经75°，有芒作物成熟，播种最忙。', customs: '送花神、煮梅、安苗。', month: 6, emoji: '🌻' },
+                    { name: '夏至', pinyin: 'XIA ZHI', season: 'summer', huangjing: 90, foods: '夏至面、凉面',
+                        health: '宜养心安神、清暑益气，食面、苦瓜、莲子，午休养心。', poem: '鹿角解时蝉始鸣，半夏生处日最长。',
+                        origin: '太阳到达黄经90°，白昼最长，阳气最盛。', customs: '吃面、祭祖、消夏避伏。', month: 6, emoji: '☀️' },
+                    { name: '小暑', pinyin: 'XIAO SHU', season: 'summer', huangjing: 105, foods: '藕、绿豆汤',
+                        health: '宜清暑化湿、养心安神，食藕、绿豆、西瓜翠衣。', poem: '温风至时蟋蟀居，鹰始鸷兮暑气初。',
+                        origin: '太阳到达黄经105°，暑热渐盛但未至极。', customs: '食新、晒书画、簪茉莉。', month: 7, emoji: '🪷' },
+                    { name: '大暑', pinyin: 'DA SHU', season: 'summer', huangjing: 120, foods: '伏茶、仙草冻',
+                        health: '宜清热解暑、益气养阴，饮伏茶、食仙草、绿豆粥。', poem: '腐草为萤土润溽，大雨时行暑气酷。',
+                        origin: '太阳到达黄经120°，一年中最热时期。', customs: '喝伏茶、烧伏香、送大暑船。', month: 7, emoji: '🔥' },
+                    { name: '立秋', pinyin: 'LI QIU', season: 'autumn', huangjing: 135, foods: '贴秋膘、啃秋瓜',
+                        health: '宜养肺润燥、收敛神气，食肉贴膘、梨、银耳。', poem: '凉风至时白露降，寒蝉鸣处秋气爽。',
+                        origin: '太阳到达黄经135°，秋季开始，暑去凉来。', customs: '贴秋膘、啃秋、晒秋。', month: 8, emoji: '🍂' },
+                    { name: '处暑', pinyin: 'CHU SHU', season: 'autumn', huangjing: 150, foods: '鸭子、龙眼',
+                        health: '宜滋阴润燥、清热安神，食鸭肉、龙眼、酸梅汤。', poem: '鹰乃祭鸟天地肃，禾乃登时暑气收。',
+                        origin: '太阳到达黄经150°，暑气渐消，秋意渐浓。', customs: '吃鸭子、放河灯、开渔节。', month: 8, emoji: '🦆' },
+                    { name: '白露', pinyin: 'BAI LU', season: 'autumn', huangjing: 165, foods: '白露茶、米酒',
+                        health: '宜润肺生津、防燥护阴，饮白露茶、食龙眼、山药。', poem: '鸿雁来时玄鸟归，群鸟养羞露渐白。',
+                        origin: '太阳到达黄经165°，露凝而白，秋意加深。', customs: '喝白露茶、酿米酒、祭禹王。', month: 9,
+                emoji: '💧' },
+                    { name: '秋分', pinyin: 'QIU FEN', season: 'autumn', huangjing: 180, foods: '秋菜、汤圆',
+                        health: '宜滋阴润肺、调和阴阳，食秋菜、梨、蜂蜜、银耳。', poem: '雷始收声蛰虫坯，水始涸时昼夜平。',
+                        origin: '太阳到达黄经180°，昼夜等长，秋季中点。', customs: '祭月、吃秋菜、送秋牛。', month: 9, emoji: '🌕' },
+                    { name: '寒露', pinyin: 'HAN LU', season: 'autumn', huangjing: 195, foods: '芝麻、花糕',
+                        health: '宜养阴润燥、温补脾胃，食芝麻、核桃、红枣糕。', poem: '鸿雁来宾雀入水，菊有黄华寒露凝。',
+                        origin: '太阳到达黄经195°，露水更冷，即将结冰。', customs: '登高、赏菊、吃花糕。', month: 10, emoji: '🏵️' },
+                    { name: '霜降', pinyin: 'SHUANG JIANG', season: 'autumn', huangjing: 210, foods: '柿子、牛肉',
+                        health: '宜润肺养胃、温补防寒，食柿子、牛肉、白萝卜。', poem: '豺乃祭兽草木落，蛰虫咸俯霜已降。',
+                        origin: '太阳到达黄经210°，霜始降，秋将尽。', customs: '吃柿子、赏红叶、祭祖。', month: 10, emoji: '🍅' },
+                    { name: '立冬', pinyin: 'LI DONG', season: 'winter', huangjing: 225, foods: '饺子、羊肉汤',
+                        health: '宜温补养肾、藏精蓄锐，食饺子、羊肉、黑芝麻。', poem: '水始冰时地始冻，雉入大水冬气浓。',
+                        origin: '太阳到达黄经225°，冬季开始，万物收藏。', customs: '吃饺子、贺冬、祭祖。', month: 11, emoji: '🥟' },
+                    { name: '小雪', pinyin: 'XIAO XUE', season: 'winter', huangjing: 240, foods: '糍粑、腊肉',
+                        health: '宜温补驱寒、养护肾阳，食糍粑、羊肉、核桃。', poem: '虹藏不见天上升，闭塞成冬雪初临。',
+                        origin: '太阳到达黄经240°，降水形式由雨转雪。', customs: '腌腊肉、吃糍粑、晒鱼干。', month: 11, emoji: '❄️' },
+                    { name: '大雪', pinyin: 'DA XUE', season: 'winter', huangjing: 255, foods: '羊肉、红薯粥',
+                        health: '宜温补壮阳、防寒保暖，食羊肉、姜汤、红薯。', poem: '鹖鴠不鸣虎始交，荔挺出时大雪飘。',
+                        origin: '太阳到达黄经255°，雪量增大，仲冬开始。', customs: '腌肉、赏雪、进补。', month: 12, emoji: '⛄' },
+                    { name: '冬至', pinyin: 'DONG ZHI', season: 'winter', huangjing: 270, foods: '饺子、汤圆',
+                        health: '宜温补养阳、护肾防寒，食饺子汤圆、羊肉、桂圆。', poem: '蚯蚓结时麋角解，水泉动处阳初生。',
+                        origin: '太阳到达黄经270°，白昼最短，阳气始生。', customs: '吃饺子汤圆、祭祖、数九。', month: 12, emoji: '🧧' },
+                    { name: '小寒', pinyin: 'XIAO HAN', season: 'winter', huangjing: 285, foods: '腊八粥、糯米饭',
+                        health: '宜温补散寒、养肾固精，食腊八粥、糯米、栗子。', poem: '雁北乡时鹊始巢，雉始鸲兮小寒峭。',
+                        origin: '太阳到达黄经285°，进入一年中最冷时段。', customs: '喝腊八粥、探梅、冰戏。', month: 1, emoji: '🥣' },
+                    { name: '大寒', pinyin: 'DA HAN', season: 'winter', huangjing: 300, foods: '糯米饭、消寒糕',
+                        health: '宜温补御寒、养精蓄锐，食糯米、红枣、桂圆、姜茶。', poem: '鸡始乳时征鸟厉，水泽腹坚大寒极。',
+                        origin: '太阳到达黄经300°，寒气逆极，春之将至。', customs: '食糯、扫尘、糊窗、赶集。', month: 1, emoji: '🏔️' },
+                ];
 
-    const houData = [
-        ["东风解冻","🌸","春饼"],["蛰虫始振","🐛","春饼"],["鱼陟负冰","🐟","春饼"],
-        ["獭祭鱼","🦦","龙须饼"],["鸿雁来","🦆","罐罐肉"],["草木萌动","🌱","雨水粥"],
-        ["桃始华","🌸","吃梨"],["仓庚鸣","🐦","吃梨"],["鹰化为鸠","🦅","炒虫"],
-        ["玄鸟至","🐦","春菜"],["雷乃发声","⚡","太阳糕"],["始电","⚡","春菜"],
-        ["桐始华","🌼","青团"],["田鼠化为鴽","🐭","青团"],["虹始见","🌈","青团"],
-        ["萍始生","🌿","香椿"],["鸣鸠拂其羽","🐦","谷雨茶"],["戴胜降于桑","🐦","香椿"],
-        ["蝼蝈鸣","🦗","立夏蛋"],["蚯蚓出","🪱","立夏饭"],["王瓜生","🥒","尝新"],
-        ["苦菜秀","🥬","苦菜"],["靡草死","🌾","小满祭"],["麦秋至","🌾","小满糕"],
-        ["螳螂生","🦗","送花神"],["鵙始鸣","🐦","煮梅"],["反舌无声","🐦","芒种粽"],
-        ["鹿角解","🦌","夏至面"],["蜩始鸣","🦗","夏至面"],["半夏生","🌿","夏至馄饨"],
-        ["温风至","🍃","食藕"],["蟋蟀居壁","🦗","尝新米"],["鹰始鸷","🦅","小暑黄鳝"],
-        ["腐草为萤","✨","喝暑羊"],["土润溽暑","💧","烧仙草"],["大雨时行","☔","伏茶"],
-        ["凉风至","🍃","贴秋膘"],["白露降","💧","咬秋"],["寒蝉鸣","🦗","立秋瓜"],
-        ["鹰乃祭鸟","🦅","鸭子"],["天地始肃","🍂","处暑鸭"],["禾乃登","🌾","龙眼"],
-        ["鸿雁来","🦆","白露茶"],["玄鸟归","🐦","白露米酒"],["群鸟养羞","🐦","龙眼"],
-        ["雷始收声","⚡","秋菜"],["蛰虫坯户","🐛","桂花糕"],["水始涸","💧","秋分梨"],
-        ["鸿雁来宾","🦆","菊花酒"],["雀入大水为蛤","🐚","芝麻"],["菊有黄华","🌼","寒露茶"],
-        ["豺乃祭兽","🐺","柿子"],["草木黄落","🍂","柿子"],["蛰虫咸俯","🐛","霜降柿"],
-        ["水始冰","❄️","饺子"],["地始冻","❄️","饺子"],["雉入大水为蜃","🦚","立冬羹"],
-        ["虹藏不见","🌈","糍粑"],["天气上升","☁️","腊肉"],["闭塞成冬","❄️","小雪腌菜"],
-        ["鹖鴠不鸣","🐦","腌肉"],["虎始交","🐯","红薯粥"],["荔挺出","🌿","大雪糕"],
-        ["蚯蚓结","🪱","饺子"],["麋角解","🦌","汤圆"],["水泉动","💧","冬至面"],
-        ["雁北乡","🦆","腊八粥"],["鹊始巢","🐦","糯米饭"],["雉始鸲","🐦","小寒养生"],
-        ["鸡乳","🐔","腊味"],["征鸟厉疾","🦅","八宝饭"],["水泽腹坚","❄️","大寒糕"]
-    ];
+                const allHous = [
+                    ['东风解冻', '蛰虫始振', '鱼陟负冰'],
+                    ['獭祭鱼', '鸿雁来', '草木萌动'],
+                    ['桃始华', '仓庚鸣', '鹰化为鸠'],
+                    ['玄鸟至', '雷乃发声', '始电'],
+                    ['桐始华', '田鼠化为鴽', '虹始见'],
+                    ['萍始生', '鸣鸠拂其羽', '戴胜降于桑'],
+                    ['蝼蝈鸣', '蚯蚓出', '王瓜生'],
+                    ['苦菜秀', '靡草死', '麦秋至'],
+                    ['螳螂生', '鵙始鸣', '反舌无声'],
+                    ['鹿角解', '蝉始鸣', '半夏生'],
+                    ['温风至', '蟋蟀居宇', '鹰始鸷'],
+                    ['腐草为萤', '土润溽暑', '大雨时行'],
+                    ['凉风至', '白露降', '寒蝉鸣'],
+                    ['鹰乃祭鸟', '天地始肃', '禾乃登'],
+                    ['鸿雁来', '玄鸟归', '群鸟养羞'],
+                    ['雷始收声', '蛰虫坯户', '水始涸'],
+                    ['鸿雁来宾', '雀入大水为蛤', '菊有黄华'],
+                    ['豺乃祭兽', '草木黄落', '蛰虫咸俯'],
+                    ['水始冰', '地始冻', '雉入大水为蜃'],
+                    ['虹藏不见', '天气上升', '闭塞而成冬'],
+                    ['鹖鴠不鸣', '虎始交', '荔挺出'],
+                    ['蚯蚓结', '麋角解', '水泉动'],
+                    ['雁北乡', '鹊始巢', '雉始鸲'],
+                    ['鸡始乳', '征鸟厉疾', '水泽腹坚'],
+                ];
+                const houDescs = [
+                    ['东风送暖，大地开始解冻，冰封的河流逐渐融化。', '蛰伏冬眠的虫类开始苏醒，在土壤中微微活动。',
+                        '河水解冻，鱼儿感知阳气上升，负着冰块游动于水面。'],
+                    ['水獭捕鱼后将鱼排列岸边，如同祭祀。', '大雁从南方飞回北方。', '草木在雨水滋润下开始萌发新芽。'],
+                    ['桃花开始绽放，春意渐浓。', '黄鹂鸟开始婉转鸣叫。', '鹰逐渐减少，斑鸠等温和鸟类增多，古人以为鹰化为鸠。'],
+                    ['燕子从南方飞回北方。', '春雷开始响起。', '闪电开始出现，阴阳相激。'],
+                    ['泡桐树开始开花。', '田鼠躲回洞穴，鹌鹑类小鸟活跃田间，古人以为田鼠化为鴽。', '雨后彩虹开始出现。'],
+                    ['浮萍开始在水面生长。', '斑鸠拍打翅膀梳理羽毛，催促播种。', '戴胜鸟降落在桑树上，提醒蚕事将忙。'],
+                    ['蝼蛄开始鸣叫，夏意初显。', '蚯蚓从土壤中钻出，地温升高。', '王瓜藤蔓迅速生长，夏季作物蓬勃。'],
+                    ['苦菜正值鲜嫩可食之时。', '喜阴的靡草在强烈阳光下开始枯萎。', '麦类作物籽粒渐满，即将成熟。'],
+                    ['螳螂孵化出生。', '伯劳鸟开始鸣叫。', '反舌鸟（乌鸫）停止鸣叫。'],
+                    ['鹿角开始脱落，阳气至极而阴气始生。', '夏蝉开始鸣叫，声音响彻夏日。', '半夏这种植物开始生长，喜阴而生。'],
+                    ['温热的风开始吹拂。', '蟋蟀从田野移居到庭院墙角避暑。', '幼鹰开始练习捕猎。'],
+                    ['腐草中的萤火虫孵化而出。', '土壤湿润，空气潮热溽蒸。', '时常有大雨降临。'],
+                    ['凉爽的西风开始吹起。', '清晨白露开始凝结。', '寒蝉开始鸣叫，秋意渐深。'],
+                    ['鹰开始大量捕猎鸟类，陈列如祭。', '天地间肃杀之气开始显现。', '谷物成熟可以收割。'],
+                    ['大雁从北方飞来南方。', '燕子南归。', '群鸟储存食物以备过冬。'],
+                    ['雷声开始停止。', '蛰虫开始封堵洞口准备冬眠。', '河流水量开始减少。'],
+                    ['最后一批大雁南飞。', '雀鸟减少，蛤蜊增多，古人以为雀入水化为蛤。', '菊花盛开，金黄灿烂。'],
+                    ['豺狼开始大量捕猎，陈列猎物如祭祀。', '草木枯黄凋落。', '蛰虫全部躲入洞中冬眠。'],
+                    ['水开始结冰。', '土地开始冻结。', '野鸡减少，大蛤出现，古人以为雉入水化为蜃。'],
+                    ['彩虹不再出现。', '阳气上升，阴气下沉。', '天地闭塞，真正进入冬天。'],
+                    ['寒号鸟不再鸣叫。', '老虎开始交配。', '荔挺（马蔺草）开始萌发。'],
+                    ['蚯蚓蜷缩成结。', '麋鹿的角开始脱落。', '地下水泉开始流动，阳气初生。'],
+                    ['大雁开始向北飞回。', '喜鹊开始筑巢。', '野鸡开始鸣叫求偶。'],
+                    ['母鸡开始孵小鸡。', '鹰隼等猛禽在空中盘旋捕猎。', '河流湖泊冰冻至极，冰层厚实。'],
+                ];
+                const houPoems = [
+                    ['东风解冻河开早，万物复苏春意好。', '蛰虫始振泥土动，微阳初照生机萌。', '鱼陟负冰游水面，阳气升腾破寒天。'],
+                    ['獭祭鱼时春水暖，岸边排列似祭坛。', '鸿雁北归云间过，一字排开报春来。', '草木萌动绿芽嫩，细雨滋润万象新。'],
+                    ['桃始华时红满枝，春色三分已二分。', '仓庚鸣叫声婉转，黄鹂穿梭柳烟间。', '鹰化为鸠古人说，猛禽隐去布谷多。'],
+                    ['玄鸟至时归旧巢，燕衔春泥筑新家。', '雷乃发声惊天地，春雷滚滚万物苏。', '始电划破长空暗，阴阳相激光闪间。'],
+                    ['桐始华时紫云簇，泡桐花开满山香。', '田鼠化鴽田间跃，鹌鹑出没麦苗青。', '虹始见处雨初霁，七彩桥横天际明。'],
+                    ['萍始生时水绿满，浮萍点点覆池塘。', '鸣鸠拂羽催耕种，斑鸠振翅声声忙。', '戴胜降桑蚕事近，桑林深处鸟鸣频。'],
+                    ['蝼蝈鸣时夏气暖，田间蛙声一片喧。', '蚯蚓出土松泥土，地温渐升万物舒。', '王瓜生蔓攀篱上，夏日生机正勃发。'],
+                    ['苦菜秀时鲜嫩好，采撷入馔味微甘。', '靡草死去阳强盛，喜阴之物难久存。', '麦秋至处籽粒满，丰收在望喜心怀。'],
+                    ['螳螂生时夏更深，螳臂当车趣事多。', '鵙始鸣叫声清亮，伯劳枝头唱不休。', '反舌无声夏日长，乌鸫沉默待秋凉。'],
+                    ['鹿角解时阳气极，脱落新生循自然。', '蝉始鸣叫声震天，夏日至此热难当。', '半夏生处喜阴湿，药草青青待采撷。'],
+                    ['温风至时暑气蒸，热浪滚滚扑面来。', '蟋蟀居宇避炎热，墙角阴处声声鸣。', '鹰始鸷兮练捕猎，幼鹰展翅学飞翔。'],
+                    ['腐草为萤夜流光，点点萤火舞夏夜。', '土润溽暑湿气重，闷热难耐汗如浆。', '大雨时行雷电作，瓢泼之势洗尘埃。'],
+                    ['凉风至时秋意起，西风送爽入窗来。', '白露降时晨光冷，草木之上凝珠圆。', '寒蝉鸣叫声凄切，秋意渐深叶渐黄。'],
+                    ['鹰乃祭鸟秋猎忙，陈列猎物如祭天。', '天地始肃杀气显，万物凋零秋已深。', '禾乃登时谷物熟，金黄稻浪满田间。'],
+                    ['鸿雁来兮南飞急，一字人字写长空。', '玄鸟归时燕南去，空巢留待来年春。', '群鸟养羞储食物，备足冬粮好过冬。'],
+                    ['雷始收声秋已半，雷公歇息待来年。', '蛰虫坯户封洞口，准备冬眠避严寒。', '水始涸时河渐浅，秋旱少雨水量减。'],
+                    ['鸿雁来宾最后至，南飞之旅近尾声。', '雀入大水化为蛤，古人奇思妙想多。', '菊有黄华满园香，金蕊绽放傲秋霜。'],
+                    ['豺乃祭兽冬猎始，陈列猎物如祭祀。', '草木黄落满山金，落叶纷纷归根去。', '蛰虫咸俯全入洞，冬眠沉睡待春来。'],
+                    ['水始冰时寒意重，薄冰初结覆水面。', '地始冻时土变硬，冬日脚步渐逼近。', '雉入大水化为蜃，野鸡隐去蛤蜊多。'],
+                    ['虹藏不见冬已至，彩虹隐匿待来年。', '天气上升阴气降，天地不交闭塞成。', '闭塞成冬万物藏，静待春回大地暖。'],
+                    ['鹖鴠不鸣寒夜长，寒号鸟静巢中藏。', '虎始交时阳气动，微阳初生兽类知。', '荔挺出时冰下萌，马蔺新芽破土生。'],
+                    ['蚯蚓结时寒至极，蜷缩成团待春回。', '麋角解时阳气生，麋鹿角落循天时。', '水泉动处冰下流，阳气初生暗涌波。'],
+                    ['雁北乡时归心切，大雁北飞寻故地。', '鹊始巢时筑新家，喜鹊忙碌衔枝来。', '雉始鸲时鸣叫频，野鸡求偶声声响。'],
+                    ['鸡始乳时孵新雏，母鸡抱窝暖意浓。', '征鸟厉疾空中旋，鹰隼捕猎正当时。', '水泽腹坚冰最厚，河湖封冻至极寒。'],
+                ];
+                const houProverbs = [
+                    ['立春一日，水暖三分。', '惊蛰不动虫，冷在五月中。', '鱼陟负冰，春水渐温。'],
+                    ['獭祭鱼，雨水足。', '鸿雁来，春不寒。', '草木萌动，抓紧春耕。'],
+                    ['桃始华，春意浓。', '仓庚鸣，好年景。', '惊蛰过，暖和和。'],
+                    ['春分玄鸟至，农事不可迟。', '雷乃发声，万物齐鸣。', '春分有雨是丰年。'],
+                    ['清明前后，种瓜点豆。', '桐始华时春已深。', '虹始见，雨将歇。'],
+                    ['萍始生，雨水盈。', '鸠拂羽，催耕急。', '戴胜降桑，蚕事将忙。'],
+                    ['立夏蝼蝈鸣，暑气日渐增。', '蚯蚓出，地气通。', '王瓜生，夏日长。'],
+                    ['小满苦菜秀，清火又解暑。', '靡草死，阳气盛。', '麦秋至，丰收望。'],
+                    ['芒种螳螂生，暑夏正当时。', '鵙始鸣，夏日深。', '芒种忙种，不可错过。'],
+                    ['夏至鹿角解，阳极阴始生。', '蝉始鸣，热难当。', '半夏生，药草香。'],
+                    ['小暑温风至，心静自然凉。', '蟋蟀居宇，避暑有方。', '鹰始鸷，练翅忙。'],
+                    ['大暑腐草萤，夏夜有流光。', '土润溽暑，闷热难耐。', '大暑大雨，百日见霜。'],
+                    ['立秋凉风至，一叶知秋。', '白露降，秋意凉。', '寒蝉鸣，秋已深。'],
+                    ['处暑鹰祭鸟，秋猎正当时。', '天地始肃，秋收在即。', '禾乃登，谷物熟。'],
+                    ['白露鸿雁来，秋意渐浓。', '玄鸟归，燕南飞。', '群鸟养羞，储粮过冬。'],
+                    ['秋分雷收声，昼夜平分。', '蛰虫坯户，冬眠在即。', '秋分无雨，冬必旱。'],
+                    ['寒露鸿雁宾，秋深露重。', '雀入大水，蛤蜊肥美。', '菊有黄华，秋色正浓。'],
+                    ['霜降豺祭兽，冬猎开始。', '草木黄落，秋将尽。', '霜降见霜，米谷满仓。'],
+                    ['立冬水始冰，寒意渐深。', '地始冻，冬已至。', '立冬补冬，补嘴空。'],
+                    ['小雪虹藏，冬意渐浓。', '天气上升，闭塞成冬。', '小雪腌菜，大雪腌肉。'],
+                    ['大雪鹖鴠不鸣，寒夜漫长。', '虎始交，阳气微动。', '大雪纷纷，来年丰收。'],
+                    ['冬至蚯蚓结，寒至极点。', '麋角解，阳气初生。', '冬至一阳生，日渐长。'],
+                    ['小寒雁北乡，归心似箭。', '鹊始巢，筑新家。', '小寒大寒，冻成冰团。'],
+                    ['大寒鸡始乳，春将不远。', '征鸟厉疾，捕猎正忙。', '大寒不寒，人马不安。'],
+                ];
+                const houFoodsDetail = [
+                    ['立春吃春饼，薄如蝉翼卷时蔬，寓意咬春迎新。', '咬春萝卜脆甜多汁，消食顺气迎春来。', '春盘丰盛，汇聚五辛，祛寒迎暖。'],
+                    ['龙须面细长如丝，寓意长寿吉祥。', '春笋鲜嫩，雨水时节最是美味。', '红枣粥暖胃，雨水养生首选。'],
+                    ['惊蛰吃梨，润肺止咳，远离疾病。', '炒豆噼啪作响，寓意驱虫避害。', '梨汤清甜，润喉养肺正当时。'],
+                    ['春菜嫩绿，春分采撷正当时。', '太阳糕软糯香甜，祭日祈福。', '蜂蜜水润，调和阴阳。'],
+                    ['青团碧绿如玉，艾草清香扑鼻。', '馓子酥脆金黄，寒食传统美味。', '荠菜鲜嫩，清明尝春味。'],
+                    ['谷雨茶清香醇厚，雨前采摘最珍贵。', '香椿炒蛋，春季限定美味。', '谷雨茶一杯，清火明目。'],
+                    ['立夏蛋圆润饱满，寓意圆满健康。', '尝三鲜：樱桃、青梅、麦仁，夏日初味。', '立夏吃蛋，力气大一万。'],
+                    ['苦菜虽苦，清火解毒，小满时节正当食。', '麦糕松软，新麦磨粉制成。', '苦菜蘸酱，清热又开胃。'],
+                    ['梅子青酸，芒种煮梅制酱正当时。', '粽子飘香，端午将至先尝鲜。', '青梅煮酒，消夏解暑。'],
+                    ['夏至吃面，长长的面条寓意长寿安康。', '凉面爽滑，夏日消暑佳品。', '北方炸酱面，南方阳春面，各具风味。'],
+                    ['藕片清脆，小暑食藕清热生津。', '绿豆汤清甜解暑，夏日必备。', '莲藕排骨汤，滋补又清润。'],
+                    ['伏茶浓郁，大暑饮茶消暑祛湿。', '仙草冻爽滑清凉，解暑圣品。', '伏天喝伏茶，清凉一整夏。'],
+                    ['贴秋膘吃肉，补充夏日消耗，储备能量。', '啃秋吃西瓜，咬住秋凉不放。', '红烧肉香浓，贴膘正当时。'],
+                    ['鸭肉性凉，处暑食鸭滋阴润燥。', '龙眼甘甜，补气养血。', '酸梅汤开胃，处暑消暑尾。'],
+                    ['白露茶香醇，露水滋养的好茶。', '米酒甘甜，白露酿制最香。', '白露茶一盏，秋意入心间。'],
+                    ['秋菜嫩绿，秋分采摘尝鲜。', '汤圆圆润，象征团圆美满。', '秋分吃秋菜，健康又自在。'],
+                    ['芝麻香浓，寒露食芝麻润燥养颜。', '花糕层层叠叠，寓意步步高升。', '芝麻糊暖胃，寒露滋补佳品。'],
+                    ['柿子红透，霜降吃柿事事如意。', '牛肉温补，霜降进补正当时。', '柿饼甜蜜，秋冬零食首选。'],
+                    ['饺子形似元宝，立冬吃饺不冻耳。', '羊肉汤暖身，冬日进补首选。', '立冬饺子，冬至也饺子，冬日双饺。'],
+                    ['糍粑软糯香甜，小雪时节打糍粑。', '腊肉飘香，小雪腌肉正当时。', '糍粑蘸糖，甜蜜过冬。'],
+                    ['羊肉温补壮阳，大雪进补最佳。', '红薯粥暖胃，冬日早餐首选。', '姜汤驱寒，大雪暖身必备。'],
+                    ['冬至饺子夏至面，北方习俗代代传。', '汤圆甜糯，南方冬至必备。', '羊肉汤暖，冬至一阳生。'],
+                    ['腊八粥香浓，多种谷物熬制，暖身又养胃。', '糯米饭软糯，小寒食糯补中气。', '腊八粥一碗，温暖整个寒冬。'],
+                    ['糯米饭配腊味，大寒暖身又解馋。', '消寒糕甜软，寓意消寒迎春。', '红枣桂圆茶，大寒暖手暖心。'],
+                ];
+                const houEmojis = [
+                    ['💨', '🐛', '🐟'],
+                    ['🦦', '🦅', '🌱'],
+                    ['🌸', '🐦', '🦅'],
+                    ['🐦', '⚡', '🌩️'],
+                    ['🌳', '🐭', '🌈'],
+                    ['🌿', '🕊️', '🐦'],
+                    ['🦗', '🪱', '🌿'],
+                    ['🥬', '🌿', '🌾'],
+                    ['🦗', '🐦', '🤫'],
+                    ['🦌', '🪰', '🌿'],
+                    ['🌬️', '🦗', '🦅'],
+                    ['🪲', '💧', '🌧️'],
+                    ['🍂', '💧', '🪰'],
+                    ['🦅', '🍂', '🌾'],
+                    ['🦅', '🐦', '🐦'],
+                    ['🔇', '🐛', '💧'],
+                    ['🦅', '🐚', '🌼'],
+                    ['🐺', '🍂', '🐛'],
+                    ['❄️', '🧊', '🐔'],
+                    ['🌈', '☁️', '🔒'],
+                    ['🐦', '🐅', '🌿'],
+                    ['🪱', '🦌', '💧'],
+                    ['🦅', '🪹', '🐔'],
+                    ['🐔', '🦅', '🧊'],
+                ];
 
-    const termFoods = solarTerms.map((_, i) => ["春饼","雨水粥","吃梨","春菜","青团","香椿","立夏蛋","苦菜","粽子","夏至面","食藕","烧仙草","贴秋膘","鸭子","白露茶","桂花糕","菊花酒","柿子","饺子","糍粑","腌肉","汤圆","腊八粥","八宝饭"][i]);
-    const termHealthTips = [
-        "升阳疏肝","健脾祛湿","润肺止咳","调和阴阳","柔肝养血","清热利湿","养心安神","清热祛湿","消暑生津","清心静养",
-        "健脾化湿","清热利水","滋阴润肺","润燥生津","润肺止咳","养阴健脾","润肺益胃","暖胃驱寒","温肾助阳","温补脾肾",
-        "温阳暖身","滋阴潜阳","温补脾肾","健脾暖胃"
-    ];
-    const poemLib = [
-        "律回岁晚冰霜少，春到人间草木知。","天街小雨润如酥，草色遥看近却无。","微雨众卉新，一雷惊蛰始。","仲春初四日，春色正中分。",
-        "清明时节雨纷纷，路上行人欲断魂。","谷雨如丝复似尘，煮瓶浮蜡正尝新。","绿树阴浓夏日长，楼台倒影入池塘。","夜莺啼绿柳，皓月醒长空。",
-        "时雨及芒种，四野皆插秧。","杨柳青青江水平，闻郎江上踏歌声。","倏忽温风至，因循小暑来。","炎蒸乃如许，那更惜分阴。",
-        "乳鸦啼散玉屏空，一枕新凉一扇风。","疾风驱急雨，残暑扫除空。","露从今夜白，月是故乡明。","秋分客尚在，竹露夕微微。",
-        "袅袅凉风动，凄凄寒露零。","霜降鸿声切，秋深客思迷。","冻笔新诗懒写，寒炉美酒时温。","小雪晴沙不作泥，疏帘红日弄朝晖。",
-        "大雪江南见未曾，今年方始是严凝。","邯郸驿里逢冬至，抱膝灯前影伴身。","小寒连大吕，欢鹊垒新巢。","旧雪未及消，新雪又拥户。"
-    ];
+                const houList = [];
+                for (let s = 0; s < 24; s++) {
+                    for (let h = 0; h < 3; h++) {
+                        houList.push({
+                            globalIndex: s * 3 + h,
+                            solarIndex: s,
+                            houIndex: h,
+                            name: allHous[s][h],
+                            desc: houDescs[s][h],
+                            poem: houPoems[s][h],
+                            proverb: houProverbs[s][h],
+                            foodDetail: houFoodsDetail[s][h],
+                            emoji: houEmojis[s][h],
+                            solarName: solarTerms[s].name,
+                            season: solarTerms[s].season,
+                        });
+                    }
+                }
+                return {
+                    solarTerms,
+                    houList,
+                    allHous,
+                    houDescs,
+                    houPoems,
+                    houProverbs,
+                    houFoodsDetail,
+                    houEmojis,
+                };
+            }
 
-    const termDetailsArr = solarTerms.map((t, idx) => {
-        const h1 = houData[idx*3][0], h2 = houData[idx*3+1][0], h3 = houData[idx*3+2][0];
-        return `<h3>${t} · ${solarTermsPinyin[idx]}</h3>
-                <p><strong>🌾 节气渊源：</strong>太阳黄经${idx*15}°，时令${t}，天地气交，万物华实。</p>
-                <p><strong>🍃 七十二候：</strong>${h1} · ${h2} · ${h3}</p>
-                <p><strong>🍜 民俗食俗：</strong> ${termFoods[idx]}，民间有祭祖、尝新、${idx%2===0?"踏青":"祈福"}等传统。</p>
-                <p><strong>🧘 养生精要：</strong> ${termHealthTips[idx]}，宜${idx<6?"升发":idx<12?"养心":"润燥"}，顺时调摄。</p>`;
-    });
+            function resizeCanvas() {
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const maxSize = Math.min(window.innerWidth * 0.55, window.innerHeight * 0.78, 750);
+                canvasSize = Math.max(480, Math.floor(maxSize));
+                canvas.width = canvasSize;
+                canvas.height = canvasSize;
+                centerX = canvasSize / 2;
+                centerY = canvasSize / 2;
+                const dpr = window.devicePixelRatio || 1;
+                if (dpr > 1 && canvasSize < 600) {
+                    canvas.width = canvasSize * dpr;
+                    canvas.height = canvasSize * dpr;
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    canvas.style.width = canvasSize + 'px';
+                    canvas.style.height = canvasSize + 'px';
+                }
+            }
 
-    let canvas = document.getElementById('wheelCanvas');
-    let ctx = canvas.getContext('2d');
-    let width, height, centerX, centerY;
-    let radiusOuter = 350;
+            function getSeasonColor(season, variant = 'main') {
+                const map = {
+                    spring: variant === 'light' ? '#8DB76B' : variant === 'dark' ? '#4A7A2E' : '#6B9B4A',
+                    summer: variant === 'light' ? '#E0705E' : variant === 'dark' ? '#9B3020' : '#C44D3D',
+                    autumn: variant === 'light' ? '#DBA960' : variant === 'dark' ? '#A67025' : '#C8893D',
+                    winter: variant === 'light' ? '#A3C0D6' : variant === 'dark' ? '#5A7D95' : '#7A9BB5',
+                };
+                return map[season] || '#888';
+            }
 
-    function resizeCanvas() {
-        canvas.width = 800;
-        canvas.height = 800;
-        width = 800; height = 800;
-        centerX = 400; centerY = 400;
-        radiusOuter = 350;
-        drawWheel();
-    }
+            function getSeasonEmoji(season) {
+                return { spring: '🌸', summer: '☀️', autumn: '🍂', winter: '❄️' } [season] || '🌿';
+            }
 
-    let currentTermIdx = 9;
-    let offsetAngle = 0;
-    let dragFlag = false, dragStartMouseAngle = 0;
-    let hoveredHou = null;
-    let fixedHou = null;
+            function getSeasonPatternName(season) {
+                return { spring: '梅花', summer: '荷花', autumn: '菊花', winter: '雪花' } [season] || '';
+            }
 
-    function getTermFromOffset() {
-        let angleStep = Math.PI * 2 / 24;
-        let ref = -Math.PI/2 - offsetAngle;
-        let raw = ((ref % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
-        let idx = Math.floor(raw / angleStep) % 24;
-        return idx;
-    }
+            function drawSeasonPattern(season, cx, cy, radius, alpha) {
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = getSeasonColor(season, 'light');
+                ctx.strokeStyle = getSeasonColor(season, 'light');
+                ctx.lineWidth = 1;
+                const n = 24;
+                for (let i = 0; i < n; i++) {
+                    const angle = (i / n) * Math.PI * 2;
+                    const x = cx + Math.cos(angle) * radius;
+                    const y = cy + Math.sin(angle) * radius;
+                    ctx.beginPath();
+                    if (season === 'spring') {
+                        for (let p = 0; p < 5; p++) {
+                            const pa = angle + (p - 2) * 0.12;
+                            const pr = 8 + Math.abs(p - 2) * 4;
+                            const px = cx + Math.cos(pa) * (radius + pr);
+                            const py = cy + Math.sin(pa) * (radius + pr);
+                            if (p === 0) ctx.moveTo(px, py);
+                            else ctx.lineTo(px, py);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    } else if (season === 'summer') {
+                        for (let p = 0; p < 7; p++) {
+                            const pa = angle + (p - 3) * 0.1;
+                            const pr = 10 - Math.abs(p - 3) * 2.5;
+                            const px = cx + Math.cos(pa) * (radius + pr);
+                            const py = cy + Math.sin(pa) * (radius + pr);
+                            if (p === 0) ctx.moveTo(px, py);
+                            else ctx.lineTo(px, py);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    } else if (season === 'autumn') {
+                        for (let p = 0; p < 12; p++) {
+                            const pa = angle + (p / 11) * 0.4 - 0.2;
+                            const pr = 6 + Math.sin((p / 11) * Math.PI) * 8;
+                            const px = cx + Math.cos(pa) * (radius + pr);
+                            const py = cy + Math.sin(pa) * (radius + pr);
+                            if (p === 0) ctx.moveTo(px, py);
+                            else ctx.lineTo(px, py);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    } else {
+                        ctx.arc(x, y, 4 + Math.random() * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        const sx = cx + Math.cos(angle + 0.3) * (radius + 8);
+                        const sy = cy + Math.sin(angle + 0.3) * (radius + 8);
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.restore();
+            }
 
-    function updateAllFromTerm(termIdx, syncSlider = true) {
-        if (termIdx < 0) termIdx = 0;
-        if (termIdx > 23) termIdx = 23;
-        currentTermIdx = termIdx;
-        let targetAngle = - ( (currentTermIdx * Math.PI * 2 / 24) + Math.PI/2 );
-        offsetAngle = targetAngle;
-        if (syncSlider) {
-            document.getElementById('timeline').value = currentTermIdx;
-            document.getElementById('timelineLabel').innerText = solarTerms[currentTermIdx];
-        }
-        document.getElementById('leftTermCh').innerText = solarTerms[currentTermIdx];
-        document.getElementById('leftTermPy').innerText = solarTermsPinyin[currentTermIdx];
-        let seasonIdx = Math.floor(currentTermIdx / 6);
-        let seasonIcons = ["🌱","☀️","🍂","❄️"];
-        document.getElementById('seasonIcon').innerHTML = seasonIcons[seasonIdx];
-        document.getElementById('seasonTag').innerHTML = ["孟春·启蛰", "仲夏·朱明", "素秋·金天", "玄冬·安宁"][seasonIdx];
-        document.getElementById('poemText').innerText = poemLib[currentTermIdx];
-        document.getElementById('healthTip').innerHTML = `✨ ${termHealthTips[currentTermIdx]} · 顺时颐养，${currentTermIdx<6?"升发阳气":currentTermIdx<12?"清心宁神":"润燥收藏"}`;
-        fixedHou = currentTermIdx * 3;
-        updatePhenologyCard(fixedHou);
-        drawWheel();
-    }
+            function drawWheel(timestamp) {
+                ctx.clearRect(0, 0, canvasSize, canvasSize);
+                const cx = centerX;
+                const cy = centerY;
+                const maxR = canvasSize * 0.44;
+                const centerR = maxR * 0.16;
+                const innerR = maxR * 0.34;
+                const middleR = maxR * 0.7;
+                const outerPatternR = maxR * 0.88;
 
-    function updatePhenologyCard(houIndex) {
-        if (houIndex === undefined || houIndex === null) return;
-        let [hName, icon, food] = houData[houIndex];
-        let termIdx = Math.floor(houIndex / 3);
-        let termName = solarTerms[termIdx];
-        document.getElementById('houDetailText').innerHTML = `${hName} · ${termName}时令 · ${food}`;
-        document.getElementById('motionAnimIcon').innerHTML = icon;
-        document.getElementById('houExtra').innerHTML = `📜 民俗食趣：「${food}」 · 物候之象「${hName}」 · 古谚“${poemLib[termIdx].slice(0,22)}…”`;
-    }
+                const currentSeason = allData.solarTerms[currentSolarIndex].season;
+                drawSeasonPattern(currentSeason, cx, cy, outerPatternR, 0.18);
 
-    function drawWheel() {
-        if (!ctx) return;
-        ctx.clearRect(0, 0, width, height);
-        let rCenter = 70;
-        let ring2_in = 76, ring2_out = 152;
-        let ring3_in = 156, ring3_out = 332;
-
-        // 1. 中心圆盘
-        let seasonFill = ["#cde6c4", "#fadbbc", "#fcf0bf", "#e0e9fa"][Math.floor(currentTermIdx/6)];
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, rCenter, 0, Math.PI*2);
-        ctx.fillStyle = seasonFill;
-        ctx.fill();
-        ctx.font = "bold 22px 'Noto Serif SC'";
-        ctx.fillStyle = "#4a3320";
-        ctx.textAlign = "center";
-        ctx.fillText(solarTerms[currentTermIdx], centerX, centerY-6);
-        ctx.font = "13px 'Noto Serif SC'";
-        ctx.fillStyle = "#7b5836";
-        ctx.fillText(solarTermsPinyin[currentTermIdx], centerX, centerY+16);
-        ctx.font = "28px serif";
-        ctx.fillStyle = "#946b3e80";
-        let flora = ["🌿","🌻","🍁","❄️"][Math.floor(currentTermIdx/6)];
-        ctx.fillText(flora, centerX+38, centerY-26);
-
-        // 2. 内环 24节气 (加粗文字)
-        let angleStep = Math.PI*2/24;
-        for (let i=0; i<24; i++) {
-            let ang = i * angleStep + offsetAngle;
-            let x1 = centerX + Math.cos(ang)*ring2_in;
-            let y1 = centerY + Math.sin(ang)*ring2_in;
-            let x2 = centerX + Math.cos(ang)*ring2_out;
-            let y2 = centerY + Math.sin(ang)*ring2_out;
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.lineWidth = (i === currentTermIdx) ? 5 : 2.2;
-            ctx.strokeStyle = (i === currentTermIdx) ? "#e5aa46" : "#b8864b";
-            ctx.stroke();
-            let textR = ring2_in + 22;
-            let tx = centerX + Math.cos(ang)*textR;
-            let ty = centerY + Math.sin(ang)*textR;
-            ctx.font = (i === currentTermIdx) ? "bold 17px 'Noto Serif SC'" : "15px 'Noto Serif SC'";
-            ctx.fillStyle = (i === currentTermIdx) ? "#c5762e" : "#6b4a2a";
-            ctx.shadowBlur = (i===currentTermIdx)?3:0;
-            ctx.fillText(solarTerms[i], tx, ty);
-        }
-
-        // 3. 七十二候扇形 (增强文字尺寸)
-        let subAngle = Math.PI*2 / 72;
-        for (let i=0; i<72; i++) {
-            let termBelong = Math.floor(i/3);
-            let seasonIdx = Math.floor(termBelong/6);
-            let base = ["#9fc18b", "#edbc86", "#f5de9c", "#bdcfdf"][seasonIdx];
-            let start = i * subAngle + offsetAngle;
-            let end = (i+1) * subAngle + offsetAngle;
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, ring3_out, start, end);
-            ctx.fillStyle = base + "66";
-            ctx.fill();
-            ctx.strokeStyle = "#ddbb77";
-            ctx.lineWidth = 1;
-            ctx.stroke();
-            let midAng = start + subAngle/2;
-            let labelX = centerX + Math.cos(midAng) * (ring3_in + 54);
-            let labelY = centerY + Math.sin(midAng) * (ring3_in + 48);
-            ctx.font = "12px 'Noto Serif SC'";
-            ctx.fillStyle = "#3c2a19";
-            let shortName = houData[i][0].length > 2 ? houData[i][0].slice(0,3) : houData[i][0];
-            ctx.fillText(shortName, labelX-8, labelY-6);
-            ctx.font = "19px 'Segoe UI Emoji'";
-            ctx.fillText(houData[i][1], labelX-8, labelY+12);
-            ctx.font = "11px 'Noto Serif SC'";
-            ctx.fillStyle = "#b45f2a";
-            ctx.fillText(houData[i][2], labelX+2, labelY+24);
-            if (fixedHou === i || (hoveredHou === i && fixedHou===null)) {
+                const bgGrad = ctx.createRadialGradient(cx, cy, centerR * 0.5, cx, cy, maxR);
+                bgGrad.addColorStop(0, '#3a3528');
+                bgGrad.addColorStop(0.5, '#2a251d');
+                bgGrad.addColorStop(1, '#1a1812');
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, ring3_out, start, end);
-                ctx.strokeStyle = "#ffcd6b";
-                ctx.lineWidth = 3.5;
+                ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+                ctx.fillStyle = bgGrad;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(201,169,110,0.4)';
+                ctx.lineWidth = 2;
                 ctx.stroke();
+
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(rotationOffset);
+
+                for (let i = 0; i < 72; i++) {
+                    const hou = allData.houList[i];
+                    const startAngle = (i * 5 - 90) * Math.PI / 180;
+                    const endAngle = ((i + 1) * 5 - 90) * Math.PI / 180;
+                    const isCurrentHou = (i === currentSolarIndex * 3 + currentHouIndex);
+                    const isHovered = (hoveredHouGlobal !== null && hoveredHouGlobal.globalIndex === i);
+                    const isSelected = (selectedHouGlobal !== null && selectedHouGlobal.globalIndex === i);
+                    const isInCurrentSolar = (hou.solarIndex === currentSolarIndex);
+
+                    const sColor = getSeasonColor(hou.season, 'main');
+                    const sColorLight = getSeasonColor(hou.season, 'light');
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.arc(0, 0, middleR, startAngle, endAngle);
+                    ctx.closePath();
+                    let fillAlpha = 0.18;
+                    if (isInCurrentSolar && !isCurrentHou) fillAlpha = 0.32;
+                    if (isCurrentHou) fillAlpha = 0.5;
+                    if (isHovered) fillAlpha = 0.6;
+                    if (isSelected) fillAlpha = 0.65;
+                    ctx.fillStyle = sColor.replace(')', `, ${fillAlpha})`).replace('rgb',
+                        'rgba').replace('#6B9B4A', 'rgba(107,155,74,' + fillAlpha + ')').replace('#C44D3D',
+                        'rgba(196,77,61,' + fillAlpha + ')').replace('#C8893D', 'rgba(200,137,61,' + fillAlpha +
+                        ')').replace('#7A9BB5', 'rgba(122,155,181,' + fillAlpha + ')');
+                    if (ctx.fillStyle === sColor) ctx.fillStyle = sColorLight.replace(')', `, ${fillAlpha})`);
+                    ctx.fill();
+
+                    if (isCurrentHou || isHovered || isSelected) {
+                        ctx.strokeStyle = '#C9A96E';
+                        ctx.lineWidth = isSelected ? 3 : (isHovered ? 2.5 : 2);
+                        ctx.shadowColor = 'rgba(201,169,110,0.7)';
+                        ctx.shadowBlur = isSelected ? 14 : (isHovered ? 10 : 6);
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    } else {
+                        ctx.strokeStyle = 'rgba(180,160,130,0.25)';
+                        ctx.lineWidth = 0.6;
+                        ctx.stroke();
+                    }
+
+                    const midAngle = (startAngle + endAngle) / 2;
+                    const textR = middleR * 0.72;
+                    const tx = Math.cos(midAngle) * textR;
+                    const ty = Math.sin(midAngle) * textR;
+                    ctx.save();
+                    ctx.translate(tx, ty);
+                    ctx.rotate(midAngle + Math.PI / 2);
+                    ctx.fillStyle = (isCurrentHou || isHovered || isSelected) ? '#f5edd8' : '#c8bfa8';
+                    ctx.font = `${isCurrentHou ? 'bold ' : ''}${canvasSize<550?'7':'9'}px "KaiTi","STKaiti","SimSun",serif`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(hou.name, 0, 0);
+                    const foodShort = hou.foodDetail.split('，')[0].slice(0, 5);
+                    ctx.fillStyle = '#b0a080';
+                    ctx.font = `${canvasSize<550?'6':'7'}px "KaiTi","STKaiti","SimSun",serif`;
+                    ctx.fillText(foodShort, 0, canvasSize < 550 ? 10 : 13);
+                    ctx.restore();
+                }
+
+                for (let i = 0; i < 24; i++) {
+                    const st = allData.solarTerms[i];
+                    const angle = (i * 15 - 90) * Math.PI / 180;
+                    const isCurrent = (i === currentSolarIndex);
+                    const r1 = innerR;
+                    const r2 = centerR;
+                    const midR = (r1 + r2) / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.cos(angle - 0.04) * r2, Math.sin(angle - 0.04) * r2);
+                    ctx.arc(0, 0, r1, angle - 0.04, angle + 0.04);
+                    ctx.lineTo(Math.cos(angle + 0.04) * r2, Math.sin(angle + 0.04) * r2);
+                    ctx.arc(0, 0, r2, angle + 0.04, angle - 0.04, true);
+                    ctx.closePath();
+                    ctx.fillStyle = isCurrent ? 'rgba(201,169,110,0.45)' : 'rgba(60,50,35,0.35)';
+                    ctx.fill();
+                    if (isCurrent) {
+                        ctx.strokeStyle = '#C9A96E';
+                        ctx.lineWidth = 2.5;
+                        ctx.shadowColor = 'rgba(201,169,110,0.8)';
+                        ctx.shadowBlur = 12;
+                        ctx.stroke();
+                        ctx.shadowBlur = 0;
+                    } else {
+                        ctx.strokeStyle = 'rgba(150,130,100,0.3)';
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                    const tx = Math.cos(angle) * midR;
+                    const ty = Math.sin(angle) * midR;
+                    ctx.save();
+                    ctx.translate(tx, ty);
+                    ctx.rotate(angle + Math.PI / 2);
+                    ctx.fillStyle = isCurrent ? '#f5e8c8' : '#d5cba8';
+                    ctx.font = `${isCurrent ? 'bold ' : ''}${canvasSize<550?'8':'11'}px "KaiTi","STKaiti","SimSun",serif`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(st.name, 0, 0);
+                    const hjText = st.huangjing + '°';
+                    ctx.fillStyle = '#a09878';
+                    ctx.font = `${canvasSize<550?'6':'8'}px serif`;
+                    ctx.fillText(hjText, 0, canvasSize < 550 ? 10 : 14);
+                    ctx.restore();
+                }
+
+                ctx.beginPath();
+                ctx.arc(0, 0, centerR, 0, Math.PI * 2);
+                const centerGrad = ctx.createRadialGradient(0, 0, centerR * 0.2, 0, 0, centerR);
+                const cs = getSeasonColor(currentSeason, 'main');
+                const csLight = getSeasonColor(currentSeason, 'light');
+                centerGrad.addColorStop(0, '#fdf5e0');
+                centerGrad.addColorStop(0.4, csLight);
+                centerGrad.addColorStop(1, cs);
+                ctx.fillStyle = centerGrad;
+                ctx.fill();
+                ctx.strokeStyle = '#C9A96E';
+                ctx.lineWidth = 3;
+                ctx.shadowColor = 'rgba(201,169,110,0.6)';
+                ctx.shadowBlur = 18;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                const cs2 = allData.solarTerms[currentSolarIndex];
+                ctx.fillStyle = '#2a2218';
+                ctx.font = `bold ${canvasSize<550?'13':'17'}px "KaiTi","STKaiti","SimSun",serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText(cs2.name, 0, canvasSize < 550 ? -6 : -8);
+                ctx.fillStyle = '#8a7a5a';
+                ctx.font = `${canvasSize<550?'7':'9'}px serif`;
+                ctx.fillText(cs2.pinyin, 0, canvasSize < 550 ? 10 : 14);
+                const semoji = cs2.emoji || getSeasonEmoji(currentSeason);
+                ctx.font = `${canvasSize<550?'14':'20'}px serif`;
+                ctx.fillText(semoji, 0, canvasSize < 550 ? -20 : -28);
+
+                ctx.restore();
+
+                const indicatorAngle = -90 * Math.PI / 180;
+                const indX = cx + Math.cos(indicatorAngle) * (maxR + 14);
+                const indY = cy + Math.sin(indicatorAngle) * (maxR + 14);
+                ctx.fillStyle = '#C9A96E';
+                ctx.beginPath();
+                ctx.moveTo(indX, indY - 8);
+                ctx.lineTo(indX + 14, indY);
+                ctx.lineTo(indX, indY + 8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.shadowColor = 'rgba(201,169,110,0.8)';
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.shadowBlur = 0;
             }
-        }
 
-        // 外围纹样 (清晰)
-        let pattern = ["🌸", "🌼", "🍁", "❄️"][Math.floor(currentTermIdx/6)];
-        for (let i=0; i<48; i++) {
-            let ang = i * (Math.PI*2/48);
-            let r = radiusOuter + 12;
-            let x = centerX + Math.cos(ang)*r;
-            let y = centerY + Math.sin(ang)*r;
-            ctx.globalAlpha = 0.25;
-            ctx.font = "20px serif";
-            ctx.fillStyle = "#b28046";
-            ctx.fillText(pattern, x, y);
-            ctx.globalAlpha = 1;
-        }
-    }
-
-    function getHouFromCoord(mx, my) {
-        let dx = mx - centerX, dy = my - centerY;
-        let dist = Math.hypot(dx, dy);
-        if (dist < 148 || dist > 338) return null;
-        let angle = Math.atan2(dy, dx) - offsetAngle;
-        let idx = Math.floor(((angle + 2*Math.PI) % (2*Math.PI)) / (Math.PI*2/72));
-        return idx % 72;
-    }
-
-    function getTermFromClickArea(mx, my) {
-        let dx = mx - centerX, dy = my - centerY;
-        let dist = Math.hypot(dx, dy);
-        if (dist > 85 && dist < 190) {
-            let ang = Math.atan2(dy, dx) - offsetAngle;
-            let idx = Math.floor(((ang + 2*Math.PI) % (2*Math.PI)) / (Math.PI*2/24)) % 24;
-            return idx;
-        }
-        return null;
-    }
-
-    function onCanvasMove(e) {
-        let rect = canvas.getBoundingClientRect();
-        let sx = canvas.width / rect.width;
-        let sy = canvas.height / rect.height;
-        let mouseX = (e.clientX - rect.left) * sx;
-        let mouseY = (e.clientY - rect.top) * sy;
-        let idx = getHouFromCoord(mouseX, mouseY);
-        if (idx !== null && fixedHou === null) {
-            if (hoveredHou !== idx) {
-                hoveredHou = idx;
-                updatePhenologyCard(idx);
-                drawWheel();
+            function getHouAtAngle(worldAngle) {
+                let localAngle = worldAngle - rotationOffset;
+                while (localAngle < -Math.PI) localAngle += Math.PI * 2;
+                while (localAngle > Math.PI) localAngle -= Math.PI * 2;
+                let deg = localAngle * 180 / Math.PI + 90;
+                while (deg < 0) deg += 360;
+                while (deg >= 360) deg -= 360;
+                const houIndex = Math.floor(deg / 5);
+                if (houIndex >= 0 && houIndex < 72) return allData.houList[houIndex];
+                return null;
             }
-        } else if (idx === null && hoveredHou !== null && fixedHou===null) {
-            hoveredHou = null;
-            drawWheel();
-        }
-    }
 
-    function onCanvasClick(e) {
-        let rect = canvas.getBoundingClientRect();
-        let sx = canvas.width / rect.width;
-        let sy = canvas.height / rect.height;
-        let mouseX = (e.clientX - rect.left) * sx;
-        let mouseY = (e.clientY - rect.top) * sy;
-        let houIdx = getHouFromCoord(mouseX, mouseY);
-        if (houIdx !== null) {
-            fixedHou = houIdx;
-            updatePhenologyCard(houIdx);
-            drawWheel();
-            return;
-        }
-        let termIdx = getTermFromClickArea(mouseX, mouseY);
-        if (termIdx !== null && termIdx !== currentTermIdx) {
-            updateAllFromTerm(termIdx, true);
-        } else if (termIdx !== null && termIdx === currentTermIdx) {
-            // 如果点击当前节气区域，打开侧边栏
-            openSidebar(currentTermIdx);
-        }
-    }
+            function getSolarAtAngle(worldAngle) {
+                let localAngle = worldAngle - rotationOffset;
+                while (localAngle < -Math.PI) localAngle += Math.PI * 2;
+                while (localAngle > Math.PI) localAngle -= Math.PI * 2;
+                let deg = localAngle * 180 / Math.PI + 90;
+                while (deg < 0) deg += 360;
+                while (deg >= 360) deg -= 360;
+                const solarIndex = Math.floor(deg / 15);
+                if (solarIndex >= 0 && solarIndex < 24) return solarIndex;
+                return null;
+            }
 
-    function startDrag(e) {
-        dragFlag = true;
-        let rect = canvas.getBoundingClientRect();
-        let cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-        let ang = Math.atan2(e.clientY - cy, e.clientX - cx);
-        dragStartMouseAngle = ang;
-        canvas.style.cursor = 'grabbing';
-    }
+            function updateDetailCard(hou) {
+                if (!hou) return;
+                detailTitle.textContent = hou.name;
+                detailIcon.textContent = hou.emoji || '🌿';
+                detailIndex.textContent = '第' + (hou.globalIndex + 1) + '候（' + hou.solarName + '·' + ['初候', '二候',
+                    '三候'
+                ][hou.houIndex] + '）';
+                detailDesc.textContent = hou.desc;
+                detailPoem.textContent = hou.poem;
+                detailProverb.textContent = hou.proverb;
+                detailFood.textContent = hou.foodDetail;
+                detailCard.classList.add('visible');
+                if (detailCardTimer) clearTimeout(detailCardTimer);
+            }
 
-    function onDragMove(e) {
-        if (!dragFlag) return;
-        let rect = canvas.getBoundingClientRect();
-        let cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-        let cur = Math.atan2(e.clientY - cy, e.clientX - cx);
-        let delta = cur - dragStartMouseAngle;
-        offsetAngle += delta;
-        dragStartMouseAngle = cur;
-        let newIdx = getTermFromOffset();
-        if (newIdx !== currentTermIdx) {
-            currentTermIdx = newIdx;
-            document.getElementById('timeline').value = currentTermIdx;
-            document.getElementById('timelineLabel').innerText = solarTerms[currentTermIdx];
-            let sIdx = Math.floor(currentTermIdx/6);
-            document.getElementById('seasonIcon').innerHTML = ["🌱","☀️","🍂","❄️"][sIdx];
-            document.getElementById('seasonTag').innerHTML = ["孟春·启蛰", "仲夏·朱明", "素秋·金天", "玄冬·安宁"][sIdx];
-            document.getElementById('poemText').innerText = poemLib[currentTermIdx];
-            document.getElementById('healthTip').innerHTML = `✨ ${termHealthTips[currentTermIdx]} · 顺时颐养`;
-            fixedHou = currentTermIdx * 3;
-            updatePhenologyCard(fixedHou);
-        }
-        drawWheel();
-    }
+            function hideDetailCard() {
+                if (!detailCardLocked) {
+                    detailCardTimer = setTimeout(() => {
+                        detailCard.classList.remove('visible');
+                    }, 300);
+                }
+            }
 
-    function endDrag() { dragFlag = false; canvas.style.cursor = 'grab'; }
+            function updateUI(solarIndex, houIndex) {
+                currentSolarIndex = solarIndex;
+                currentHouIndex = houIndex;
+                const st = allData.solarTerms[solarIndex];
+                seasonVisual.innerHTML = st.name + '<span class="pinyin">' + st.pinyin + '</span>';
+                seasonMiniIcon.textContent = st.emoji || getSeasonEmoji(st.season);
+                bottomPoem.textContent = st.poem;
+                bottomHealth.textContent = '🍵 ' + st.name + '养生：' + st.health;
+                const hou = allData.houList[solarIndex * 3 + houIndex];
+                updateDetailCard(hou);
+                detailCardLocked = false;
+                selectedHouGlobal = hou;
+                updateTimelineDots();
+                if (sidebarDetail.classList.contains('open')) {
+                    updateSidebarContent(solarIndex);
+                }
+            }
 
-    function openSidebar(termIdx) {
-        document.getElementById('sidebarContent').innerHTML = termDetailsArr[termIdx];
-        document.getElementById('detailSidebar').classList.add('open');
-        document.getElementById('overlaySide').classList.add('active');
-    }
+            function updateTimelineDots() {
+                timelineRow.innerHTML = '';
+                allData.solarTerms.forEach((st, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'timeline-dot season-' + st.season;
+                    if (i === currentSolarIndex) dot.classList.add('active');
+                    dot.title = st.name + ' ' + st.pinyin + ' (' + st.huangjing + '°)';
+                    dot.textContent = st.name.charAt(0);
+                    dot.addEventListener('click', () => {
+                        navigateToSolar(i, 0);
+                    });
+                    timelineRow.appendChild(dot);
+                });
+            }
 
-    window.addEventListener('load', () => {
-        resizeCanvas();
-        updateAllFromTerm(9, true);
-        canvas.addEventListener('mousemove', onCanvasMove);
-        canvas.addEventListener('click', onCanvasClick);
-        canvas.addEventListener('mousedown', startDrag);
-        window.addEventListener('mousemove', onDragMove);
-        window.addEventListener('mouseup', endDrag);
-        document.getElementById('timeline').addEventListener('input', (e) => {
-            let idx = parseInt(e.target.value);
-            updateAllFromTerm(idx, true);
-        });
-        let termSelectA = document.getElementById('termA'), termSelectB = document.getElementById('termB');
-        solarTerms.forEach((t,i) => { termSelectA.add(new Option(t,i)); termSelectB.add(new Option(t,i)); });
-        termSelectA.value = '9'; termSelectB.value = '2';
-        document.getElementById('compareBtn').onclick = () => {
-            let a = parseInt(termSelectA.value), b = parseInt(termSelectB.value);
-            let compHtml = `<div style="border-bottom:1px solid #e6cf9a;margin:10px 0"><b>${solarTerms[a]}</b><br>三候：${houData[a*3][0]} · ${houData[a*3+1][0]} · ${houData[a*3+2][0]}<br>食俗：${termFoods[a]}<br>养生：${termHealthTips[a]}</div>
-                            <div><b>${solarTerms[b]}</b><br>三候：${houData[b*3][0]} · ${houData[b*3+1][0]} · ${houData[b*3+2][0]}<br>食俗：${termFoods[b]}<br>养生：${termHealthTips[b]}</div>`;
-            document.getElementById('compareResult').innerHTML = compHtml;
-            document.getElementById('compareModal').style.display = 'flex';
-        };
-        document.querySelector('.close-modal').onclick = () => document.getElementById('compareModal').style.display = 'none';
-        document.getElementById('detailViewBtn').onclick = () => openSidebar(currentTermIdx);
-        document.getElementById('closeSidebar').onclick = () => { document.getElementById('detailSidebar').classList.remove('open'); document.getElementById('overlaySide').classList.remove('active'); };
-        document.getElementById('overlaySide').onclick = () => { document.getElementById('detailSidebar').classList.remove('open'); document.getElementById('overlaySide').classList.remove('active'); };
-    });
-</script>
+            function navigateToSolar(solarIndex, houIndex) {
+                currentSolarIndex = solarIndex;
+                currentHouIndex = houIndex || 0;
+                const st = allData.solarTerms[solarIndex];
+                const targetLocalDeg = solarIndex * 15;
+                const targetWorldDeg = 0;
+                targetRotation = (targetWorldDeg - targetLocalDeg) * Math.PI / 180;
+                updateUI(solarIndex, currentHouIndex);
+                detailCardLocked = false;
+                selectedHouGlobal = allData.houList[solarIndex * 3 + currentHouIndex];
+            }
+
+            function updateSidebarContent(solarIndex) {
+                const st = allData.solarTerms[solarIndex];
+                sidebarTitle.textContent = st.name + ' · 详情';
+                let html = '';
+                html += '<div class="section"><h5>📖 节气渊源</h5><p>' + st.origin + '</p></div>';
+                html += '<div class="section"><h5>🌡️ 太阳黄经</h5><p>' + st.huangjing + '°（' + (solarIndex * 15) +
+                    '°从春分起算）</p></div>';
+                html += '<div class="section"><h5>🌿 三候详解</h5>';
+                for (let h = 0; h < 3; h++) {
+                    const hou = allData.houList[solarIndex * 3 + h];
+                    html += '<p><strong>' + ['初候', '二候', '三候'][h] + '：' + hou.name + '</strong> — ' + hou.desc +
+                        '</p>';
+                }
+                html += '</div>';
+                html += '<div class="section"><h5>🎉 民俗活动</h5><p>' + st.customs + '</p></div>';
+                html += '<div class="section"><h5>🍽️ 专属吃食</h5><p>' + st.foods + '</p></div>';
+                html += '<div class="section"><h5>🧘 养生指引</h5><p>' + st.health + '</p></div>';
+                html += '<div class="section"><h5>📝 节气诗句</h5><p>' + st.poem + '</p></div>';
+                sidebarContent.innerHTML = html;
+            }
+
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+                const dx = mouseX - centerX;
+                const dy = mouseY - centerY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxR = canvasSize * 0.44;
+                const middleR = maxR * 0.7;
+                const innerR = maxR * 0.34;
+                if (dist > innerR * 0.85 && dist < middleR * 1.05) {
+                    const worldAngle = Math.atan2(dy, dx);
+                    const hou = getHouAtAngle(worldAngle);
+                    if (hou && (!hoveredHouGlobal || hoveredHouGlobal.globalIndex !== hou.globalIndex)) {
+                        hoveredHouGlobal = hou;
+                        if (!detailCardLocked) updateDetailCard(hou);
+                        canvas.style.cursor = 'pointer';
+                    } else if (!hou) {
+                        hoveredHouGlobal = null;
+                        if (!detailCardLocked) hideDetailCard();
+                        canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
+                    }
+                } else {
+                    if (hoveredHouGlobal && !detailCardLocked) hideDetailCard();
+                    hoveredHouGlobal = null;
+                    canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
+                }
+            });
+
+            canvas.addEventListener('click', (e) => {
+                if (isDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const my = e.clientY - rect.top;
+                const dx = mx - centerX;
+                const dy = my - centerY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxR = canvasSize * 0.44;
+                const middleR = maxR * 0.7;
+                const innerR = maxR * 0.34;
+                const centerR = maxR * 0.16;
+                if (dist < centerR * 1.1) {
+                    detailCardLocked = false;
+                    selectedHouGlobal = allData.houList[currentSolarIndex * 3 + currentHouIndex];
+                    updateDetailCard(selectedHouGlobal);
+                    return;
+                }
+                if (dist > innerR * 0.85 && dist < middleR * 1.05) {
+                    const worldAngle = Math.atan2(dy, dx);
+                    const hou = getHouAtAngle(worldAngle);
+                    if (hou) {
+                        detailCardLocked = true;
+                        selectedHouGlobal = hou;
+                        updateDetailCard(hou);
+                        currentSolarIndex = hou.solarIndex;
+                        currentHouIndex = hou.houIndex;
+                        updateUI(currentSolarIndex, currentHouIndex);
+                        detailCardLocked = true;
+                        selectedHouGlobal = hou;
+                    }
+                }
+                if (dist > innerR * 0.5 && dist < innerR * 1.15) {
+                    const worldAngle = Math.atan2(dy, dx);
+                    const si = getSolarAtAngle(worldAngle);
+                    if (si !== null && si !== currentSolarIndex) {
+                        navigateToSolar(si, 0);
+                    }
+                }
+            });
+
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const my = e.clientY - rect.top;
+                const dx = mx - centerX;
+                const dy = my - centerY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxR = canvasSize * 0.44;
+                if (dist < maxR * 1.1) {
+                    isDragging = true;
+                    dragStartAngle = Math.atan2(dy, dx);
+                    dragStartRotation = rotationOffset;
+                    canvas.style.cursor = 'grabbing';
+                }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const my = e.clientY - rect.top;
+                const dx = mx - centerX;
+                const dy = my - centerY;
+                const currentAngle = Math.atan2(dy, dx);
+                let delta = currentAngle - dragStartAngle;
+                if (delta > Math.PI) delta -= Math.PI * 2;
+                if (delta < -Math.PI) delta += Math.PI * 2;
+                rotationOffset = dragStartRotation + delta;
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    canvas.style.cursor = hoveredHouGlobal ? 'pointer' : 'grab';
+                    let deg = (-rotationOffset * 180 / Math.PI);
+                    while (deg < 0) deg += 360;
+                    while (deg >= 360) deg -= 360;
+                    const nearestSolar = Math.round(deg / 15) % 24;
+                    const snappedSolar = (nearestSolar + 24) % 24;
+                    targetRotation = -(snappedSolar * 15) * Math.PI / 180;
+                    currentSolarIndex = snappedSolar;
+                    currentHouIndex = 0;
+                    updateUI(currentSolarIndex, currentHouIndex);
+                    detailCardLocked = false;
+                }
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                hoveredHouGlobal = null;
+                if (!detailCardLocked) hideDetailCard();
+                if (!isDragging) canvas.style.cursor = 'grab';
+            });
+
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.04 : -0.04;
+                rotationOffset += delta;
+                let deg = (-rotationOffset * 180 / Math.PI);
+                while (deg < 0) deg += 360;
+                while (deg >= 360) deg -= 360;
+                const nearestSolar = Math.round(deg / 15) % 24;
+                const snappedSolar = (nearestSolar + 24) % 24;
+                targetRotation = -(snappedSolar * 15) * Math.PI / 180;
+                if (Math.abs(rotationOffset - targetRotation) < 0.01) {
+                    currentSolarIndex = snappedSolar;
+                    currentHouIndex = 0;
+                    updateUI(currentSolarIndex, currentHouIndex);
+                    detailCardLocked = false;
+                }
+            }, { passive: false });
+
+            btnCompare.addEventListener('click', () => {
+                if (!compareMode) {
+                    compareMode = true;
+                    compareFirst = currentSolarIndex;
+                    compareSecond = null;
+                    compareCard.innerHTML =
+                        '<div class="compare-col"><h4>已选：' + allData.solarTerms[compareFirst].name +
+                        '</h4><p>请点击轮盘选择第二个节气</p></div>';
+                    overlayCompare.classList.add('active');
+                    btnCompare.textContent = '选择第二个节气...';
+                    btnCompare.style.borderColor = '#ff9800';
+                }
+            });
+
+            compareClose.addEventListener('click', () => {
+                compareMode = false;
+                compareFirst = null;
+                compareSecond = null;
+                overlayCompare.classList.remove('active');
+                btnCompare.textContent = '⚖️ 节气对比';
+                btnCompare.style.borderColor = '';
+            });
+
+            overlayCompare.addEventListener('click', function(e) {
+                if (e.target === this && !compareSecond) {
+                    compareMode = false;
+                    compareFirst = null;
+                    overlayCompare.classList.remove('active');
+                    btnCompare.textContent = '⚖️ 节气对比';
+                    btnCompare.style.borderColor = '';
+                }
+            });
+
+            const origCanvasClick = canvas.onclick;
+            canvas.addEventListener('click', function(e) {
+                if (compareMode && compareFirst !== null && compareSecond === null) {
+                    const rect = canvas.getBoundingClientRect();
+                    const mx = e.clientX - rect.left;
+                    const my = e.clientY - rect.top;
+                    const dx = mx - centerX;
+                    const dy = my - centerY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const maxR = canvasSize * 0.44;
+                    const innerR = maxR * 0.34;
+                    if (dist > innerR * 0.5 && dist < maxR * 0.75) {
+                        const worldAngle = Math.atan2(dy, dx);
+                        const si = getSolarAtAngle(worldAngle);
+                        if (si !== null && si !== compareFirst) {
+                            compareSecond = si;
+                            const s1 = allData.solarTerms[compareFirst];
+                            const s2 = allData.solarTerms[compareSecond];
+                            let html = '<div class="compare-col"><h4>' + s1.emoji + ' ' + s1.name +
+                                '</h4>';
+                            html += '<p><strong>三候：</strong>' + allData.allHous[compareFirst].join(
+                                '、') + '</p>';
+                            html += '<p><strong>民俗：</strong>' + s1.customs + '</p>';
+                            html += '<p><strong>吃食：</strong>' + s1.foods + '</p>';
+                            html += '<p><strong>黄经：</strong>' + s1.huangjing + '°</p>';
+                            html += '</div>';
+                            html += '<div class="compare-col"><h4>' + s2.emoji + ' ' + s2.name +
+                                '</h4>';
+                            html += '<p><strong>三候：</strong>' + allData.allHous[compareSecond].join(
+                                '、') + '</p>';
+                            html += '<p><strong>民俗：</strong>' + s2.customs + '</p>';
+                            html += '<p><strong>吃食：</strong>' + s2.foods + '</p>';
+                            html += '<p><strong>黄经：</strong>' + s2.huangjing + '°</p>';
+                            html += '</div>';
+                            html +=
+                                '<div style="width:100%;text-align:center;color:#C9A96E;margin-top:8px;">点击关闭按钮退出对比</div>';
+                            compareCard.innerHTML = html;
+                            compareMode = false;
+                            btnCompare.textContent = '⚖️ 节气对比';
+                            btnCompare.style.borderColor = '';
+                        }
+                    }
+                }
+            });
+
+            btnDetail.addEventListener('click', () => {
+                sidebarDetail.classList.toggle('open');
+                if (sidebarDetail.classList.contains('open')) {
+                    updateSidebarContent(currentSolarIndex);
+                }
+            });
+
+            sidebarClose.addEventListener('click', () => {
+                sidebarDetail.classList.remove('open');
+            });
+
+            btnReset.addEventListener('click', () => {
+                const now = new Date();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                let foundSolar = 0;
+                const solarRanges = [
+                    { s: 0, m: 2, dStart: 3, dEnd: 18 },
+                    { s: 1, m: 2, dStart: 18, dEnd: 29 },
+                    { s: 2, m: 3, dStart: 5, dEnd: 20 },
+                    { s: 3, m: 3, dStart: 20, dEnd: 31 },
+                    { s: 4, m: 4, dStart: 4, dEnd: 19 },
+                    { s: 5, m: 4, dStart: 19, dEnd: 30 },
+                    { s: 6, m: 5, dStart: 5, dEnd: 20 },
+                    { s: 7, m: 5, dStart: 20, dEnd: 31 },
+                    { s: 8, m: 6, dStart: 5, dEnd: 21 },
+                    { s: 9, m: 6, dStart: 21, dEnd: 30 },
+                    { s: 10, m: 7, dStart: 6, dEnd: 22 },
+                    { s: 11, m: 7, dStart: 22, dEnd: 31 },
+                    { s: 12, m: 8, dStart: 7, dEnd: 22 },
+                    { s: 13, m: 8, dStart: 22, dEnd: 31 },
+                    { s: 14, m: 9, dStart: 7, dEnd: 22 },
+                    { s: 15, m: 9, dStart: 22, dEnd: 30 },
+                    { s: 16, m: 10, dStart: 7, dEnd: 23 },
+                    { s: 17, m: 10, dStart: 23, dEnd: 31 },
+                    { s: 18, m: 11, dStart: 7, dEnd: 21 },
+                    { s: 19, m: 11, dStart: 21, dEnd: 30 },
+                    { s: 20, m: 12, dStart: 6, dEnd: 21 },
+                    { s: 21, m: 12, dStart: 21, dEnd: 31 },
+                    { s: 22, m: 1, dStart: 5, dEnd: 19 },
+                    { s: 23, m: 1, dStart: 19, dEnd: 31 },
+                ];
+                for (const r of solarRanges) {
+                    if ((month === r.m && day >= r.dStart && day <= r.dEnd) || (month === r.m + 1 && day < r
+                            .dStart && r.m === 12)) {
+                        foundSolar = r.s;
+                        break;
+                    }
+                }
+                if (month === 1 && day < 5) foundSolar = 22;
+                if (month === 2 && day < 3) foundSolar = 23;
+                navigateToSolar(foundSolar, 0);
+                rotationOffset = -(foundSolar * 15) * Math.PI / 180;
+                targetRotation = rotationOffset;
+                detailCardLocked = false;
+            });
+
+            updateTimelineDots();
+
+            function getInitialSolar() {
+                const now = new Date();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                if (month === 5 && day >= 5 && day < 21) return { s: 6, h: Math.min(2, Math.floor((day - 5) / 5)) };
+                if (month === 5 && day >= 21) return { s: 7, h: Math.min(2, Math.floor((day - 21) / 5)) };
+                if (month === 6 && day < 6) return { s: 7, h: Math.min(2, Math.floor((day - 21 + 31) / 5)) };
+                if (month === 6 && day >= 6 && day < 22) return { s: 8, h: Math.min(2, Math.floor((day - 6) / 5)) };
+                if (month === 6 && day >= 22) return { s: 9, h: Math.min(2, Math.floor((day - 22) / 5)) };
+                if (month === 7 && day < 7) return { s: 9, h: Math.min(2, Math.floor((day - 22 + 30) / 5)) };
+                if (month === 7 && day >= 7 && day < 23) return { s: 10, h: Math.min(2, Math.floor((day - 7) / 5)) };
+                if (month === 7 && day >= 23) return { s: 11, h: Math.min(2, Math.floor((day - 23) / 5)) };
+                if (month === 8 && day < 8) return { s: 11, h: Math.min(2, Math.floor((day - 23 + 31) / 5)) };
+                if (month === 8 && day >= 8 && day < 23) return { s: 12, h: Math.min(2, Math.floor((day - 8) / 5)) };
+                if (month === 5 && day >= 15) return { s: 6, h: 2 };
+                return { s: 6, h: 2 };
+            }
+            const initSolar = getInitialSolar();
+            currentSolarIndex = initSolar.s;
+            currentHouIndex = initSolar.h;
+            rotationOffset = -(currentSolarIndex * 15) * Math.PI / 180;
+            targetRotation = rotationOffset;
+            updateUI(currentSolarIndex, currentHouIndex);
+
+            function animate(timestamp) {
+                if (!isDragging) {
+                    const diff = targetRotation - rotationOffset;
+                    if (Math.abs(diff) > 0.0005) {
+                        rotationOffset += diff * 0.15;
+                        if (Math.abs(diff) < 0.002) rotationOffset = targetRotation;
+                    }
+                }
+                resizeCanvas();
+                drawWheel(timestamp);
+                animationId = requestAnimationFrame(animate);
+            }
+
+            resizeCanvas();
+            updateUI(currentSolarIndex, currentHouIndex);
+            rotationOffset = -(currentSolarIndex * 15) * Math.PI / 180;
+            targetRotation = rotationOffset;
+            animationId = requestAnimationFrame(animate);
+
+            setTimeout(() => {
+                loadingOverlay.classList.add('done');
+                setTimeout(() => { loadingOverlay.style.display = 'none'; }, 700);
+            }, 900);
+
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    navigateToSolar((currentSolarIndex + 1) % 24, 0);
+                    targetRotation = -(currentSolarIndex * 15) * Math.PI / 180;
+                } else if (e.key === 'ArrowLeft') {
+                    navigateToSolar((currentSolarIndex - 1 + 24) % 24, 0);
+                    targetRotation = -(currentSolarIndex * 15) * Math.PI / 180;
+                } else if (e.key === 'Escape') {
+                    detailCardLocked = false;
+                    hideDetailCard();
+                    compareMode = false;
+                    overlayCompare.classList.remove('active');
+                    btnCompare.textContent = '⚖️ 节气对比';
+                    btnCompare.style.borderColor = '';
+                    sidebarDetail.classList.remove('open');
+                }
+            });
+
+            console.log('✅ 岁时轮转·七十二候 可视化系统已就绪');
+            console.log('   - 24节气 | 72候 | 完整物候数据');
+            console.log('   - 民俗吃食 | 诗句农谚 | 养生古训');
+            console.log('   - 拖拽旋转 | 悬浮预览 | 点击锁定');
+            console.log('   - 节气对比 | 详情侧栏 | 时间轴导航');
+            console.log('   - 四季纹样 | 加载动效 | 鎏金国风');
+            console.log('   当前节气：' + allData.solarTerms[currentSolarIndex].name + ' | 第' + (currentHouIndex + 1) +
+                '候：' + allData.houList[currentSolarIndex * 3 + currentHouIndex].name);
+        })();
+    </script>
 </body>
 </html>

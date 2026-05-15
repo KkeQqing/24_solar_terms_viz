@@ -1,51 +1,76 @@
 // assets/js/modules/timeline.js
-// 功能：【底部节气时间轴】
-// 作用：生成24个节气按钮、点击切换节气、高亮当前节气、自动滚动居中
+// 功能：【底部节气时间轴 + 72候轴】 严格对齐，候单行完整显示，日期右置
 
-// 1. 初始化时间轴：动态创建 24 个节气按钮
 window.initTimeline = () => {
-  // 获取时间轴容器
-  const box = document.getElementById('timeline');
-  // 清空容器
-  box.innerHTML = '';
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = '';
 
-  // 循环遍历 24 节气，为每个节气创建按钮
-  window.solarTerms.forEach((t, i) => {
-    // 创建 button 元素
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    // 设置样式类名
-    btn.className = 'timeline-item font-sans text-xs';
-    // 鼠标悬浮提示：节气名 + 三候
-    btn.title = `${t.name}：${t.hou.join(' / ')}`;
+  // 遍历 24 节气，每个节气创建一个列容器
+  window.solarTerms.forEach((term, tIndex) => {
+    const col = document.createElement('div');
+    col.className = 'term-column';
 
-    // 按钮内部结构：日期 + 中间小圆点 + 节气名称
-    btn.innerHTML = `
-      <div style="font-size:10px">${t.date}</div>
+    // ----- 节气按钮（新布局：圆点在上，名称+日期在下） -----
+    const termBtn = document.createElement('button');
+    termBtn.type = 'button';
+    termBtn.className = 'timeline-item';
+    termBtn.title = `${term.name}：${term.hou.join(' / ')}`;
+    termBtn.innerHTML = `
       <div class="dot"></div>
-      <div>${t.name}</div>
+      <div class="term-info">
+        <span class="term-name">${term.name}</span>
+        <span class="term-date">${term.date}</span>
+      </div>
     `;
+    termBtn.addEventListener('click', () => window.selectTerm(tIndex));
 
-    // 点击按钮 → 切换到对应节气
-    btn.addEventListener('click', () => window.selectTerm(i));
+    // ----- 三候按钮组 -----
+    const houGroup = document.createElement('div');
+    houGroup.className = 'hou-group';
 
-    // 把按钮添加到时间轴容器中
-    box.appendChild(btn);
+    term.hou.forEach((houName, hIndex) => {
+      const globalHouIndex = tIndex * 3 + hIndex;
+      const houBtn = document.createElement('button');
+      houBtn.type = 'button';
+      houBtn.className = 'hou-item';
+      houBtn.textContent = houName;
+      houBtn.title = `${term.name}·${houName}`;
+      houBtn.addEventListener('click', () => {
+        window.selectTerm(tIndex);
+        window.currentHouIndex = globalHouIndex;
+        window.refreshTimeline();
+      });
+      houGroup.appendChild(houBtn);
+    });
+
+    col.appendChild(termBtn);
+    col.appendChild(houGroup);
+    timeline.appendChild(col);
   });
 };
 
-// 2. 刷新时间轴状态：高亮当前节气 + 自动滚动居中
+// 刷新时间轴与候轴的高亮、滚动居中
 window.refreshTimeline = () => {
-  // 遍历所有时间轴按钮
-  document.querySelectorAll('.timeline-item').forEach((b, i) => {
-    // 给【当前节气】添加 .active 高亮样式
-    b.classList.toggle('active', i === window.currentTermIndex);
+  const termIndex = window.currentTermIndex ?? 0;
+  const houIndex = window.currentHouIndex ?? 0;
+
+  // 高亮节气按钮
+  document.querySelectorAll('.timeline-item').forEach((btn, idx) => {
+    btn.classList.toggle('active', idx === termIndex);
   });
 
-  // 让当前节气按钮自动【平滑滚动到视图中间】
-  document.querySelectorAll('.timeline-item')[window.currentTermIndex]?.scrollIntoView({
-    behavior: 'smooth',   // 平滑滚动
-    inline: 'center',    // 水平居中
-    block: 'nearest'      // 垂直不偏移
+  // 高亮候按钮
+  document.querySelectorAll('.hou-item').forEach((btn, idx) => {
+    btn.classList.toggle('active', idx === houIndex);
   });
+
+  // 将当前候按钮滚动到水平居中位置
+  const activeHou = document.querySelectorAll('.hou-item')[houIndex];
+  if (activeHou) {
+    activeHou.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest'
+    });
+  }
 };

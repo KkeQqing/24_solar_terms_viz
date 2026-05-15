@@ -113,10 +113,10 @@
     </section>
 
     <!-- 底部时间轴 -->
-    <section class="glass timeline-card p-4 flex items-center">
+    <section class="glass timeline-card p-4 flex flex-col items-center" style="min-height: auto; height: auto; overflow: visible;">
       <div class="absolute left-5 top-4 z-10 px-3 py-1 rounded-full border text-xs font-bold bg-white/70" style="color:var(--gold);border-color:rgba(214,169,40,.45)">24节气轴</div>
       <div class="absolute left-28 right-28 top-6 season-strip"></div>
-      <div id="timeline" class="timeline-scroll w-full flex items-center gap-2 px-20 pt-6"></div>
+      <div id="timeline" class="timeline-scroll w-full flex px-20 pt-6" style="overflow-y: hidden; align-items: flex-start;"></div>
     </section>
   </main>
 

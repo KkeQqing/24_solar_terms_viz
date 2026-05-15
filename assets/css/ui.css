@@ -108,50 +108,6 @@ body.dark .btn {
   50% { transform: translateY(-8px); }
 }
 
-/* 时间轴滚动容器 */
-.timeline-scroll {
-  overflow-x: auto;          /* 横向滚动 */
-  scroll-behavior: smooth;   /* 平滑滚动 */
-}
-/* 时间轴滚动条样式 */
-.timeline-scroll::-webkit-scrollbar {
-  height: 5px;
-}
-.timeline-scroll::-webkit-scrollbar-thumb {
-  background: rgba(214, 169, 40, 0.5);
-  border-radius: 8px;
-}
-
-/* 时间轴单个节气项 */
-.timeline-item {
-  width: 64px;
-  min-width: 64px;
-  border: 0;
-  background: transparent;
-  color: var(--sub);
-  cursor: pointer;
-  transition: 0.18s ease;
-  padding: 0;
-}
-/* 时间轴选中项：变色 + 放大 */
-.timeline-item.active {
-  color: var(--ink);
-  transform: scale(1.12);
-}
-
-/* 时间轴小圆点 */
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(120, 120, 120, 0.22);
-  margin: 5px auto 8px;
-}
-/* 选中时小圆点变成金色 + 光晕 */
-.timeline-item.active .dot {
-  background: var(--gold);
-  box-shadow: 0 0 0 8px rgba(214, 169, 40, 0.12);
-}
 
 /* 搜索下拉面板 */
 .search-panel {
@@ -314,4 +270,130 @@ body.dark .modal-card {
   width: 100%;
   height: 100%;
   min-height: 0;
+}
+
+
+
+/* ========== 时间轴滚动容器 ========== */
+.timeline-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;          /* 强制禁止垂直滚动 */
+  scroll-behavior: smooth;
+  padding-bottom: 8px;         /* 为滚动条留空间 */
+  height: auto;
+  align-items: flex-start;
+}
+.timeline-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.timeline-scroll::-webkit-scrollbar-thumb {
+  background: rgba(214, 169, 40, 0.45);
+  border-radius: 6px;
+}
+.timeline-scroll::-webkit-scrollbar-track {
+  background: rgba(200, 200, 200, 0.15);
+}
+
+/* ========== 节气和三候列容器 ========== */
+.term-column {
+  width: 300px;                /* 大幅放大列宽，确保所有文字完整显示 */
+  flex-shrink: 0;
+  margin-right: 28px;          /* 列间距 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.term-column:last-child {
+  margin-right: 0;
+}
+
+/* ========== 节气按钮 ========== */
+.timeline-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--sub);
+  cursor: pointer;
+  transition: 0.18s ease;
+  padding: 0;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.timeline-item.active {
+  color: var(--ink);
+  transform: scale(1.05);
+}
+
+/* 小圆点（独立一行） */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(120, 120, 120, 0.25);
+  margin: 0 auto 6px auto;
+  display: block;
+}
+.timeline-item.active .dot {
+  background: var(--gold);
+  box-shadow: 0 0 0 6px rgba(214, 169, 40, 0.15);
+}
+
+/* 节气名称与日期行（水平布局） */
+.term-info {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+.term-name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.term-date {
+  font-size: 13px;
+  color: var(--sub);
+  line-height: 1.2;
+}
+.timeline-item.active .term-date {
+  color: var(--ink);
+}
+
+/* ========== 三候按钮组 ========== */
+.hou-group {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* 候按钮 */
+.hou-item {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--sub);
+  font-size: 15px;             /* 足够大且清晰 */
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  padding: 4px 0;
+  text-align: center;
+  white-space: nowrap;         /* 强制单行 */
+  overflow: visible;           /* 不裁剪文字 */
+  border-right: 1px dashed rgba(180, 180, 180, 0.35);
+  margin: 0 2px;
+}
+.hou-item:last-child {
+  border-right: none;
+}
+
+/* 候高亮状态：放大、金色、加粗 */
+.hou-item.active {
+  color: var(--gold);
+  font-weight: bold;
+  font-size: 16px;
+  transform: scale(1.08);
+  border-right-color: var(--gold);
+  text-shadow: 0 0 4px rgba(214, 169, 40, 0.3);
 }

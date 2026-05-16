@@ -21,22 +21,22 @@
     .scroll-container {
       width: 100%;
       height: 100%;
-      background-color: #fff8e1;
+      background-color: #fff8e6;
       border: 8px solid #ffb74d;
       border-radius: 12px;
       box-shadow: 
         0 0 25px rgba(255,160,60,0.15),
         inset 0 0 30px rgba(255,183,77,0.35),
-        0 0 60px rgba(255,230,180,0.5);
+        0 0 60px rgba(255,230,200,0.5);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
       background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130"><path fill="none" stroke="%23ffd699" stroke-width="0.6" d="M0 60 Q65 35 130 60 T260 60"/></svg>'),
-                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="3" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23noise)"/></svg>');
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="heat"><feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="2" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23heat)"/></svg>');
       background-size: 250px 250px, 250px 250px;
       overflow: hidden;
-      animation: goldenGlow 4.5s ease-in-out infinite, unfoldSummer 1.3s ease-out;
+      animation: heatGlow 4.5s ease-in-out infinite, unfoldSummer 1.3s ease-out;
       background-position: 0 0;
     }
 
@@ -45,16 +45,16 @@
       100% { transform: scaleY(1) translateY(0); opacity: 1; }
     }
 
-    @keyframes goldenGlow {
+    @keyframes heatGlow {
       0%, 100% { 
         box-shadow: 0 0 25px rgba(255,160,60,0.15),
         inset 0 0 30px rgba(255,183,77,0.35),
-        0 0 60px rgba(255,230,180,0.5);
+        0 0 60px rgba(255,230,200,0.5);
       }
       45% { 
         box-shadow: 0 0 40px rgba(255,140,30,0.25),
         inset 0 0 50px rgba(255,183,77,0.5),
-        0 0 100px rgba(255,210,140,0.7);
+        0 0 100px rgba(255,210,160,0.7);
       }
       50%{filter:brightness(1.05)}
       55%{filter:brightness(1)}
@@ -70,27 +70,27 @@
       border-radius: 6px;
       z-index: 1;
       box-shadow: 
-        inset 0 0 12px rgba(255,160,60,0.4),
+        inset 0 0 12px rgba(255,150,50,0.4),
         0 0 8px rgba(0,0,0,0.12);
     }
     .scroll-container::before { left: -12px; }
     .scroll-container::after { right: -12px; }
 
-    /* 创新：热风浮动粒子 */
+    /* 创新：温风流动粒子 */
     .wind-particle {
       position: absolute;
-      top: -10px;
-      width: 6px;
-      height: 12px;
-      border-radius: 3px;
-      background: linear-gradient(#ffcc80, #ffb74d);
+      top: 50%;
+      width: 12px;
+      height: 2px;
+      background: linear-gradient(90deg, #ffcc80, transparent);
       opacity: 0.7;
-      animation: windFloat linear infinite;
+      animation: windFlow linear infinite;
       z-index: 2;
     }
-    @keyframes windFloat {
-      0% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
-      100% { transform: translate(40px, 800px) rotate(180deg); opacity: 0; }
+    @keyframes windFlow {
+      0% { transform: translateX(-100px); opacity: 0; }
+      50% { opacity: 0.7; }
+      100% { transform: translateX(1200px); opacity: 0; }
     }
 
     .top-section {
@@ -256,18 +256,18 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      animation: windSwing 2.4s ease-in-out infinite;
+      animation: leafSway 2.4s ease-in-out infinite;
     }
-    @keyframes windSwing {
+    @keyframes leafSway {
       0%, 100% { transform: rotate(0deg); }
-      30% { transform: rotate(3deg); }
-      70% { transform: rotate(-3deg); }
+      30% { transform: rotate(2deg); }
+      70% { transform: rotate(-2deg); }
     }
 
     .illustration-placeholder {
       width: 190px;
       height: 145px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M50 110 Q100 80 150 110" stroke="%23ff9800" stroke-width="3" fill="none"/><path d="M55 105 Q100 85 145 105" stroke="%23ffb74d" stroke-width="2" fill="none"/><path d="M60 100 Q100 90 140 100" stroke="%23ffcc80" stroke-width="1.5" fill="none"/><circle cx="100" cy="70" r="15" fill="%23ffeb3b"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M50 110 Q100 90 150 110" stroke="%23ff9800" stroke-width="3" fill="none"/><path d="M45 105 Q100 85 155 105" stroke="%23ffb74d" stroke-width="2" fill="none"/><circle cx="100" cy="70" r="15" fill="%23ffeb3b"/></svg>');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -275,8 +275,8 @@
     }
     @keyframes sunSwing {
       0%, 100% { transform: translateX(0) rotate(0deg); }
-      40% { transform: translateX(4px) rotate(1deg); }
-      60% { transform: translateX(-4px) rotate(-1deg); }
+      40% { transform: translateX(3px) rotate(0.5deg); }
+      60% { transform: translateX(-3px) rotate(-0.5deg); }
     }
 
     .proverb-text {
@@ -350,7 +350,7 @@
 
     .card-content {
       font-size: 13.5px;
-      color: #443322;
+      color: #332211;
       line-height: 1.45;
       text-shadow: 0 0.3px 0.8px rgba(0,0,0,0.05);
     }
@@ -360,11 +360,11 @@
   <div class="scroll-component">
     <div class="scroll-container">
 
-      <div class="wind-particle" style="left:8%;animation-duration:5s;animation-delay:0s"></div>
-      <div class="wind-particle" style="left:28%;animation-duration:5.5s;animation-delay:0.5s"></div>
-      <div class="wind-particle" style="left:48%;animation-duration:4.8s;animation-delay:0.3s"></div>
-      <div class="wind-particle" style="left:72%;animation-duration:6s;animation-delay:0.8s"></div>
-      <div class="wind-particle" style="left:92%;animation-duration:5.2s;animation-delay:0.2s"></div>
+      <div class="wind-particle" style="top:15%;animation-duration:6s;animation-delay:0s"></div>
+      <div class="wind-particle" style="top:35%;animation-duration:5.5s;animation-delay:0.5s"></div>
+      <div class="wind-particle" style="top:55%;animation-duration:6.5s;animation-delay:0.2s"></div>
+      <div class="wind-particle" style="top:75%;animation-duration:5s;animation-delay:0.8s"></div>
+      <div class="wind-particle" style="top:95%;animation-duration:7s;animation-delay:0.3s"></div>
 
       <div class="top-section">
         <div class="left-title-bar">
@@ -383,13 +383,13 @@
             <div class="author-seal"></div>
             <div class="poem-text">
               小暑温风至<br>
-              骄阳照长空
+              林间暑气微
             </div>
           </div>
           <div class="illustration-column">
-            <div class="hou-label">小暑三候 · 温风至</div>
+            <div class="hou-label">小暑一候 · 温风至</div>
             <div class="illustration-placeholder"></div>
-            <div class="proverb-text">小暑南风起，热浪漫山川，万物沐骄阳</div>
+            <div class="proverb-text">小暑南风起，热浪徐徐来，万物沐暖阳</div>
           </div>
         </div>
       </div>
@@ -397,19 +397,19 @@
       <div class="bottom-info-grid">
         <div class="info-card">
           <div class="card-title">三候·温风至</div>
-          <div class="card-content">风中带着热浪，不再有清凉之风，大地被温热气流包裹。</div>
+          <div class="card-content">盛夏热风渐起，不再有清凉之风，空气中弥漫着温热气息。</div>
         </div>
         <div class="info-card">
           <div class="card-title">节气气象</div>
-          <div class="card-content">气温快速攀升，湿度增大，闷热感明显增强。</div>
+          <div class="card-content">气温快速攀升，湿度增大，闷热感逐渐增强。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时节特征</div>
-          <div class="card-content">盛夏正式开启，万物生长旺盛，伏天即将来临。</div>
+          <div class="card-content">盛夏正式开启，作物生长旺盛，田园一片繁茂景象。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时令养生</div>
-          <div class="card-content">宜清淡饮食，多吃瓜类补水，静心安神，少动多静防中暑。</div>
+          <div class="card-content">少动多静，避暑降温，清淡饮食，及时补充水分与电解质。</div>
         </div>
       </div>
 

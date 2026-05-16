@@ -63,15 +63,24 @@
         <div class="chart" id="phenology-chart"></div>
         <p class="hint" id="phenology-desc"></p>
       </div>
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="climate">
-        <div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:cloud-sun-bold"></iconify-icon><span>近十年气候变化</span></div>
-        <div class="grid grid-cols-3 gap-2 mt-3 font-sans">
-          <div class="stat-card text-center"><p class="hint">十年均温</p><div class="text-xl font-black" id="avg-temp">--</div></div>
-          <div class="stat-card text-center"><p class="hint">均降水</p><div class="text-xl font-black" id="avg-rain">--</div></div>
-          <div class="stat-card text-center"><p class="hint">趋势</p><div class="text-xl font-black" id="climate-trend">--</div></div>
+      <div class="glass p-3 flex flex-col min-h-0 module-card" data-analysis="climate">
+        <div class="card-title">近十年气候变化</div>
+        <div class="grid grid-cols-3 gap-1 mt-1 font-sans text-xs">
+            <div class="stat-card text-center py-1">
+                <p class="hint mb-0 text-[10px]">十年均温</p>
+                <div class="text-sm font-bold" id="avg-temp">--</div>
+            </div>
+            <div class="stat-card text-center py-1">
+                <p class="hint mb-0 text-[10px]">均降水</p>
+                <div class="text-sm font-bold" id="avg-rain">--</div>
+            </div>
+            <div class="stat-card text-center py-1">
+                <p class="hint mb-0 text-[10px]">趋势</p>
+                <div class="text-sm font-bold" id="climate-trend">--</div>
+            </div>
         </div>
         <div class="chart flex-1" id="climate-chart"></div>
-      </div>
+    </div>
     </section>
 
     <!-- 中央列 -->

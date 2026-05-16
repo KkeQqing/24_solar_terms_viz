@@ -21,40 +21,40 @@
     .scroll-container {
       width: 100%;
       height: 100%;
-      background-color: #e8f5e9;
+      background-color: #e6f7e6;
       border: 8px solid #66bb6a;
       border-radius: 12px;
       box-shadow: 
-        0 0 25px rgba(80,180,90,0.15),
+        0 0 25px rgba(80,180,80,0.15),
         inset 0 0 30px rgba(102,187,106,0.35),
-        0 0 60px rgba(200,240,200,0.5);
+        0 0 60px rgba(200,245,200,0.5);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
       background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130"><path fill="none" stroke="%23a5d6a7" stroke-width="0.6" d="M0 50 Q65 25 130 50 T260 50"/></svg>'),
-                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="3" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23noise)"/></svg>');
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="grass"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23grass)"/></svg>');
       background-size: 250px 250px, 250px 250px;
       overflow: hidden;
-      animation: greenGlow 4.5s ease-in-out infinite, unfoldCricket 1.3s ease-out;
+      animation: grassGlow 4.5s ease-in-out infinite, unfoldGreen 1.3s ease-out;
       background-position: 0 0;
     }
 
-    @keyframes unfoldCricket {
+    @keyframes unfoldGreen {
       0% { transform: scaleY(0.15) translateY(20px); opacity: 0; }
       100% { transform: scaleY(1) translateY(0); opacity: 1; }
     }
 
-    @keyframes greenGlow {
+    @keyframes grassGlow {
       0%, 100% { 
-        box-shadow: 0 0 25px rgba(80,180,90,0.15),
+        box-shadow: 0 0 25px rgba(80,180,80,0.15),
         inset 0 0 30px rgba(102,187,106,0.35),
-        0 0 60px rgba(200,240,200,0.5);
+        0 0 60px rgba(200,245,200,0.5);
       }
       45% { 
-        box-shadow: 0 0 40px rgba(60,160,70,0.25),
+        box-shadow: 0 0 40px rgba(50,160,50,0.25),
         inset 0 0 50px rgba(102,187,106,0.5),
-        0 0 100px rgba(165,214,167,0.7);
+        0 0 100px rgba(150,220,150,0.7);
       }
       50%{filter:brightness(1.05)}
       55%{filter:brightness(1)}
@@ -70,28 +70,33 @@
       border-radius: 6px;
       z-index: 1;
       box-shadow: 
-        inset 0 0 12px rgba(80,180,90,0.4),
+        inset 0 0 12px rgba(70,150,70,0.4),
         0 0 8px rgba(0,0,0,0.12);
     }
     .scroll-container::before { left: -12px; }
     .scroll-container::after { right: -12px; }
 
-    /* 创新：蟋蟀跳跃光点 */
-    .cricket-dot {
+    /* 创新：萤火闪烁特效 */
+    .firefly {
       position: absolute;
-      top: -10px;
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
+      background: #ffeb3b;
       border-radius: 50%;
-      background: radial-gradient(circle, #81c784 0%, #66bb6a 100%);
-      opacity: 0.8;
-      animation: cricketJump linear infinite;
+      box-shadow: 0 0 8px #ffeb3b;
+      animation: fireflyFly 8s linear infinite, fireflyGlow 1.5s ease-in-out infinite;
       z-index: 2;
     }
-    @keyframes cricketJump {
-      0% { transform: translate(0, 0); opacity: 0.9; }
-      50% { transform: translate(20px, 400px); }
-      100% { transform: translate(-20px, 800px); opacity: 0; }
+    @keyframes fireflyFly {
+      0% { transform: translate(0,0); }
+      25% { transform: translate(30px,-20px); }
+      50% { transform: translate(60px,10px); }
+      75% { transform: translate(30px,30px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes fireflyGlow {
+      0%,100% { opacity: 0.4; }
+      50% { opacity: 1; }
     }
 
     .top-section {
@@ -111,24 +116,24 @@
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 4px 12px rgba(80,180,90,0.18);
+      box-shadow: 0 4px 12px rgba(80,180,80,0.18);
     }
 
     .festival-emoji {
       font-size: 32px;
-      animation: cricketShake 3s infinite alternate ease-in-out;
+      animation: insectShake 3s infinite alternate ease-in-out;
       margin-bottom: 4px;
     }
-    @keyframes cricketShake {
-      0% { transform: translateY(-2px) scale(1); }
-      100% { transform: translateY(2px) scale(1.05); }
+    @keyframes insectShake {
+      0% { transform: rotate(-2deg) scale(1); }
+      100% { transform: rotate(2deg) scale(1.05); }
     }
 
     .festival-name {
       font-family: KaiTi, serif;
       font-size: 50px;
       font-weight: bold;
-      background: linear-gradient(90deg, #4caf50, #66bb6a, #81c784);
+      background: linear-gradient(90deg, #388e3c, #66bb6a, #a5d6a7);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -167,7 +172,7 @@
     .festival-info {
       text-align: center;
       font-size: 15px;
-      color: #225533;
+      color: #224422;
       line-height: 1.5;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
@@ -180,7 +185,7 @@
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 4px 15px rgba(80,180,90,0.22);
+      box-shadow: 0 4px 15px rgba(80,180,80,0.22);
     }
     .poem-column {
       flex: 1;
@@ -195,14 +200,14 @@
       line-height: 1.75;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      background: linear-gradient(180deg, #4caf50, #66bb6a);
+      background: linear-gradient(180deg, #388e3c, #66bb6a);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.08);
-      animation: poemSlowJump 7s ease-in-out infinite;
+      animation: poemSlowSway 7s ease-in-out infinite;
     }
-    @keyframes poemSlowJump {
+    @keyframes poemSlowSway {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-8px); }
     }
@@ -212,17 +217,17 @@
       font-size: 19px;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      color: #225533;
+      color: #224422;
       margin-right: 8px;
     }
 
     .author-seal {
       width: 22px;
       height: 22px;
-      background: #4caf50;
+      background: #388e3c;
       border-radius: 2px;
       margin-top: 14px;
-      box-shadow: 0 0 8px rgba(76,175,80,0.45);
+      box-shadow: 0 0 8px rgba(56,142,60,0.45);
       animation: sealBounce 3s ease-in-out infinite;
       display: grid;
       place-items: center;
@@ -232,7 +237,7 @@
       font-family: KaiTi;
     }
     .author-seal::after {
-      content: "蟀";
+      content: "虫";
     }
     @keyframes sealBounce {
       0%, 100% { transform: scale(1); opacity: 0.9; }
@@ -251,15 +256,15 @@
       font-size: 21px;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      color: #225533;
+      color: #224422;
       margin-right: 14px;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
       display: flex;
       align-items: center;
       gap: 4px;
-      animation: leafShake 2.4s ease-in-out infinite;
+      animation: leafSway 2.4s ease-in-out infinite;
     }
-    @keyframes leafShake {
+    @keyframes leafSway {
       0%, 100% { transform: rotate(0deg); }
       30% { transform: rotate(2deg); }
       70% { transform: rotate(-2deg); }
@@ -268,7 +273,7 @@
     .illustration-placeholder {
       width: 190px;
       height: 145px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M60 100 Q100 70 140 100" stroke="%234caf50" stroke-width="3" fill="none"/><path d="M65 95 Q100 75 135 95" stroke="%2366bb6a" stroke-width="2" fill="none"/><path d="M70 90 Q100 80 130 90" stroke="%2381c784" stroke-width="1.5" fill="none"/><circle cx="100" cy="65" r="10" fill="%23ffeb3b"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M60 100 Q100 80 140 100" stroke="%23388e3c" stroke-width="3" fill="none"/><path d="M65 95 Q100 85 135 95" stroke="%2366bb6a" stroke-width="2" fill="none"/><circle cx="100" cy="75" r="10" fill="%238d6e63"/></svg>');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -283,7 +288,7 @@
     .proverb-text {
       margin-top: 10px;
       font-size: 15px;
-      color: #225533;
+      color: #224422;
       text-align: center;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
       overflow: hidden;
@@ -308,15 +313,15 @@
       border-radius: 8px;
       padding: 10px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 2px 8px rgba(80,180,90,0.18);
+      box-shadow: 0 2px 8px rgba(80,180,80,0.18);
       cursor: pointer;
       transition: all 0.4s ease;
     }
     .info-card:hover {
       transform: translateY(-5px) scale(1.02);
       background: rgba(255,255,255,0.8);
-      box-shadow: 0 8px 20px rgba(60,160,70,0.35);
-      border-color: #4caf50;
+      box-shadow: 0 8px 20px rgba(50,160,50,0.35);
+      border-color: #388e3c;
     }
     .info-card:active {
       animation: tinyShake 0.25s;
@@ -332,7 +337,7 @@
       font-family: KaiTi, serif;
       font-size: 15px;
       font-weight: bold;
-      color: #4caf50;
+      color: #388e3c;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
@@ -342,16 +347,16 @@
     .card-title::before {
       content: '🦗';
       font-size: 13px;
-      animation: dotTwinkle 3.2s ease-in-out infinite;
+      animation: insectTwinkle 3.2s ease-in-out infinite;
     }
-    @keyframes dotTwinkle {
+    @keyframes insectTwinkle {
       0%, 100% { opacity: 0.8; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.2); }
     }
 
     .card-content {
       font-size: 13.5px;
-      color: #113322;
+      color: #112211;
       line-height: 1.45;
       text-shadow: 0 0.3px 0.8px rgba(0,0,0,0.05);
     }
@@ -361,11 +366,11 @@
   <div class="scroll-component">
     <div class="scroll-container">
 
-      <div class="cricket-dot" style="left:8%;animation-duration:5s;animation-delay:0s"></div>
-      <div class="cricket-dot" style="left:28%;animation-duration:5.5s;animation-delay:0.5s"></div>
-      <div class="cricket-dot" style="left:48%;animation-duration:4.8s;animation-delay:0.3s"></div>
-      <div class="cricket-dot" style="left:72%;animation-duration:6s;animation-delay:0.8s"></div>
-      <div class="cricket-dot" style="left:92%;animation-duration:5.2s;animation-delay:0.2s"></div>
+      <div class="firefly" style="top:20%;left:10%;animation-delay:0s"></div>
+      <div class="firefly" style="top:40%;left:30%;animation-delay:0.5s"></div>
+      <div class="firefly" style="top:60%;left:50%;animation-delay:0.3s"></div>
+      <div class="firefly" style="top:80%;left:70%;animation-delay:0.8s"></div>
+      <div class="firefly" style="top:30%;left:90%;animation-delay:0.2s"></div>
 
       <div class="top-section">
         <div class="left-title-bar">
@@ -374,7 +379,7 @@
           <div class="divider"></div>
           <div class="festival-info">
             <div>季夏时节</div>
-            <div>暑气渐盛</div>
+            <div>黄经 105°</div>
           </div>
         </div>
 
@@ -388,9 +393,9 @@
             </div>
           </div>
           <div class="illustration-column">
-            <div class="hou-label">小暑三候 · 蟋蟀居壁</div>
+            <div class="hou-label">小暑二候 · 蟋蟀居壁</div>
             <div class="illustration-placeholder"></div>
-            <div class="proverb-text">蟋蟀离田野，安居屋檐下，声声鸣盛夏</div>
+            <div class="proverb-text">蟋蟀离田野，穴居墙壁间，夏夜鸣声声</div>
           </div>
         </div>
       </div>
@@ -398,19 +403,19 @@
       <div class="bottom-info-grid">
         <div class="info-card">
           <div class="card-title">三候·蟋蟀居壁</div>
-          <div class="card-content">蟋蟀因地面炎热，离开田野草丛，搬到墙壁下避暑鸣叫。</div>
+          <div class="card-content">蟋蟀因天气炎热，离开田野，躲到墙壁墙角下避暑栖息。</div>
         </div>
         <div class="info-card">
           <div class="card-title">节气气象</div>
-          <div class="card-content">高温持续，昼热夜暖，虫鸣阵阵，盛夏氛围浓厚。</div>
-        </div>
-        <div class="info-card">
-          <div class="card-title">时令养生</div>
-          <div class="card-content">宜晚睡早起顺应昼长，多食绿豆汤清热解暑，安神静心。</div>
+          <div class="card-content">气温持续升高，地表温度灼热，虫类寻找阴凉处藏身。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时节特征</div>
-          <div class="card-content">草木繁茂，虫鸣悦耳，暑气蒸腾，万物蓬勃生长。</div>
+          <div class="card-content">草木葱郁，虫鸣阵阵，盛夏田园生机盎然充满野趣。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">时令养生</div>
+          <div class="card-content">晚睡早起午休补觉，多食清热利湿食材，保持心境平和。</div>
         </div>
       </div>
 

@@ -21,22 +21,22 @@
     .scroll-container {
       width: 100%;
       height: 100%;
-      background-color: #f6fff0;
-      border: 8px solid #7ccd7c;
+      background-color: #f2f9ff;
+      border: 8px solid #84c0e8;
       border-radius: 12px;
       box-shadow: 
-        0 0 25px rgba(80,180,80,0.15),
-        inset 0 0 30px rgba(124,205,124,0.35),
-        0 0 60px rgba(230,255,220,0.5);
+        0 0 25px rgba(50,100,150,0.15),
+        inset 0 0 30px rgba(132,192,232,0.35),
+        0 0 60px rgba(225,240,255,0.5);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><path fill="none" stroke="%23b7e4b7" stroke-width="0.7" d="M0 60 Q75 35 150 60 T300 60"/></svg>'),
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130"><path fill="none" stroke="%23c8e6f7" stroke-width="0.6" d="M0 40 Q65 15 130 40 T260 40"/></svg>'),
                         url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="3" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23noise)"/></svg>');
-      background-size: 280px 280px, 250px 250px;
+      background-size: 250px 250px, 250px 250px;
       overflow: hidden;
-      animation: grassGlow 4.5s ease-in-out infinite, unfoldSpring 1.3s ease-out;
+      animation: rainbowGlow 4.5s ease-in-out infinite, unfoldSpring 1.3s ease-out;
       background-position: 0 0;
     }
 
@@ -45,16 +45,16 @@
       100% { transform: scaleY(1) translateY(0); opacity: 1; }
     }
 
-    @keyframes grassGlow {
+    @keyframes rainbowGlow {
       0%, 100% { 
-        box-shadow: 0 0 25px rgba(80,180,80,0.15),
-        inset 0 0 30px rgba(124,205,124,0.35),
-        0 0 60px rgba(230,255,220,0.5);
+        box-shadow: 0 0 25px rgba(50,100,150,0.15),
+        inset 0 0 30px rgba(132,192,232,0.35),
+        0 0 60px rgba(225,240,255,0.5);
       }
       45% { 
-        box-shadow: 0 0 40px rgba(100,200,100,0.25),
-        inset 0 0 50px rgba(124,205,124,0.5),
-        0 0 100px rgba(200,245,190,0.7);
+        box-shadow: 0 0 40px rgba(80,140,190,0.25),
+        inset 0 0 50px rgba(132,192,232,0.5),
+        0 0 100px rgba(190,225,245,0.7);
       }
       50%{filter:brightness(1.05)}
       55%{filter:brightness(1)}
@@ -66,11 +66,11 @@
       position: absolute;
       top: 0; bottom: 0;
       width: 24px;
-      background: #d6f8d6;
+      background: #d6eaf8;
       border-radius: 6px;
       z-index: 1;
       box-shadow: 
-        inset 0 0 12px rgba(90,200,90,0.4),
+        inset 0 0 12px rgba(90,150,200,0.4),
         0 0 8px rgba(0,0,0,0.12);
     }
     .scroll-container::before { left: -12px; }
@@ -79,18 +79,18 @@
     .petal {
       position: absolute;
       top: -10px;
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: radial-gradient(circle, #ffd966 0%, #ffcc33 100%);
-      opacity: 0.85;
-      animation: fireflyFly linear infinite;
+      background: radial-gradient(circle, #a8d8ff 0%, #84c0e8 100%);
+      opacity: 0.8;
+      animation: raindropFall linear infinite;
       z-index: 2;
     }
-    @keyframes fireflyFly {
-      0% { transform: translate(0, 0) scale(0.8); opacity: 0.9; }
-      50%{transform: translate(10px, 400px) scale(1);}
-      100% { transform: translate(-10px, 800px) scale(0.8); opacity: 0; }
+    @keyframes raindropFall {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.9; }
+      50%{transform: translateY(400px) scale(1);}
+      100% { transform: translateY(800px) scale(0.8); opacity: 0; }
     }
 
     .top-section {
@@ -106,36 +106,36 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 2px solid #7ccd7c;
+      border: 2px solid #84c0e8;
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 4px 12px rgba(120,220,120,0.18);
+      box-shadow: 0 4px 12px rgba(120,180,220,0.18);
     }
 
     .festival-emoji {
       font-size: 32px;
-      animation: bugShake 3s infinite alternate ease-in-out;
+      animation: rainbowShake 3s infinite alternate ease-in-out;
       margin-bottom: 4px;
     }
-    @keyframes bugShake {
-      0% { transform: rotate(-3deg) scale(1); }
-      100% { transform: rotate(3deg) scale(1.05); }
+    @keyframes rainbowShake {
+      0% { transform: rotate(-2deg) scale(1); }
+      100% { transform: rotate(2deg) scale(1.05); }
     }
 
     .festival-name {
       font-family: KaiTi, serif;
       font-size: 50px;
       font-weight: bold;
-      background: linear-gradient(90deg, #32a852, #56c16f, #7ccd7c);
+      background: linear-gradient(90deg, #42a5f5, #64b5f6, #84c0e8);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 8px;
       text-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      animation: titleGreenShine 4.5s infinite alternate;
+      animation: titleBlueShine 4.5s infinite alternate;
     }
-    @keyframes titleGreenShine {
+    @keyframes titleBlueShine {
       0% { filter: brightness(1); }
       100% { filter: brightness(1.25); }
     }
@@ -143,7 +143,7 @@
     .divider {
       width: 80%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #7ccd7c, transparent);
+      background: linear-gradient(90deg, transparent, #84c0e8, transparent);
       margin-bottom: 8px;
       position: relative;
       overflow: hidden;
@@ -155,10 +155,10 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, #fff, #c8f7c8, transparent);
-      animation: greenLineFlow 3.8s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent, #fff, #c8e6f7, transparent);
+      animation: blueLineFlow 3.8s ease-in-out infinite;
     }
-    @keyframes greenLineFlow {
+    @keyframes blueLineFlow {
       0% { left: -100%; }
       100% { left: 100%; }
     }
@@ -166,7 +166,7 @@
     .festival-info {
       text-align: center;
       font-size: 15px;
-      color: #2d4a22;
+      color: #334455;
       line-height: 1.5;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
@@ -175,11 +175,11 @@
       flex: 1;
       display: flex;
       gap: 16px;
-      border: 2px solid #7ccd7c;
+      border: 2px solid #84c0e8;
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 4px 15px rgba(120,220,120,0.22);
+      box-shadow: 0 4px 15px rgba(120,180,220,0.22);
     }
     .poem-column {
       flex: 1;
@@ -194,14 +194,14 @@
       line-height: 1.75;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      background: linear-gradient(180deg, #32a852, #56c16f);
+      background: linear-gradient(180deg, #42a5f5, #64b5f6);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.08);
-      animation: poemFloat 7s ease-in-out infinite;
+      animation: poemSlowRise 7s ease-in-out infinite;
     }
-    @keyframes poemFloat {
+    @keyframes poemSlowRise {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-8px); }
     }
@@ -211,18 +211,18 @@
       font-size: 19px;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      color: #2d4a22;
+      color: #334455;
       margin-right: 8px;
     }
 
     .author-seal {
       width: 22px;
       height: 22px;
-      background: #32a852;
+      background: #42a5f5;
       border-radius: 2px;
       margin-top: 14px;
-      box-shadow: 0 0 8px rgba(50,168,82,0.45);
-      animation: sealPulse 3s ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(66,165,245,0.45);
+      animation: sealVital 3s ease-in-out infinite;
       display: grid;
       place-items: center;
       color: white;
@@ -231,9 +231,9 @@
       font-family: KaiTi;
     }
     .author-seal::after {
-      content: "鸣";
+      content: "虹";
     }
-    @keyframes sealPulse {
+    @keyframes sealVital {
       0%, 100% { transform: scale(1); opacity: 0.9; }
       50% { transform: scale(1.2); opacity: 1; }
     }
@@ -250,7 +250,7 @@
       font-size: 21px;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      color: #2d4a22;
+      color: #334455;
       margin-right: 14px;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
       display: flex;
@@ -267,13 +267,13 @@
     .illustration-placeholder {
       width: 190px;
       height: 145px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M70 100 Q100 85 130 100" stroke="%2332a852" stroke-width="3" fill="none"/><circle cx="85" cy="90" r="4" fill="%23ffcc33"/><circle cx="115" cy="95" r="3.5" fill="%23ffcc33"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M60 100 Q100 70 140 100" stroke="%2342a5f5" stroke-width="3" fill="none"/><path d="M65 95 Q100 75 135 95" stroke="%2366bb6a" stroke-width="2" fill="none"/><path d="M70 90 Q100 80 130 90" stroke="%23fdd835" stroke-width="1.5" fill="none"/><circle cx="100" cy="60" r="12" fill="%23ffeb3b"/></svg>');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      animation: bugSwing 4.2s ease-in-out infinite;
+      animation: flowerSwing 4.2s ease-in-out infinite;
     }
-    @keyframes bugSwing {
+    @keyframes flowerSwing {
       0%, 100% { transform: translateX(0) rotate(0deg); }
       40% { transform: translateX(3px) rotate(0.5deg); }
       60% { transform: translateX(-3px) rotate(-0.5deg); }
@@ -282,7 +282,7 @@
     .proverb-text {
       margin-top: 10px;
       font-size: 15px;
-      color: #2d4a22;
+      color: #334455;
       text-align: center;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
       overflow: hidden;
@@ -303,19 +303,19 @@
     
     .info-card {
       flex: 1;
-      border: 2px solid #7ccd7c;
+      border: 2px solid #84c0e8;
       border-radius: 8px;
       padding: 10px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 2px 8px rgba(120,220,120,0.18);
+      box-shadow: 0 2px 8px rgba(120,180,220,0.18);
       cursor: pointer;
       transition: all 0.4s ease;
     }
     .info-card:hover {
       transform: translateY(-5px) scale(1.02);
       background: rgba(255,255,255,0.8);
-      box-shadow: 0 8px 20px rgba(90,200,90,0.35);
-      border-color: #56c16f;
+      box-shadow: 0 8px 20px rgba(90,150,200,0.35);
+      border-color: #64b5f6;
     }
     .info-card:active {
       animation: tinyShake 0.25s;
@@ -331,7 +331,7 @@
       font-family: KaiTi, serif;
       font-size: 15px;
       font-weight: bold;
-      color: #32a852;
+      color: #42a5f5;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
@@ -339,18 +339,18 @@
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
     .card-title::before {
-      content: '🦗';
+      content: '🌈';
       font-size: 13px;
-      animation: bugTwinkle 3.2s ease-in-out infinite;
+      animation: budTwinkle 3.2s ease-in-out infinite;
     }
-    @keyframes bugTwinkle {
+    @keyframes budTwinkle {
       0%, 100% { opacity: 0.8; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.2); }
     }
 
     .card-content {
       font-size: 13.5px;
-      color: #1f2f16;
+      color: #223344;
       line-height: 1.45;
       text-shadow: 0 0.3px 0.8px rgba(0,0,0,0.05);
     }
@@ -368,48 +368,48 @@
 
       <div class="top-section">
         <div class="left-title-bar">
-          <div class="festival-emoji">🦗</div>
-          <div class="festival-name">立夏</div>
+          <div class="festival-emoji">🌈</div>
+          <div class="festival-name">清明</div>
           <div class="divider"></div>
           <div class="festival-info">
-            <div>孟夏之初</div>
-            <div>黄经 45°</div>
+            <div>仲春暮春</div>
+            <div>黄经 15°</div>
           </div>
         </div>
 
         <div class="middle-poem-area">
           <div class="poem-column">
-            <div class="poem-author">佚名</div>
+            <div class="poem-author">刘禹锡</div>
             <div class="author-seal"></div>
             <div class="poem-text">
-              蝼蝈深树鸣<br>
-              初夏暖风轻
+              雨过天晴色<br>
+              长虹映碧空
             </div>
           </div>
           <div class="illustration-column">
-            <div class="hou-label">立夏一候 · 蝼蝈鸣</div>
+            <div class="hou-label">清明三候 · 虹始见</div>
             <div class="illustration-placeholder"></div>
-            <div class="proverb-text">蝼蝈声声唤初夏，草木青青满庭芳</div>
+            <div class="proverb-text">春雨歇，彩虹现，天光云影共徘徊</div>
           </div>
         </div>
       </div>
 
       <div class="bottom-info-grid">
         <div class="info-card">
-          <div class="card-title">三候·蝼蝈鸣</div>
-          <div class="card-content">夏夜来临，蝼蝈开始在田间林间鸣叫，宣告夏日正式登场。</div>
+          <div class="card-title">三候·虹始见</div>
+          <div class="card-content">雨后空气清新阳光折射，天空开始出现美丽彩虹，气象万千。</div>
         </div>
         <div class="info-card">
           <div class="card-title">节气气象</div>
-          <div class="card-content">气温快速升高，雨水增多，空气湿润，万物进入快速生长期。</div>
+          <div class="card-content">春雨频繁雨过天晴，空气湿度大，光折射现象频繁出现。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时节特征</div>
-          <div class="card-content">春去夏来，绿荫渐浓，蛙鸣虫唱，一派生机勃勃的夏日景象。</div>
+          <div class="card-content">暮春景色美不胜收，雨水滋养万物，大地一片生机盎然。</div>
         </div>
         <div class="info-card">
-          <div class="card-title">时令养生</div>
-          <div class="card-content">宜清淡饮食养心健脾，早睡早起顺应阳气，多食瓜果清热润燥。</div>
+          <div class="card-title">养生</div>
+          <div class="card-content">雨后通风防潮祛湿，多晒太阳温补阳气，清淡饮食调养脾胃。</div>
         </div>
       </div>
 

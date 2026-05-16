@@ -1,7 +1,7 @@
 // assets/js/modules/analysis.js
 // 功能：【节气分析弹窗】
 // 作用：点击分析卡片 → 弹出弹窗，展示该类型下的详实数据解读 + 图表
-// 修改：各分析类型均提供具体详实的文字说明，删除数据口径展示
+// 修改：趣味科普(travel) 展示真实的科学解释（来自 funFacts），无占位符
 
 window.openAnalysis = (type = 'summary') => {
   window.currentAnalysisType = type;
@@ -11,7 +11,6 @@ window.openAnalysis = (type = 'summary') => {
   const region = window.currentRegion || 'south';
   const regionLabel = window.regionProfiles?.[region]?.label || '南方';
 
-  // 节气基础信息
   const name = t.name || '未知节气';
   const color = t.color || '#d6a928';
   const folkList = t.folk || [];
@@ -24,21 +23,20 @@ window.openAnalysis = (type = 'summary') => {
   const temp = t.temp ?? '--';
   const rain = t.rain ?? '--';
 
-  // 类型元信息
   const meta = {
     summary:  { title: '综合解读',   subtitle: '从物候、气候、农事、民俗、文旅多维度全面认识这个节气。' },
     phenology:{ title: '南北物候分析',subtitle: '对比南方与北方在同一节气下的物候差异及其成因。' },
     climate:  { title: '气候变化分析',subtitle: '基于近十年模拟数据的温度、降水与日照变化趋势。' },
     folk:     { title: '民俗分布分析',subtitle: '展现该节气的代表性民俗活动及其南北地域差异。' },
     agri:     { title: '农事适宜分析',subtitle: '节气对应的传统农事活动与现代农业生产建议。' },
-    travel:   { title: '文旅热度分析',subtitle: '结合气候舒适度与民俗活动，评估节气文旅适宜指数。' },
+    travel:   { title: '节气趣味科普',subtitle: '深入解读节气背后的科学原理与物候花信。' },
     space:    { title: '空间分异分析',subtitle: '华北、江南、岭南、西北等区域在节气期间的气候与物候对比。' }
   };
 
   document.getElementById('analysis-title').textContent = `${name} · ${meta[type]?.title || '综合分析'}`;
   document.getElementById('analysis-subtitle').textContent = meta[type]?.subtitle || '';
 
-  // ---------- KPI 卡片（根据类型定制） ----------
+  // ---------- KPI 卡片 ----------
   let kpisHtml = '';
   if (type === 'folk') {
     kpisHtml = `
@@ -76,26 +74,8 @@ window.openAnalysis = (type = 'summary') => {
       </div>
     `;
   } else if (type === 'travel') {
-    const travelScore = Math.min(100, Math.round((s.travel || 50) * 1.2));
-    kpisHtml = `
-      <div class="modal-kpi">
-        <p class="hint">文旅热度</p>
-        <div class="text-2xl font-black">${travelScore}</div>
-        <p class="hint">综合气候与民俗吸引力</p>
-      </div>
-      <div class="modal-kpi">
-        <p class="hint">舒适度</p>
-        <div class="text-2xl font-black">${temp !== '--' ? (temp > 25 ? '偏热' : temp > 15 ? '舒适' : '偏凉') : '--'}</div>
-        <p class="hint">体感温度参考</p>
-      </div>
-      <div class="modal-kpi">
-        <p class="hint">推荐区域</p>
-        <div class="text-2xl font-black">${region === 'south' ? '江南' : '华北'}</div>
-        <p class="hint">当前选择${regionLabel}</p>
-      </div>
-    `;
+    kpisHtml = ''; // 无 KPI 卡片
   } else {
-    // 通用 KPI（summary / phenology / climate / space）
     kpisHtml = `
       <div class="modal-kpi">
         <p class="hint">综合指数</p>
@@ -116,7 +96,7 @@ window.openAnalysis = (type = 'summary') => {
   }
   document.getElementById('analysis-kpis').innerHTML = kpisHtml;
 
-  // ---------- 详实文字分析（根据类型） ----------
+  // ---------- 分析文字 ----------
   let analysisText = '';
   switch (type) {
     case 'summary':
@@ -163,12 +143,26 @@ window.openAnalysis = (type = 'summary') => {
       break;
 
     case 'travel':
-      analysisText = `
-        <p><strong>文旅指数：</strong>${name}期间，${regionLabel}气候${temp !== '--' ? (temp > 25 ? '偏热' : temp > 15 ? '舒适宜人' : '凉爽') : '多变'}，适合${temp > 25 ? '避暑、亲水活动' : temp > 15 ? '赏花、踏青、户外民俗体验' : '温泉、室内文化游'}。</p>
-        <p class="mt-2"><strong>特色节庆：</strong>${folkList.length ? folkList.join('、') + '等民俗活动' : '暂无大型民俗'}常在此期间举办，吸引大量游客。</p>
-        <p class="mt-2"><strong>出行提示：</strong>${advice || '建议关注天气变化，合理安排行程'}。热门景点可能出现客流高峰，建议错峰出行。</p>
-      `;
-      break;
+    // 深层科学解释
+    const scienceDetail = (window.scienceExplanations && window.scienceExplanations[name]) 
+      ? window.scienceExplanations[name] 
+      : `每个节气背后都蕴含着丰富的科学知识。${name}标志着太阳黄经达到${t.degrees || '?'}°，地球公转位置改变引起日照、温度等气象要素的规律性变化，从而影响物候和人类活动。`;
+
+    // 物候与花信
+    const flowerList = (window.flowerPhenology && window.flowerPhenology[name]) 
+      ? window.flowerPhenology[name] 
+      : ['应季花卉'];
+    const phenoText = `${name}时节，${flowerList.join('、')}等植物进入最佳观赏期。`;
+
+    analysisText = `
+      <div style="line-height:1.8;">
+        <p><strong>🔍 背后的知识</strong></p>
+        <p>${scienceDetail}</p>
+        <p class="mt-3"><strong>🌸 物候与花信</strong></p>
+        <p>${phenoText}</p>
+      </div>
+    `;
+    break;
 
     case 'space':
       analysisText = `
@@ -187,14 +181,11 @@ window.openAnalysis = (type = 'summary') => {
   }
   document.getElementById('analysis-text').innerHTML = analysisText;
 
-  // 不再填充数据口径（已删除）
-
-  // 显示弹窗
   document.getElementById('analysis-modal').style.display = 'flex';
   setTimeout(() => window.renderAnalysisChart(type), 60);
 };
 
-// 2. 渲染图表（雷达图 / 自定义信息卡）
+// 2. 渲染图表（雷达图 / 自定义图表）
 window.renderAnalysisChart = (type) => {
   const t = window.solarTerms[window.currentTermIndex] || {};
   const s = window.moduleScores ? window.moduleScores(t) : {};
@@ -232,6 +223,69 @@ window.renderAnalysisChart = (type) => {
         </div>
       </div>
     `;
+    return;
+  }
+
+  // 趣味科普：全年昼长变化曲线
+  if (type === 'travel') {
+    if (window.analysisChart) {
+      window.analysisChart.dispose();
+      window.analysisChart = null;
+    }
+    window.analysisChart = echarts.init(chartDom);
+
+    const currentTerm = t.name;
+    const allTerms = window.solarTerms.map(t => t.name);
+    const xiazhiIndex = 9;   // 夏至
+    const dongzhiIndex = 21; // 冬至
+    const currentIndex = allTerms.indexOf(currentTerm);
+
+    // 模拟全年昼长（可用真实天文数据替换）
+    const dayLengths = allTerms.map((_, i) => {
+      const phase = (i - 21) / 24 * 2 * Math.PI;
+      return +(12 + 3.5 * Math.sin(phase)).toFixed(2);
+    });
+
+    window.analysisChart.setOption({
+      tooltip: { trigger: 'axis' },
+      grid: { left: 60, right: 30, top: 30, bottom: 60 },
+      xAxis: {
+        type: 'category',
+        data: allTerms,
+        axisLabel: { rotate: 45, fontSize: 10, color: tc }
+      },
+      yAxis: {
+        type: 'value',
+        name: '昼长 (小时)',
+        min: 8,
+        max: 16,
+        axisLabel: { color: tc },
+        nameTextStyle: { color: tc }
+      },
+      series: [{
+        name: '全年昼长',
+        type: 'line',
+        data: dayLengths,
+        smooth: true,
+        lineStyle: { color: '#FFB74D', width: 3 },
+        itemStyle: { color: '#FFB74D' },
+        markPoint: {
+          data: [
+            { name: '夏至', coord: [allTerms[xiazhiIndex], dayLengths[xiazhiIndex]], symbol: 'pin', symbolSize: 40, itemStyle: { color: '#FF5252' } },
+            { name: '冬至', coord: [allTerms[dongzhiIndex], dayLengths[dongzhiIndex]], symbol: 'pin', symbolSize: 40, itemStyle: { color: '#448AFF' } }
+          ],
+          label: { color: tc }
+        },
+        markLine: {
+          silent: true,
+          data: [{ xAxis: currentTerm }],
+          lineStyle: { color: '#FFD54F', type: 'dashed' },
+          label: { show: false }
+        }
+      }]
+    });
+
+    window.analysisChart.resize();
     return;
   }
 

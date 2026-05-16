@@ -21,22 +21,22 @@
     .scroll-container {
       width: 100%;
       height: 100%;
-      background-color: #f6fff0;
-      border: 8px solid #7ccd7c;
+      background-color: #fffbeb;
+      border: 8px solid #ffb74d;
       border-radius: 12px;
       box-shadow: 
-        0 0 25px rgba(80,180,80,0.15),
-        inset 0 0 30px rgba(124,205,124,0.35),
-        0 0 60px rgba(230,255,220,0.5);
+        0 0 25px rgba(200,140,40,0.15),
+        inset 0 0 30px rgba(255,183,77,0.35),
+        0 0 60px rgba(255,245,225,0.5);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><path fill="none" stroke="%23b7e4b7" stroke-width="0.7" d="M0 60 Q75 35 150 60 T300 60"/></svg>'),
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130"><path fill="none" stroke="%23ffe0b2" stroke-width="0.6" d="M0 50 Q65 25 130 50 T260 50"/></svg>'),
                         url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="3" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23noise)"/></svg>');
-      background-size: 280px 280px, 250px 250px;
+      background-size: 250px 250px, 250px 250px;
       overflow: hidden;
-      animation: grassGlow 4.5s ease-in-out infinite, unfoldSpring 1.3s ease-out;
+      animation: orangeGlow 4.5s ease-in-out infinite, unfoldSpring 1.3s ease-out;
       background-position: 0 0;
     }
 
@@ -45,16 +45,16 @@
       100% { transform: scaleY(1) translateY(0); opacity: 1; }
     }
 
-    @keyframes grassGlow {
+    @keyframes orangeGlow {
       0%, 100% { 
-        box-shadow: 0 0 25px rgba(80,180,80,0.15),
-        inset 0 0 30px rgba(124,205,124,0.35),
-        0 0 60px rgba(230,255,220,0.5);
+        box-shadow: 0 0 25px rgba(200,140,40,0.15),
+        inset 0 0 30px rgba(255,183,77,0.35),
+        0 0 60px rgba(255,245,225,0.5);
       }
       45% { 
-        box-shadow: 0 0 40px rgba(100,200,100,0.25),
-        inset 0 0 50px rgba(124,205,124,0.5),
-        0 0 100px rgba(200,245,190,0.7);
+        box-shadow: 0 0 40px rgba(230,160,50,0.25),
+        inset 0 0 50px rgba(255,183,77,0.5),
+        0 0 100px rgba(255,230,180,0.7);
       }
       50%{filter:brightness(1.05)}
       55%{filter:brightness(1)}
@@ -66,11 +66,11 @@
       position: absolute;
       top: 0; bottom: 0;
       width: 24px;
-      background: #d6f8d6;
+      background: #fff0cc;
       border-radius: 6px;
       z-index: 1;
       box-shadow: 
-        inset 0 0 12px rgba(90,200,90,0.4),
+        inset 0 0 12px rgba(210,150,50,0.4),
         0 0 8px rgba(0,0,0,0.12);
     }
     .scroll-container::before { left: -12px; }
@@ -79,18 +79,18 @@
     .petal {
       position: absolute;
       top: -10px;
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: radial-gradient(circle, #ffd966 0%, #ffcc33 100%);
+      background: radial-gradient(circle, #ffd699 0%, #ffb74d 100%);
       opacity: 0.85;
-      animation: fireflyFly linear infinite;
+      animation: birdFly linear infinite;
       z-index: 2;
     }
-    @keyframes fireflyFly {
-      0% { transform: translate(0, 0) scale(0.8); opacity: 0.9; }
-      50%{transform: translate(10px, 400px) scale(1);}
-      100% { transform: translate(-10px, 800px) scale(0.8); opacity: 0; }
+    @keyframes birdFly {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.9; }
+      50%{transform: translateY(400px) scale(1);}
+      100% { transform: translateY(800px) scale(0.8); opacity: 0; }
     }
 
     .top-section {
@@ -106,36 +106,36 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 2px solid #7ccd7c;
+      border: 2px solid #ffb74d;
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 4px 12px rgba(120,220,120,0.18);
+      box-shadow: 0 4px 12px rgba(220,170,90,0.18);
     }
 
     .festival-emoji {
       font-size: 32px;
-      animation: bugShake 3s infinite alternate ease-in-out;
+      animation: birdShake 3s infinite alternate ease-in-out;
       margin-bottom: 4px;
     }
-    @keyframes bugShake {
-      0% { transform: rotate(-3deg) scale(1); }
-      100% { transform: rotate(3deg) scale(1.05); }
+    @keyframes birdShake {
+      0% { transform: rotate(-2deg) scale(1); }
+      100% { transform: rotate(2deg) scale(1.05); }
     }
 
     .festival-name {
       font-family: KaiTi, serif;
       font-size: 50px;
       font-weight: bold;
-      background: linear-gradient(90deg, #32a852, #56c16f, #7ccd7c);
+      background: linear-gradient(90deg, #f57c00, #ff9800, #ffb74d);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 8px;
       text-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      animation: titleGreenShine 4.5s infinite alternate;
+      animation: titleOrangeShine 4.5s infinite alternate;
     }
-    @keyframes titleGreenShine {
+    @keyframes titleOrangeShine {
       0% { filter: brightness(1); }
       100% { filter: brightness(1.25); }
     }
@@ -143,7 +143,7 @@
     .divider {
       width: 80%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #7ccd7c, transparent);
+      background: linear-gradient(90deg, transparent, #ffb74d, transparent);
       margin-bottom: 8px;
       position: relative;
       overflow: hidden;
@@ -155,10 +155,10 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, #fff, #c8f7c8, transparent);
-      animation: greenLineFlow 3.8s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent, #fff, #ffe0b2, transparent);
+      animation: orangeLineFlow 3.8s ease-in-out infinite;
     }
-    @keyframes greenLineFlow {
+    @keyframes orangeLineFlow {
       0% { left: -100%; }
       100% { left: 100%; }
     }
@@ -166,7 +166,7 @@
     .festival-info {
       text-align: center;
       font-size: 15px;
-      color: #2d4a22;
+      color: #554422;
       line-height: 1.5;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
@@ -175,11 +175,11 @@
       flex: 1;
       display: flex;
       gap: 16px;
-      border: 2px solid #7ccd7c;
+      border: 2px solid #ffb74d;
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 4px 15px rgba(120,220,120,0.22);
+      box-shadow: 0 4px 15px rgba(220,170,90,0.22);
     }
     .poem-column {
       flex: 1;
@@ -194,7 +194,7 @@
       line-height: 1.75;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      background: linear-gradient(180deg, #32a852, #56c16f);
+      background: linear-gradient(180deg, #f57c00, #ff9800);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -211,17 +211,17 @@
       font-size: 19px;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      color: #2d4a22;
+      color: #554422;
       margin-right: 8px;
     }
 
     .author-seal {
       width: 22px;
       height: 22px;
-      background: #32a852;
+      background: #f57c00;
       border-radius: 2px;
       margin-top: 14px;
-      box-shadow: 0 0 8px rgba(50,168,82,0.45);
+      box-shadow: 0 0 8px rgba(245,124,0,0.45);
       animation: sealPulse 3s ease-in-out infinite;
       display: grid;
       place-items: center;
@@ -250,15 +250,15 @@
       font-size: 21px;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      color: #2d4a22;
+      color: #554422;
       margin-right: 14px;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
       display: flex;
       align-items: center;
       gap: 4px;
-      animation: leafSway 2.4s ease-in-out infinite;
+      animation: birdSwing 2.4s ease-in-out infinite;
     }
-    @keyframes leafSway {
+    @keyframes birdSwing {
       0%, 100% { transform: rotate(0deg); }
       30% { transform: rotate(2deg); }
       70% { transform: rotate(-2deg); }
@@ -267,13 +267,13 @@
     .illustration-placeholder {
       width: 190px;
       height: 145px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M70 100 Q100 85 130 100" stroke="%2332a852" stroke-width="3" fill="none"/><circle cx="85" cy="90" r="4" fill="%23ffcc33"/><circle cx="115" cy="95" r="3.5" fill="%23ffcc33"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M70 80 Q90 60 110 80" stroke="%23ff9800" stroke-width="2.5" fill="none"/><path d="M80 75 Q100 55 120 75" stroke="%23ffb74d" stroke-width="2" fill="none"/><circle cx="95" cy="70" r="4" fill="%23f57c00"/></svg>');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      animation: bugSwing 4.2s ease-in-out infinite;
+      animation: birdFloat 4.2s ease-in-out infinite;
     }
-    @keyframes bugSwing {
+    @keyframes birdFloat {
       0%, 100% { transform: translateX(0) rotate(0deg); }
       40% { transform: translateX(3px) rotate(0.5deg); }
       60% { transform: translateX(-3px) rotate(-0.5deg); }
@@ -282,7 +282,7 @@
     .proverb-text {
       margin-top: 10px;
       font-size: 15px;
-      color: #2d4a22;
+      color: #554422;
       text-align: center;
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
       overflow: hidden;
@@ -303,19 +303,19 @@
     
     .info-card {
       flex: 1;
-      border: 2px solid #7ccd7c;
+      border: 2px solid #ffb74d;
       border-radius: 8px;
       padding: 10px;
       background: rgba(255,255,255,0.55);
-      box-shadow: 0 2px 8px rgba(120,220,120,0.18);
+      box-shadow: 0 2px 8px rgba(220,170,90,0.18);
       cursor: pointer;
       transition: all 0.4s ease;
     }
     .info-card:hover {
       transform: translateY(-5px) scale(1.02);
       background: rgba(255,255,255,0.8);
-      box-shadow: 0 8px 20px rgba(90,200,90,0.35);
-      border-color: #56c16f;
+      box-shadow: 0 8px 20px rgba(210,150,50,0.35);
+      border-color: #ff9800;
     }
     .info-card:active {
       animation: tinyShake 0.25s;
@@ -331,7 +331,7 @@
       font-family: KaiTi, serif;
       font-size: 15px;
       font-weight: bold;
-      color: #32a852;
+      color: #f57c00;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
@@ -339,18 +339,18 @@
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
     .card-title::before {
-      content: '🦗';
+      content: '🐦';
       font-size: 13px;
-      animation: bugTwinkle 3.2s ease-in-out infinite;
+      animation: budTwinkle 3.2s ease-in-out infinite;
     }
-    @keyframes bugTwinkle {
+    @keyframes budTwinkle {
       0%, 100% { opacity: 0.8; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.2); }
     }
 
     .card-content {
       font-size: 13.5px;
-      color: #1f2f16;
+      color: #332211;
       line-height: 1.45;
       text-shadow: 0 0.3px 0.8px rgba(0,0,0,0.05);
     }
@@ -368,12 +368,12 @@
 
       <div class="top-section">
         <div class="left-title-bar">
-          <div class="festival-emoji">🦗</div>
-          <div class="festival-name">立夏</div>
+          <div class="festival-emoji">☀️</div>
+          <div class="festival-name">芒种</div>
           <div class="divider"></div>
           <div class="festival-info">
-            <div>孟夏之初</div>
-            <div>黄经 45°</div>
+            <div>仲夏开端</div>
+            <div>黄经 75°</div>
           </div>
         </div>
 
@@ -382,34 +382,34 @@
             <div class="poem-author">佚名</div>
             <div class="author-seal"></div>
             <div class="poem-text">
-              蝼蝈深树鸣<br>
-              初夏暖风轻
+              林间百鸟唱<br>
+              鹏鸟始鸣长
             </div>
           </div>
           <div class="illustration-column">
-            <div class="hou-label">立夏一候 · 蝼蝈鸣</div>
+            <div class="hou-label">芒种二候 · 鹏始鸣</div>
             <div class="illustration-placeholder"></div>
-            <div class="proverb-text">蝼蝈声声唤初夏，草木青青满庭芳</div>
+            <div class="proverb-text">伯劳鸟鸣林间，声传四野，夏日盛景至</div>
           </div>
         </div>
       </div>
 
       <div class="bottom-info-grid">
         <div class="info-card">
-          <div class="card-title">三候·蝼蝈鸣</div>
-          <div class="card-content">夏夜来临，蝼蝈开始在田间林间鸣叫，宣告夏日正式登场。</div>
+          <div class="card-title">三候·鹏始鸣</div>
+          <div class="card-content">伯劳鸟感阴而鸣，飞鸣林间，声悦耳动听，标志盛夏正式来临。</div>
         </div>
         <div class="info-card">
           <div class="card-title">节气气象</div>
-          <div class="card-content">气温快速升高，雨水增多，空气湿润，万物进入快速生长期。</div>
+          <div class="card-content">高温高湿，雷雨增多，万物生长最为旺盛繁茂。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时节特征</div>
-          <div class="card-content">春去夏来，绿荫渐浓，蛙鸣虫唱，一派生机勃勃的夏日景象。</div>
+          <div class="card-content">草木葱茏，蝉鸣渐起，一派生机勃勃的盛夏风光。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时令养生</div>
-          <div class="card-content">宜清淡饮食养心健脾，早睡早起顺应阳气，多食瓜果清热润燥。</div>
+          <div class="card-content">清淡饮食祛湿气，静心安神防烦躁，适度补水护心阴。</div>
         </div>
       </div>
 

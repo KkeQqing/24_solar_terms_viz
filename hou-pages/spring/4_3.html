@@ -68,7 +68,6 @@
     .scroll-container::before { left: -13px; }
     .scroll-container::after { right: -13px; }
 
-    /* 电光粒子 */
     .petal {
       position: absolute;
       top: -10px;
@@ -85,7 +84,6 @@
       100% { transform: translateY(800px) translateX(-30px); opacity: 0; }
     }
 
-    /* 闪电光点 */
     .light {
       position: absolute;
       width: 6px;
@@ -238,4 +236,194 @@
       color: white;
       font-size: 13px;
       font-weight: bold;
-      font-family: Kai
+      font-family: KaiTi;
+    }
+    .author-seal::after {
+      content: "电";
+    }
+    @keyframes sealVital {
+      0%, 100% { transform: scale(1); opacity: 0.92; }
+      50% { transform: scale(1.22); opacity: 1; }
+    }
+
+    .illustration-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .hou-label {
+      font-family: KaiTi, serif;
+      font-size: 22px;
+      writing-mode: vertical-rl;
+      color: #664422;
+      animation: leafSway 2.6s ease-in-out infinite;
+    }
+    @keyframes leafSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-2.5deg); }
+    }
+
+    .illustration-placeholder {
+      width: 200px;
+      height: 150px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path fill="%23ff9800" d="M75 85 L100 60 L125 85 L115 95 L100 90 L85 95 Z"/><path fill="%23ffff00" d="M100 55 a7 6 0 1 0 0 -1"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation: flowerSwing 4.5s ease-in-out infinite;
+    }
+    @keyframes flowerSwing {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      50% { transform: translateX(-4px) rotate(-0.8deg); }
+    }
+
+    .proverb-text {
+      font-size: 15px;
+      color: #664422;
+      text-align: center;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typingSlow 3.8s steps(26) forwards;
+      width: 0;
+    }
+    @keyframes typingSlow {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .bottom-info-grid {
+      display: flex;
+      flex: 1;
+      padding: 0 24px 24px;
+      gap: 18px;
+    }
+    
+    .info-card {
+      flex: 1;
+      border: 2px solid #ffb74d;
+      border-radius: 10px;
+      padding: 14px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 4px 12px rgba(180,120,50,0.2);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      background: rgba(255,255,255,0.88);
+      box-shadow: 0 10px 24px rgba(100,60,20,0.38);
+      border-color: #ff9800;
+    }
+    .info-card:active {
+      animation: tinyShake 0.25s;
+    }
+    @keyframes tinyShake {
+      0%{transform:translateX(0)}
+      30%{transform:translateX(-3px)}
+      70%{transform:translateX(3px)}
+      100%{transform:translateX(0)}
+    }
+
+    .card-title {
+      font-family: KaiTi, serif;
+      font-size: 16px;
+      font-weight: bold;
+      color: #e65100;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title::before {
+      content: '⚡';
+      font-size: 14px;
+      animation: budTwinkle 3.2s ease-in-out infinite;
+    }
+    @keyframes budTwinkle {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.22); }
+    }
+
+    .card-content {
+      font-size: 14px;
+      color: #443018;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-component">
+    <div class="scroll-container">
+      <div class="petal" style="left:8%;animation-duration:7s;animation-delay:0s"></div>
+      <div class="petal" style="left:28%;animation-duration:7.5s;animation-delay:1.2s"></div>
+      <div class="petal" style="left:48%;animation-duration:6.2s;animation-delay:0.6s"></div>
+      <div class="petal" style="left:72%;animation-duration:8s;animation-delay:1.8s"></div>
+      <div class="petal" style="left:92%;animation-duration:6.8s;animation-delay:0.3s"></div>
+
+      <div class="light" style="top:10%;left:15%"></div>
+      <div class="light" style="top:25%;right:12%"></div>
+      <div class="light" style="bottom:20%;left:22%"></div>
+      <div class="light" style="bottom:30%;right:18%"></div>
+
+      <div class="top-section">
+        <div class="left-title-bar">
+          <div class="festival-emoji">⚡</div>
+          <div class="festival-name">春分</div>
+          <div class="divider"></div>
+          <div class="festival-info">
+            <div>春雷阵阵</div>
+            <div>天际始电</div>
+          </div>
+        </div>
+
+        <div class="middle-poem-area">
+          <div class="poem-column">
+            <div class="poem-author">杜甫</div>
+            <div class="author-seal"></div>
+            <div class="poem-text">
+              迟日江山丽<br>
+              春风花草香
+            </div>
+          </div>
+          <div class="illustration-column">
+            <div class="hou-label">春分三候 · 始电</div>
+            <div class="illustration-placeholder"></div>
+            <div class="proverb-text">春分麦起身，肥水要紧跟；一场春雨一场暖</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-info-grid">
+        <div class="info-card">
+          <div class="card-title">三候·始电</div>
+          <div class="card-content">阳气升腾云雨相生，闪电频发，春雨充沛滋养田地沃土。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">气候特征</div>
+          <div class="card-content">气温持续回升，雨水增多，田间土壤湿润适宜作物生长。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">田间农事</div>
+          <div class="card-content">抓紧春耕播种，及时追肥灌溉，清理田间杂草，培育壮苗保丰收。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">时令养生</div>
+          <div class="card-content">早睡早起顺应春时，田间劳作劳逸结合，清淡饮食调养身心。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.petal').forEach(p => {
+      const colors = ['#ff9800','#ffab40','#ffc168','#ffd699'];
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    });
+  </script>
+</body>
+</html>

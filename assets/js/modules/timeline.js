@@ -38,6 +38,7 @@ window.initTimeline = () => {
       houBtn.addEventListener('click', () => {
         window.selectTerm(tIndex);
         window.currentHouIndex = globalHouIndex;
+        window.loadHouPage(globalHouIndex);   // ← 新增：加载候页面
         window.refreshTimeline();
       });
       houGroup.appendChild(houBtn);

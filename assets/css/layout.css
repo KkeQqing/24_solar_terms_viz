@@ -13,7 +13,15 @@
 }
 header { grid-column: 1/4; grid-row: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
 .left-col { grid-column: 1; grid-row: 2/4; display: grid; grid-template-rows: 1fr 0.92fr; gap: 16px; min-height: 0; }
-.center-col { grid-column: 2; grid-row: 2/4; display: grid; grid-template-rows: 64px minmax(0, 1fr) 92px; gap: 14px; min-width: 0; min-height: 0; }
+.center-col {
+  grid-column: 2;
+  grid-row: 2/4;               /* 仍然占据原来的行范围 */
+  display: grid;
+  grid-template-rows: 1fr;     /* 只留一行，让 iframe 填满 */
+  /* gap: 14px;  ← 删除或注释掉 */
+  min-width: 0;
+  min-height: 0;
+}
 .right-col { grid-column: 3; grid-row: 2/4; display: grid; grid-template-rows: 1fr 1fr 0.92fr; gap: 16px; min-height: 0; }
 .timeline-card { grid-column: 1/4; grid-row: 4; position: relative; min-height: 122px; }
 @media (max-width: 1120px) {

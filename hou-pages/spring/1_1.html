@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* 完全隔离，不污染父页面 */
+    .scroll-component {
+      all: initial;
+      display: block;
+      width: 100%;
+      height: 100%;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      box-sizing: border-box;
+    }
+    .scroll-component * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .scroll-container {
+      width: 100%;
+      height: 100%;
+      background-color: #f9f3e3;
+      border: 8px solid #d9c49c;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0 0h100v100H0z" fill="none"/><path d="M10 10c0 0 20 10 40 0s40 10 40 0" stroke="%23e6d7b9" stroke-width="0.5" fill="none"/></svg>');
+      background-size: 200px 200px;
+      overflow: hidden;
+    }
+
+    /* 卷轴两侧木轴装饰 */
+    .scroll-container::before,
+    .scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 24px;
+      background: #e8d9bf;
+      border-radius: 6px;
+      z-index: 1;
+    }
+    .scroll-container::before { left: -12px; }
+    .scroll-container::after { right: -12px; }
+
+    .top-section {
+      display: flex;
+      flex: 4;                    /* 保持原比例 */
+      padding: 18px 20px 14px;   /* ↕️ 上内边距微调 20→18，下20→14 */
+      gap: 20px;
+    }
+
+    .left-title-bar {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #e6b8b7;
+      border-radius: 8px;
+      padding: 14px;              /* ↕️ 原16→14 */
+      background: rgba(255,255,255,0.5);
+    }
+    .festival-name {
+      font-family: KaiTi, serif;
+      font-size: 50px;            /* ↕️ 原54→50 */
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;         /* ↕️ 原10→8 */
+    }
+    .divider {
+      width: 80%;
+      height: 1px;
+      background: #e6b8b7;
+      margin-bottom: 8px;         /* ↕️ 原10→8 */
+    }
+    .festival-info {
+      text-align: center;
+      font-size: 15px;            /* ↕️ 原16→15 */
+      color: #555;
+      line-height: 1.5;           /* ↕️ 原1.6→1.5 */
+    }
+
+    .middle-poem-area {
+      flex: 1;
+      display: flex;
+      gap: 16px;
+      border: 2px solid #e6b8b7;
+      border-radius: 8px;
+      padding: 14px;              /* ↕️ 原16→14 */
+      background: rgba(255,255,255,0.5);
+    }
+    .poem-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .poem-text {
+      font-family: KaiTi, serif;
+      font-size: 21px;            /* ↕️ 原22→21 */
+      line-height: 1.75;          /* ↕️ 原1.8→1.75 */
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #444;
+    }
+    .poem-author {
+      font-family: KaiTi, serif;
+      font-size: 19px;            /* ↕️ 原20→19 */
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #555;
+      margin-right: 8px;
+    }
+    .author-seal {
+      width: 22px;                /* ↕️ 原24→22 */
+      height: 22px;
+      background: #b83a3a;
+      border-radius: 2px;
+      margin-top: 14px;           /* ↕️ 原16→14 */
+    }
+    .illustration-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hou-label {
+      font-family: KaiTi, serif;
+      font-size: 21px;            /* ↕️ 原22→21 */
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #555;
+      margin-right: 14px;         /* ↕️ 原16→14 */
+    }
+    .illustration-placeholder {
+      width: 190px;               /* ↕️ 原200→190 */
+      height: 145px;              /* ↕️ 原160→145 */
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M100 130c-10 0-15-5-20-15-5-8-10-15-15-20-10-10-15-15-15-15s10 5 20 15c8 8 15 15 20 25 5 10 10 15 10 15z" fill="%238B4513"/><circle cx="130" cy="50" r="15" fill="%23FFB6C1"/><circle cx="130" cy="50" r="8" fill="%23FF69B4"/><circle cx="100" cy="70" r="12" fill="%23FFB6C1"/><circle cx="100" cy="70" r="6" fill="%23FF69B4"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .proverb-text {
+      margin-top: 10px;           /* ↕️ 原12→10 */
+      font-size: 15px;            /* ↕️ 原16→15 */
+      color: #555;
+      text-align: center;
+    }
+
+    .bottom-info-grid {
+      display: flex;
+      flex: 1;                    /* 保持原比例 */
+      padding: 0 20px 16px 20px;  /* ↕️ 下内边距 20→16 */
+      gap: 14px;                  /* ↕️ 原16→14 */
+    }
+    .info-card {
+      flex: 1;
+      border: 2px solid #b8d0b8;
+      border-radius: 8px;
+      padding: 10px;              /* ↕️ 原12→10 */
+      background: rgba(255,255,255,0.5);
+    }
+    .card-title {
+      font-family: KaiTi, serif;
+      font-size: 15px;            /* ↕️ 原16→15 */
+      font-weight: bold;
+      color: #6b8e6b;
+      margin-bottom: 6px;         /* ↕️ 原8→6 */
+      display: flex;
+      align-items: center;
+      gap: 5px;                   /* ↕️ 原6→5 */
+    }
+    .card-title::before {
+      content: '❀';
+      font-size: 13px;            /* ↕️ 原14→13 */
+    }
+    .card-content {
+      font-size: 13.5px;          /* ↕️ 原14→13.5 */
+      color: #444;
+      line-height: 1.45;          /* ↕️ 原1.5→1.45 */
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-component">
+    <div class="scroll-container">
+
+      <div class="top-section">
+        <div class="left-title-bar">
+          <div class="festival-name">立春</div>
+          <div class="divider"></div>
+          <div class="festival-info">
+            <div>正月</div>
+            <div>黄经 315°</div>
+          </div>
+        </div>
+
+        <div class="middle-poem-area">
+          <div class="poem-column">
+            <div class="poem-author">佚名</div>
+            <div class="author-seal"></div>
+            <div class="poem-text">
+              东风解冻意微微<br>
+              暖气初回万物滋
+            </div>
+          </div>
+          <div class="illustration-column">
+            <div class="hou-label">立春初候 · 东风解冻</div>
+            <div class="illustration-placeholder"></div>
+            <div class="proverb-text">立春晴，雨水匀，草木萌动好收成</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-info-grid">
+        <div class="info-card">
+          <div class="card-title">物候解释</div>
+          <div class="card-content">东风送暖，冰冻开始消融，大地回暖，阳气初生。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">天文原理</div>
+          <div class="card-content">太阳到达黄经315°，日照增强，气温回升，天地阳气开始升发。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">农事提示</div>
+          <div class="card-content">开始备耕，检修农具，清理田园，为春播做好准备。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">养生建议</div>
+          <div class="card-content">早睡早起，饮食清淡，多食芽菜，舒缓肝气，助阳气升发。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

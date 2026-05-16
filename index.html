@@ -76,33 +76,12 @@
 
     <!-- 中央列 -->
     <section class="center-col">
-      <div class="glass p-3 flex items-center gap-2 relative" style="z-index:30">
-        <div class="relative flex-1">
-          <iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2" icon="ph:magnifying-glass-bold" style="color:var(--sub)"></iconify-icon>
-          <input id="search-input" class="w-full rounded-full bg-white/45 border border-white/40 pl-10 pr-4 py-3 font-sans text-sm outline-none" placeholder="搜索节气、民俗、农事、诗句，如：牡丹 / 插秧 / 冬至" />
-          <div id="search-panel" class="search-panel font-sans text-sm"></div>
-        </div>
-        <button class="btn" id="prev-btn" type="button"><iconify-icon icon="ph:caret-left-bold"></iconify-icon></button>
-        <button class="btn" id="next-btn" type="button"><iconify-icon icon="ph:caret-right-bold"></iconify-icon></button>
-      </div>
-      <div class="glass main-map-card module-card" data-analysis="space">
-        <div id="main-map" class="w-full h-full"></div>
-        <div class="absolute left-8 top-10 pointer-events-none"><div class="term-title" id="solar-title">谷雨</div><div class="font-sans text-xs tracking-[.28em] mt-4" style="color:var(--sub)" id="solar-pinyin">GU YU</div></div>
-        <div class="absolute right-5 top-5 flex flex-col gap-2" onclick="event.stopPropagation()">
-          <button class="btn small-btn" id="fav-btn" type="button"><iconify-icon id="fav-icon" icon="ph:star-bold"></iconify-icon><span id="fav-label">收藏</span></button>
-          <button class="btn small-btn" id="compare-btn" type="button"><iconify-icon icon="ph:chart-line-up-bold"></iconify-icon>对比</button>
-          <button class="btn small-btn" id="detail-btn" type="button"><iconify-icon icon="ph:book-open-text-bold"></iconify-icon>详情</button>
-        </div>
-        <div class="absolute right-7 bottom-7 flex flex-col items-center" onclick="event.stopPropagation()">
-          <button class="poster-stamp" id="stamp-btn" type="button"><iconify-icon class="text-3xl" style="color:var(--gold)" icon="mingcute:seal-line"></iconify-icon></button>
-          <span class="hint mt-2" id="medal-tip">领取·谷雨勋章</span>
-        </div>
-      </div>
-      <div class="glass p-4 flex items-center gap-5 module-card" data-analysis="summary">
-        <div class="h-full w-1 rounded-full" style="background:var(--gold)"></div>
-        <div class="flex-1 min-w-0"><div class="text-xl italic truncate" id="poem-content">“落花落尽且深藏，最是清明谷雨前。”</div><div class="hint mt-2 flex flex-wrap gap-x-4" id="three-hou"></div></div>
-        <div class="desktop-only text-right border-l pl-5" style="border-color:var(--line)"><div class="hint">今日建议</div><div id="daily-advice" class="font-bold text-sm max-w-[155px]"></div></div>
-      </div>
+      <iframe 
+        id="hou-iframe" 
+        src="" 
+        style="width:100%; height:100%; border:none; border-radius:12px; display:block; overflow:hidden;"
+        title="候详情"
+      ></iframe>
     </section>
 
     <!-- 右侧列 -->

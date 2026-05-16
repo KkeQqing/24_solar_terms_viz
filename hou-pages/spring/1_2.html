@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <style>
+    /* 完全隔离，不污染父页面 */
     .scroll-component {
       all: initial;
       display: block;
@@ -21,18 +22,18 @@
     .scroll-container {
       width: 100%;
       height: 100%;
-      background-color: #edf7fc;
-      border: 8px solid #a4c8e8;
+      background-color: #f9f3e3;
+      border: 8px solid #d9c49c;
       border-radius: 12px;
       box-shadow: 
         0 0 25px rgba(0,0,0,0.15),
-        inset 0 0 30px rgba(164, 200, 232, 0.3),
-        0 0 60px rgba(237, 247, 252, 0.4);
+        inset 0 0 30px rgba(217, 196, 156, 0.3),
+        0 0 60px rgba(255, 248, 230, 0.4);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0 0h100v100H0z" fill="none"/><path d="M10 10c0 0 20 10 40 0s40 10 40 0" stroke="%23c6dff2" stroke-width="0.5" fill="none"/></svg>'),
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0 0h100v100H0z" fill="none"/><path d="M10 10c0 0 20 10 40 0s40 10 40 0" stroke="%23e6d7b9" stroke-width="0.5" fill="none"/></svg>'),
                         url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.03"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23noise)"/></svg>');
       background-size: 200px 200px, 200px 200px;
       overflow: hidden;
@@ -40,43 +41,48 @@
       background-position: 0 0;
     }
 
+    /* 卷轴展开动画 */
     @keyframes unfold {
       0% { transform: scaleY(0.2); opacity: 0; }
       100% { transform: scaleY(1); opacity: 1; }
     }
 
+    /* 全局柔光呼吸动画 */
     @keyframes borderGlow {
-      0%, 100% { box-shadow: 0 0 25px rgba(0,0,0,0.15), inset 0 0 30px rgba(164, 200, 232, 0.3), 0 0 60px rgba(237, 247, 252, 0.4); }
-      50% { box-shadow: 0 0 35px rgba(0,0,0,0.2), inset 0 0 45px rgba(164, 200, 232, 0.45), 0 0 90px rgba(210, 235, 248, 0.65); }
+      0%, 100% { box-shadow: 0 0 25px rgba(0,0,0,0.15), inset 0 0 30px rgba(217, 196, 156, 0.3), 0 0 60px rgba(255, 248, 230, 0.4); }
+      50% { box-shadow: 0 0 35px rgba(0,0,0,0.2), inset 0 0 45px rgba(217, 196, 156, 0.45), 0 0 90px rgba(255, 240, 210, 0.65); }
     }
 
+    /* 背景纹理流动 */
     @keyframes bgFlow {
       0% { background-position: 0 0; }
       100% { background-position: 200px 200px; }
     }
 
+    /* 流苏吊坠装饰 */
     .scroll-container::before,
     .scroll-container::after {
       content: '';
       position: absolute;
       top: 0; bottom: 0;
       width: 24px;
-      background: #d1e2f2;
+      background: #e8d9bf;
       border-radius: 6px;
       z-index: 1;
       box-shadow: 
-        inset 0 0 12px rgba(120, 150, 180, 0.35),
+        inset 0 0 12px rgba(150, 120, 80, 0.35),
         0 0 8px rgba(0,0,0,0.15);
     }
     .scroll-container::before { left: -12px; }
     .scroll-container::after { right: -12px; }
 
+    /* 花瓣飘落 */
     .petal {
       position: absolute;
       top: -10px;
       width: 8px;
       height: 8px;
-      background: #a4c8e8;
+      background: pink;
       border-radius: 50%;
       opacity: 0.6;
       animation: fall linear infinite;
@@ -100,13 +106,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 2px solid #a4c8e8;
+      border: 2px solid #e6b8b7;
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.5);
-      box-shadow: 0 4px 12px rgba(164, 200, 232, 0.15);
+      box-shadow: 0 4px 12px rgba(230, 184, 183, 0.15);
     }
 
+    /* 顶部EMOJI */
     .festival-emoji {
       font-size: 30px;
       animation: swing 2.5s infinite alternate;
@@ -121,7 +128,7 @@
       font-family: KaiTi, serif;
       font-size: 50px;
       font-weight: bold;
-      background: linear-gradient(90deg, #4b79a1, #283e51, #a4c8e8);
+      background: linear-gradient(90deg, #6b8e6b, #b83a3a, #e6b8b7);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -134,10 +141,11 @@
       100% { filter: brightness(1.2); }
     }
     
+    /* 标题分割线流光特效 */
     .divider {
       width: 80%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #a4c8e8, transparent);
+      background: linear-gradient(90deg, transparent, #e6b8b7, transparent);
       margin-bottom: 8px;
       position: relative;
       overflow: hidden;
@@ -149,7 +157,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, #fff, #d1e2f2, transparent);
+      background: linear-gradient(90deg, transparent, #fff, #f8d7da, transparent);
       animation: dividerFlow 3.5s ease-in-out infinite;
     }
     @keyframes dividerFlow {
@@ -169,11 +177,11 @@
       flex: 1;
       display: flex;
       gap: 16px;
-      border: 2px solid #a4c8e8;
+      border: 2px solid #e6b8b7;
       border-radius: 8px;
       padding: 14px;
       background: rgba(255,255,255,0.5);
-      box-shadow: 0 4px 15px rgba(164, 200, 232, 0.2);
+      box-shadow: 0 4px 15px rgba(230, 184, 183, 0.2);
     }
     .poem-column {
       flex: 1;
@@ -182,13 +190,14 @@
       align-items: center;
     }
     
+    /* 竖排古诗缓慢向上浮动 + 渐变色彩 */
     .poem-text {
       font-family: KaiTi, serif;
       font-size: 21px;
       line-height: 1.75;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      background: linear-gradient(180deg, #283e51, #4b79a1);
+      background: linear-gradient(180deg, #333, #6b8e6b);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -209,13 +218,14 @@
       margin-right: 8px;
     }
 
+    /* 古风印章 + 文字 */
     .author-seal {
       width: 22px;
       height: 22px;
-      background: #283e51;
+      background: #b83a3a;
       border-radius: 2px;
       margin-top: 14px;
-      box-shadow: 0 0 8px rgba(40, 62, 81, 0.4);
+      box-shadow: 0 0 8px rgba(184, 58, 58, 0.4);
       animation: sealBreath 2.8s ease-in-out infinite;
       display: grid;
       place-items: center;
@@ -225,7 +235,7 @@
       font-family: KaiTi;
     }
     .author-seal::after {
-      content: "雨";
+      content: "春";
     }
     @keyframes sealBreath {
       0%, 100% { transform: scale(1); opacity: 0.9; }
@@ -261,7 +271,7 @@
     .illustration-placeholder {
       width: 190px;
       height: 145px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M100 110c-10 0-15-5-20-15-5-8-10-15-15-20-10-10-15-15-15-15s10 5 20 15c8 8 15 15 20 25 5 10 10 15 10 15z" fill="%234b79a1"/><circle cx="130" cy="50" r="15" fill="%23a4c8e8"/><circle cx="130" cy="50" r="8" fill="%236b9cd1"/><circle cx="100" cy="70" r="12" fill="%23a4c8e8"/><circle cx="100" cy="70" r="6" fill="%236b9cd1"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><ellipse cx="100" cy="110" rx="40" ry="20" fill="%238B4513"/><path d="M90 95c0-10 5-15 10-15s10 5 10 15l-5 8-10-8z" fill="%23654321"/><circle cx="70" cy="80" r="5" fill="%23333"/><circle cx="130" cy="80" r="5" fill="%23333"/></svg>');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -273,6 +283,7 @@
       66% { transform: translateX(-2px) rotate(-0.4deg); }
     }
 
+    /* 谚语打字机效果 */
     .proverb-text {
       margin-top: 10px;
       font-size: 15px;
@@ -297,18 +308,18 @@
     
     .info-card {
       flex: 1;
-      border: 2px solid #a4c8e8;
+      border: 2px solid #b8d0b8;
       border-radius: 8px;
       padding: 10px;
       background: rgba(255,255,255,0.5);
-      box-shadow: 0 2px 8px rgba(164, 200, 232, 0.15);
+      box-shadow: 0 2px 8px rgba(184, 208, 184, 0.15);
       cursor: pointer;
     }
     .info-card:hover {
       transform: translateY(-4px);
       background: rgba(255,255,255,0.75);
-      box-shadow: 0 6px 16px rgba(164, 200, 232, 0.3);
-      border-color: #6b9cd1;
+      box-shadow: 0 6px 16px rgba(184, 208, 184, 0.3);
+      border-color: #99bb99;
     }
     .info-card:active {
       animation: shake 0.2s;
@@ -324,7 +335,7 @@
       font-family: KaiTi, serif;
       font-size: 15px;
       font-weight: bold;
-      color: #4b79a1;
+      color: #6b8e6b;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
@@ -332,7 +343,7 @@
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
     .card-title::before {
-      content: '💧';
+      content: '❀';
       font-size: 13px;
       animation: flowerTwinkle 3s ease-in-out infinite;
     }
@@ -353,6 +364,7 @@
   <div class="scroll-component">
     <div class="scroll-container">
 
+      <!-- 花瓣 -->
       <div class="petal" style="left:10%;animation-duration:6s;animation-delay:0s"></div>
       <div class="petal" style="left:30%;animation-duration:6.5s;animation-delay:1s"></div>
       <div class="petal" style="left:50%;animation-duration:5.5s;animation-delay:0.5s"></div>
@@ -361,48 +373,48 @@
 
       <div class="top-section">
         <div class="left-title-bar">
-          <div class="festival-emoji">💧</div>
-          <div class="festival-name">雨水</div>
+          <div class="festival-emoji">🌱</div>
+          <div class="festival-name">立春</div>
           <div class="divider"></div>
           <div class="festival-info">
-            <div>正月中 </div>
-            <div>黄经 330° </div>
+            <div>正月 </div>
+            <div>黄经 315° </div>
           </div>
         </div>
 
         <div class="middle-poem-area">
           <div class="poem-column">
-            <div class="poem-author">杜甫</div>
+            <div class="poem-author">佚名</div>
             <div class="author-seal"></div>
             <div class="poem-text">
-              好雨知时节<br>
-              当春乃发生
+              蛰虫初醒动芳辰<br>
+              阳气潜回大地新
             </div>
           </div>
           <div class="illustration-column">
-            <div class="hou-label">雨水一候 · 獭祭鱼</div>
+            <div class="hou-label">立春二候 · 蛰虫始振</div>
             <div class="illustration-placeholder"></div>
-            <div class="proverb-text">雨水有雨，一年多水；雨水无雨，少水年</div>
+            <div class="proverb-text">惊蛰未到虫先动，春暖阳和万物荣</div>
           </div>
         </div>
       </div>
 
       <div class="bottom-info-grid">
         <div class="info-card">
-          <div class="card-title">一候·獭祭鱼</div>
-          <div class="card-content">水獭开始捕鱼，将鱼摆成祭祀模样，象征感恩与丰收。</div>
+          <div class="card-title">物候解释</div>
+          <div class="card-content">冬眠的昆虫感受到阳气，开始苏醒活动，大地生机渐渐显露。</div>
         </div>
         <div class="info-card">
           <div class="card-title">天文原理</div>
-          <div class="card-content">太阳到达黄经330°，气温回升，冰雪融化，降水增多。</div>
+          <div class="card-content">日照持续增强，气温稳步回升，地下深层阳气逐步向外升发。</div>
         </div>
         <div class="info-card">
           <div class="card-title">农事提示</div>
-          <div class="card-content>">及时清沟排水，防御春寒，准备春种育苗。</div>
+          <div class="card-content">清理田园杂草，提前防治越冬虫害，筹备早春作物播种事宜。</div>
         </div>
         <div class="info-card">
           <div class="card-title">养生建议</div>
-          <div class="card-content">健脾祛湿，多吃粥品，少酸多甘，养护脾胃。</div>
+          <div class="card-content">多外出舒展筋骨，常晒太阳增补阳气，保持身心情志舒畅平和。</div>
         </div>
       </div>
 
@@ -410,8 +422,9 @@
   </div>
 
   <script>
+    // 花瓣随机颜色
     document.querySelectorAll('.petal').forEach(p => {
-      const colors = ['#a4c8e8', '#c6dff2', '#d1e2f2', '#6b9cd1'];
+      const colors = ['#ffb6c1', '#f8c8dc', '#ffd6e0', '#f3c3c3'];
       p.style.background = colors[Math.floor(Math.random() * colors.length)];
     });
   </script>

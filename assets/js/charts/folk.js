@@ -1,70 +1,119 @@
 // assets/js/charts/folk.js
-// 功能：渲染【民俗活跃度】圆环饼图
-// 展示内容：当前节气的两个民俗活动 + 时令游赏 的占比分布
+// 功能：渲染【民俗信息卡】—— 显示节气民俗 + 南北地域差异
 
-// 更新民俗图表
-// raw = 当前选中的节气完整数据（来自 data.js）
 window.updateFolk = (raw) => {
+  const container = document.getElementById('folk-chart');
+  if (!container) return;
 
-  // 1. 获取当前主题文字颜色（适配深色/浅色模式）
-  const tc = window.textColor();
+  // 获取主题文字颜色（适配深色/浅色）
+  const tc = window.textColor ? window.textColor() : '#333';
 
-  // 2. 当前节气的主题色（用于第一个民俗项）
-  const color = raw.color;
+  // 节气名
+  const termName = raw.name;
 
-  // 3. 根据南北地区，调整节气数据
-  const d = window.adjusted(raw);
+  // 民俗活动列表（直接使用 raw.folk 数组）
+  const folkList = raw.folk || [];
 
-  // 4. 渲染 ECharts 圆环饼图
-  window.charts['folk-chart'].setOption({
+  // 地域差异描述（使用已有字段，若无则占位）
+  const northDesc = raw.north || '北方物候特征暂无描述';
+  const southDesc = raw.south || '南方物候特征暂无描述';
 
-    // 悬浮提示框：显示 名称 + 占比（保留2位小数）
-    tooltip: {
-      trigger: 'item',
-      formatter: p => `${p.name}<br>占比：${window.fmt(p.percent, 2)}%`
-    },
+  // 构建信息卡片 HTML
+  container.innerHTML = `
+    <div style="
+      padding: 20px 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: ${tc};
+      font-family: 'Noto Sans SC', sans-serif;
+      overflow-y: auto;
+    ">
+      <!-- 节气标题 -->
+      <div style="
+        font-size: 22px;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 16px;
+        letter-spacing: 0.08em;
+      ">
+        ${termName}·民俗
+      </div>
 
-    // 饼图系列（核心）
-    series: [{
-      type: 'pie',                // 类型：饼图
-      radius: ['42%', '70%'],     // 空心圆环：内径42%，外径70%
-      center: ['50%', '53%'],      // 位置：水平居中，垂直略偏下
-      
-      // 圆环样式：圆角、白色边框
-      itemStyle: {
-        borderRadius: 10,           // 圆环块圆角
-        borderColor: 'rgba(255,255,255,.78)', // 边框白色
-        borderWidth: 2               // 边框宽度
-      },
-      
-      // 饼图文字标签颜色
-      label: { color: tc, fontSize: 10 },
+      <!-- 民俗活动列表 -->
+      <div style="margin-bottom: 16px;">
+        <div style="
+          font-size: 14px;
+          font-weight: 700;
+          margin-bottom: 8px;
+          color: ${raw.color};
+        ">📜 主要民俗</div>
+        <ul style="
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        ">
+          ${folkList.map(f => `
+            <li style="
+              display: flex;
+              align-items: baseline;
+              gap: 8px;
+              font-size: 14px;
+              line-height: 1.6;
+            ">
+              <span style="color: ${raw.color}; font-size: 16px;">•</span>
+              <span>${f}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
 
-      // 圆环的3段数据（固定3部分）
-      data: [
-        // 第一段：节气第一个民俗（如赏牡丹）→ 节气主色
-        { value: 42, name: raw.folk[0], itemStyle: { color } },
-        
-        // 第二段：节气第二个民俗（如喝茶）→ 主题金色
-        { value: 33, name: raw.folk[1], itemStyle: { color: '#d6a928' } },
-        
-        // 第三段：时令游赏 → 灰色
-        { value: 25, name: '时令游赏', itemStyle: { color: 'rgba(150,150,150,.32)' } }
-      ]
-    }],
-
-    // 图表中心文字（民俗综合指数）
-    graphic: [{
-      type: 'text',
-      left: 'center',
-      top: 'center',
-      style: {
-        // 文字内容：民俗 + 计算出来的分数
-        text: `民俗\n${Math.round((d.active + d.rain) / 2)}`,
-        textAlign: 'center',
-        fill: tc,               // 文字颜色
-        font: '700 14px Noto Sans SC' // 字体
-      }
-    }]
-  });
+      <!-- 南北地域差异 -->
+      <div style="
+        background: rgba(0,0,0,0.04);
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: auto;
+      ">
+        <div style="
+          font-size: 14px;
+          font-weight: 700;
+          margin-bottom: 10px;
+          color: ${raw.color};
+        ">🗺️ 地域差异</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 8px; align-items: flex-start;">
+            <span style="
+              display: inline-block;
+              background: #87CEEB;
+              color: #fff;
+              border-radius: 4px;
+              padding: 1px 8px;
+              font-size: 12px;
+              font-weight: bold;
+              flex-shrink: 0;
+            ">北方</span>
+            <span style="font-size: 13px; line-height: 1.5;">${northDesc}</span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: flex-start;">
+            <span style="
+              display: inline-block;
+              background: #FFB6C1;
+              color: #fff;
+              border-radius: 4px;
+              padding: 1px 8px;
+              font-size: 12px;
+              font-weight: bold;
+              flex-shrink: 0;
+            ">南方</span>
+            <span style="font-size: 13px; line-height: 1.5;">${southDesc}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 };

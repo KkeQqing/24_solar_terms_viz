@@ -118,12 +118,13 @@ window.openAnalysis = (type = 'summary') => {
       break;
 
     case 'folk':
-      analysisText = `
-        <p><strong>民俗溯源：</strong>${folkList.length ? folkList.join('、') : '暂无'}等习俗在${name}广泛流传，多与农事祭祀、祈福迎祥相关，体现了古人顺应天时的智慧。</p>
-        <p class="mt-2"><strong>南北差异：</strong>北方多以${northDesc}为主，而南方则侧重${southDesc}。这种差异源于地理环境与物产的不同，形成了丰富多彩的节气文化。</p>
-        <p class="mt-2"><strong>现代传承：</strong>如今许多民俗已演化为旅游节庆、美食体验或非遗展示，成为地方文旅名片。</p>
-      `;
-      break;
+    const folkNames = folkList.map(f => (typeof f === 'string' ? f : f.name)).join('、') || '暂无';
+    analysisText = `
+      <p><strong>民俗溯源：</strong>${folkNames}等习俗在${name}广泛流传，多与农事祭祀、祈福迎祥相关，体现了古人顺应天时的智慧。</p>
+      <p class="mt-2"><strong>南北差异：</strong>北方多以${northDesc}为主，而南方则侧重${southDesc}。这种差异源于地理环境与物产的不同，形成了丰富多彩的节气文化。</p>
+      <p class="mt-2"><strong>现代传承：</strong>如今许多民俗已演化为旅游节庆、美食体验或非遗展示，成为地方文旅名片。</p>
+    `;
+    break;
 
     case 'agri':
       analysisText = `
@@ -191,26 +192,26 @@ window.renderAnalysisChart = (type) => {
       window.analysisChart = null;
     }
     const folkList = t.folk || [];
+    const folkItems = folkList.map(item => {
+      if (typeof item === 'string') return `<li>▪ ${item}</li>`;
+      return `<li style="margin-bottom:10px;">
+        <div style="font-weight:bold;">▪ ${item.name}</div>
+        ${item.desc ? `<div style="font-size:12px; opacity:0.7; margin-top:4px;">${item.desc}</div>` : ''}
+      </li>`;
+    }).join('');
+    
     chartDom.innerHTML = `
       <div style="padding:20px; height:100%; overflow-y:auto; font-family:'Noto Sans SC', sans-serif; color:${tc};">
-        <h3 style="margin-bottom:12px; color:${t.color || '#d6a928'}; display:flex; align-items:center; gap:8px;">
-          <span style="font-size:20px;">📜</span> ${t.name || ''}·民俗活动
-        </h3>
-        <ul style="list-style:none; padding:0; margin:0 0 20px 0;">
-          ${folkList.map(f => `<li style="padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.08); font-size:15px;">▪ ${f}</li>`).join('')}
-        </ul>
-        <h3 style="margin-bottom:12px; color:${t.color || '#d6a928'}; display:flex; align-items:center; gap:8px;">
-          <span style="font-size:20px;">🗺️</span> 地域差异
-        </h3>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="background:rgba(135,206,235,0.1); border-radius:10px; padding:12px;">
-            <span style="display:inline-block; background:#87CEEB; color:#fff; border-radius:4px; padding:2px 10px; font-size:13px; font-weight:bold;">北方</span>
-            <p style="margin-top:8px; line-height:1.7; font-size:14px;">${t.north || '暂无描述'}</p>
-          </div>
-          <div style="background:rgba(255,182,193,0.1); border-radius:10px; padding:12px;">
-            <span style="display:inline-block; background:#FFB6C1; color:#fff; border-radius:4px; padding:2px 10px; font-size:13px; font-weight:bold;">南方</span>
-            <p style="margin-top:8px; line-height:1.7; font-size:14px;">${t.south || '暂无描述'}</p>
-          </div>
+        <h3 style="margin-bottom:12px; color:${t.color || '#d6a928'};">📜 ${t.name}·民俗活动</h3>
+        <ul style="list-style:none; padding:0;">${folkItems}</ul>
+        <h3 style="margin-bottom:12px; color:${t.color || '#d6a928'};">🗺️ 地域差异</h3>
+        <div style="background:rgba(135,206,235,0.1); border-radius:10px; padding:12px; margin-bottom:8px;">
+          <span style="background:#87CEEB; color:#fff; border-radius:4px; padding:2px 8px; font-size:12px; font-weight:bold;">北方</span>
+          <p style="margin-top:6px; font-size:14px;">${t.north || '暂无描述'}</p>
+        </div>
+        <div style="background:rgba(255,182,193,0.1); border-radius:10px; padding:12px;">
+          <span style="background:#FFB6C1; color:#fff; border-radius:4px; padding:2px 8px; font-size:12px; font-weight:bold;">南方</span>
+          <p style="margin-top:6px; font-size:14px;">${t.south || '暂无描述'}</p>
         </div>
       </div>
     `;
@@ -231,19 +232,17 @@ window.renderAnalysisChart = (type) => {
 
     const northTemp = bj.temp ?? (t.temp - 3);
     const northRain = bj.rain ?? (t.rain - 10);
-    const northActive = Math.min(100, Math.max(0, (northTemp + 5) * 2.5));
     const southTemp = gz.temp ?? t.temp;
     const southRain = gz.rain ?? t.rain;
-    const southActive = Math.min(100, Math.max(0, southTemp * 3.2));
 
     window.analysisChart.setOption({
       tooltip: {},
       title: { text: `${t.name} 南北物候对比`, left: 'center', textStyle: { color: tc, fontSize: 14 } },
-      xAxis: { data: ['均温(°C)', '降水(mm)', '物候活跃'], axisLabel: { color: tc } },
+      xAxis: { data: ['均温(°C)', '降水(mm)'], axisLabel: { color: tc } },
       yAxis: { type: 'value', axisLabel: { color: tc } },
       series: [
-        { name: '北方(北京)', type: 'bar', data: [northTemp, northRain, northActive], itemStyle: { color: '#87CEEB' } },
-        { name: '南方(广州)', type: 'bar', data: [southTemp, southRain, southActive], itemStyle: { color: '#FFB6C1' } }
+        { name: '北方(北京)', type: 'bar', data: [northTemp, northRain], itemStyle: { color: '#87CEEB' } },
+        { name: '南方(广州)', type: 'bar', data: [southTemp, southRain], itemStyle: { color: '#FFB6C1' } }
       ]
     });
     window.analysisChart.resize();

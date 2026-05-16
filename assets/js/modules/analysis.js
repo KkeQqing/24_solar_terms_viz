@@ -217,21 +217,33 @@ window.renderAnalysisChart = (type) => {
     return;
   }
 
+  // 在 renderAnalysisChart 中，phenology 类型的柱状图
   if (type === 'phenology') {
     if (window.analysisChart) {
       window.analysisChart.dispose();
       window.analysisChart = null;
     }
     window.analysisChart = echarts.init(chartDom);
-    const northData = [t.temp - 3, t.rain - 10, Math.min(100, (t.temp - 3) * 3)];
-    const southData = [t.temp, t.rain, Math.min(100, t.temp * 3.5)];
+
+    const rcd = window.realClimateData;
+    const bj = rcd?.terms?.[t.name]?.beijing || {};
+    const gz = rcd?.terms?.[t.name]?.guangzhou || {};
+
+    const northTemp = bj.temp ?? (t.temp - 3);
+    const northRain = bj.rain ?? (t.rain - 10);
+    const northActive = Math.min(100, Math.max(0, (northTemp + 5) * 2.5));
+    const southTemp = gz.temp ?? t.temp;
+    const southRain = gz.rain ?? t.rain;
+    const southActive = Math.min(100, Math.max(0, southTemp * 3.2));
+
     window.analysisChart.setOption({
       tooltip: {},
-      xAxis: { data: ['气温(°C)', '降水(%)', '物候活跃'], axisLabel: { color: tc } },
+      title: { text: `${t.name} 南北物候对比`, left: 'center', textStyle: { color: tc, fontSize: 14 } },
+      xAxis: { data: ['均温(°C)', '降水(mm)', '物候活跃'], axisLabel: { color: tc } },
       yAxis: { type: 'value', axisLabel: { color: tc } },
       series: [
-        { name: '北方', type: 'bar', data: northData, itemStyle: { color: '#87CEEB' } },
-        { name: '南方', type: 'bar', data: southData, itemStyle: { color: '#FFB6C1' } }
+        { name: '北方(北京)', type: 'bar', data: [northTemp, northRain, northActive], itemStyle: { color: '#87CEEB' } },
+        { name: '南方(广州)', type: 'bar', data: [southTemp, southRain, southActive], itemStyle: { color: '#FFB6C1' } }
       ]
     });
     window.analysisChart.resize();

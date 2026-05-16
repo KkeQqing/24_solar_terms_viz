@@ -21,22 +21,22 @@
     .scroll-container {
       width: 100%;
       height: 100%;
-      background-color: #f5faff;
-      border: 8px solid #92b8e4;
+      background-color: #faffff;
+      border: 8px solid #7aa7c7;
       border-radius: 12px;
       box-shadow: 
-        0 0 25px rgba(70,120,180,0.15),
-        inset 0 0 30px rgba(146,184,228,0.35),
-        0 0 60px rgba(230,240,255,0.5);
+        0 0 25px rgba(50,100,140,0.15),
+        inset 0 0 30px rgba(122,167,199,0.35),
+        0 0 60px rgba(220,240,255,0.5);
       display: flex;
       flex-direction: column;
       position: relative;
       box-sizing: border-box;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150"><path fill="none" stroke="%23d6e4f5" stroke-width="0.6" d="M0 60 Q75 30 150 60 T300 60"/></svg>'),
-                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="frost"><feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="2" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23frost)"/></svg>');
-      background-size: 280px 280px, 250px 250px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="170" height="170" viewBox="0 0 170 170"><path fill="none" stroke="%23c6dff1" stroke-width="0.8" d="M0 75 Q85 45 170 75 T340 75"/></svg>'),
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="270" height="270" opacity="0.04"><filter id="rime"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" stitchTiles="stitch"/></filter><rect width="270" height="270" filter="url(%23rime)"/></svg>');
+      background-size: 300px 300px, 270px 270px;
       overflow: hidden;
-      animation: frostGlow 5s ease-in-out infinite, unfoldWinter 1.3s ease-out;
+      animation: rimeGlow 5s ease-in-out infinite, unfoldWinter 1.3s ease-out;
       background-position: 0 0;
     }
 
@@ -45,16 +45,16 @@
       100% { transform: scaleY(1) translateY(0); opacity: 1; }
     }
 
-    @keyframes frostGlow {
+    @keyframes rimeGlow {
       0%, 100% { 
-        box-shadow: 0 0 25px rgba(70,120,180,0.15),
-        inset 0 0 30px rgba(146,184,228,0.35),
-        0 0 60px rgba(230,240,255,0.5);
+        box-shadow: 0 0 25px rgba(50,100,140,0.15),
+        inset 0 0 30px rgba(122,167,199,0.35),
+        0 0 60px rgba(220,240,255,0.5);
       }
       45% { 
-        box-shadow: 0 0 40px rgba(90,140,200,0.25),
-        inset 0 0 50px rgba(146,184,228,0.5),
-        0 0 100px rgba(200,225,245,0.7);
+        box-shadow: 0 0 40px rgba(70,120,150,0.25),
+        inset 0 0 50px rgba(122,167,199,0.5),
+        0 0 100px rgba(190,220,240,0.7);
       }
       50%{filter:brightness(1.05)}
       55%{filter:brightness(1)}
@@ -66,32 +66,32 @@
       position: absolute;
       top: 0; bottom: 0;
       width: 24px;
-      background: #e2ecf8;
+      background: #ddeff9;
       border-radius: 6px;
       z-index: 1;
       box-shadow: 
-        inset 0 0 12px rgba(100,150,200,0.4),
+        inset 0 0 12px rgba(80,130,160,0.4),
         0 0 8px rgba(0,0,0,0.12);
     }
     .scroll-container::before { left: -12px; }
     .scroll-container::after { right: -12px; }
 
-    /* 雪花动效 创新替换雨滴 */
-    .snowflake {
+    /* 雾凇霜花动效 */
+    .rimeflake {
       position: absolute;
       top: -10px;
-      width: 6px;
-      height: 6px;
-      background: white;
+      width: 7px;
+      height: 7px;
+      background: #edf7ff;
       border-radius: 50%;
-      box-shadow: 0 0 4px rgba(255,255,255,0.8);
-      opacity: 0.9;
-      animation: snowFall linear infinite;
+      box-shadow: 0 0 6px rgba(255,255,255,1);
+      opacity: 0.95;
+      animation: rimeFall linear infinite;
       z-index: 2;
     }
-    @keyframes snowFall {
-      0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.9; }
-      100% { transform: translateY(800px) translateX(30px) rotate(360deg); opacity: 0; }
+    @keyframes rimeFall {
+      0% { transform: translateY(0) translateX(0) scale(0.9); opacity: 1; }
+      100% { transform: translateY(800px) translateX(20px) scale(1.1); opacity: 0; }
     }
 
     .top-section {
@@ -107,19 +107,19 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 2px solid #92b8e4;
+      border: 2px solid #7aa7c7;
       border-radius: 8px;
       padding: 14px;
-      background: rgba(255,255,255,0.6);
-      box-shadow: 0 4px 12px rgba(130,170,210,0.18);
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 4px 12px rgba(110,150,180,0.18);
     }
 
     .festival-emoji {
       font-size: 32px;
-      animation: snowShake 3s infinite alternate ease-in-out;
+      animation: rimeShake 3s infinite alternate ease-in-out;
       margin-bottom: 4px;
     }
-    @keyframes snowShake {
+    @keyframes rimeShake {
       0% { transform: rotate(-1deg) scale(1); }
       100% { transform: rotate(1deg) scale(1.05); }
     }
@@ -128,15 +128,15 @@
       font-family: KaiTi, serif;
       font-size: 50px;
       font-weight: bold;
-      background: linear-gradient(90deg, #4a90e2, #73a7e2, #92b8e4);
+      background: linear-gradient(90deg, #3682b6, #5e96c2, #7aa7c7);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       margin-bottom: 8px;
       text-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      animation: titleFrostShine 4.5s infinite alternate;
+      animation: titleRimeShine 4.5s infinite alternate;
     }
-    @keyframes titleFrostShine {
+    @keyframes titleRimeShine {
       0% { filter: brightness(1); }
       100% { filter: brightness(1.25); }
     }
@@ -144,7 +144,7 @@
     .divider {
       width: 80%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #92b8e4, transparent);
+      background: linear-gradient(90deg, transparent, #7aa7c7, transparent);
       margin-bottom: 8px;
       position: relative;
       overflow: hidden;
@@ -156,10 +156,10 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, #fff, #d6e4f5, transparent);
-      animation: frostLineFlow 3.8s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent, #fff, #c6dff1, transparent);
+      animation: rimeLineFlow 3.8s ease-in-out infinite;
     }
-    @keyframes frostLineFlow {
+    @keyframes rimeLineFlow {
       0% { left: -100%; }
       100% { left: 100%; }
     }
@@ -176,11 +176,11 @@
       flex: 1;
       display: flex;
       gap: 16px;
-      border: 2px solid #92b8e4;
+      border: 2px solid #7aa7c7;
       border-radius: 8px;
       padding: 14px;
-      background: rgba(255,255,255,0.6);
-      box-shadow: 0 4px 15px rgba(130,170,210,0.22);
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 4px 15px rgba(110,150,180,0.22);
     }
     .poem-column {
       flex: 1;
@@ -195,7 +195,7 @@
       line-height: 1.75;
       writing-mode: vertical-rl;
       text-orientation: upright;
-      background: linear-gradient(180deg, #4a90e2, #73a7e2);
+      background: linear-gradient(180deg, #3682b6, #5e96c2);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -219,11 +219,11 @@
     .author-seal {
       width: 22px;
       height: 22px;
-      background: #4a90e2;
+      background: #3682b6;
       border-radius: 2px;
       margin-top: 14px;
-      box-shadow: 0 0 8px rgba(74,144,226,0.45);
-      animation: sealWinter 3s ease-in-out infinite;
+      box-shadow: 0 0 8px rgba(54,130,182,0.45);
+      animation: sealRime 3s ease-in-out infinite;
       display: grid;
       place-items: center;
       color: white;
@@ -232,9 +232,9 @@
       font-family: KaiTi;
     }
     .author-seal::after {
-      content: "冬";
+      content: "春";
     }
-    @keyframes sealWinter {
+    @keyframes sealRime {
       0%, 100% { transform: scale(1); opacity: 0.9; }
       50% { transform: scale(1.2); opacity: 1; }
     }
@@ -257,9 +257,9 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      animation: frostSway 2.4s ease-in-out infinite;
+      animation: rimeSway 2.4s ease-in-out infinite;
     }
-    @keyframes frostSway {
+    @keyframes rimeSway {
       0%, 100% { transform: rotate(0deg); }
       30% { transform: rotate(1deg); }
       70% { transform: rotate(-1deg); }
@@ -268,13 +268,13 @@
     .illustration-placeholder {
       width: 190px;
       height: 145px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M90 50 L100 40 L110 50" stroke="%234a90e2" stroke-width="2.5" fill="none"/><path d="M85 60 L100 45 L115 60" stroke="%2373a7e2" stroke-width="2" fill="none"/><path d="M50 90 Q100 70 150 90" stroke="%23cfe2f5" stroke-width="2" fill="none"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M60 90 Q100 60 140 90" stroke="%233682b6" stroke-width="3" fill="none"/><path d="M75 80 Q100 65 125 80" stroke="%235e96c2" stroke-width="2.5" fill="none"/><path d="M90 70 L100 55 L110 70" stroke="%23c6dff1" stroke-width="2" fill="none"/></svg>');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      animation: wildGooseSwing 4.2s ease-in-out infinite;
+      animation: pheasantSwing 4.2s ease-in-out infinite;
     }
-    @keyframes wildGooseSwing {
+    @keyframes pheasantSwing {
       0%, 100% { transform: translateX(0) rotate(0deg); }
       40% { transform: translateX(2px) rotate(0.3deg); }
       60% { transform: translateX(-2px) rotate(-0.3deg); }
@@ -304,19 +304,19 @@
     
     .info-card {
       flex: 1;
-      border: 2px solid #92b8e4;
+      border: 2px solid #7aa7c7;
       border-radius: 8px;
       padding: 10px;
-      background: rgba(255,255,255,0.6);
-      box-shadow: 0 2px 8px rgba(130,170,210,0.18);
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 2px 8px rgba(110,150,180,0.18);
       cursor: pointer;
       transition: all 0.4s ease;
     }
     .info-card:hover {
       transform: translateY(-5px) scale(1.02);
-      background: rgba(255,255,255,0.85);
-      box-shadow: 0 8px 20px rgba(100,150,200,0.35);
-      border-color: #73a7e2;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 8px 20px rgba(90,130,160,0.35);
+      border-color: #5e96c2;
     }
     .info-card:active {
       animation: tinyShake 0.25s;
@@ -332,7 +332,7 @@
       font-family: KaiTi, serif;
       font-size: 15px;
       font-weight: bold;
-      color: #4a90e2;
+      color: #3682b6;
       margin-bottom: 6px;
       display: flex;
       align-items: center;
@@ -340,11 +340,11 @@
       text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
     }
     .card-title::before {
-      content: '❄️';
+      content: '🦚';
       font-size: 13px;
-      animation: snowTwinkle 3.2s ease-in-out infinite;
+      animation: rimeTwinkle 3.2s ease-in-out infinite;
     }
-    @keyframes snowTwinkle {
+    @keyframes rimeTwinkle {
       0%, 100% { opacity: 0.8; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.2); }
     }
@@ -361,16 +361,16 @@
   <div class="scroll-component">
     <div class="scroll-container">
 
-      <div class="snowflake" style="left:8%;animation-duration:6s;animation-delay:0s"></div>
-      <div class="snowflake" style="left:23%;animation-duration:6.5s;animation-delay:0.4s"></div>
-      <div class="snowflake" style="left:42%;animation-duration:5.8s;animation-delay:0.2s"></div>
-      <div class="snowflake" style="left:65%;animation-duration:7s;animation-delay:0.7s"></div>
-      <div class="snowflake" style="left:85%;animation-duration:6.2s;animation-delay:0.1s"></div>
-      <div class="snowflake" style="left:94%;animation-duration:5.5s;animation-delay:0.5s"></div>
+      <div class="rimeflake" style="left:12%;animation-duration:5.8s;animation-delay:0s"></div>
+      <div class="rimeflake" style="left:27%;animation-duration:6.3s;animation-delay:0.2s"></div>
+      <div class="rimeflake" style="left:45%;animation-duration:5.6s;animation-delay:0.4s"></div>
+      <div class="rimeflake" style="left:66%;animation-duration:6.5s;animation-delay:0.1s"></div>
+      <div class="rimeflake" style="left:84%;animation-duration:6s;animation-delay:0.5s"></div>
+      <div class="rimeflake" style="left:92%;animation-duration:5.4s;animation-delay:0.3s"></div>
 
       <div class="top-section">
         <div class="left-title-bar">
-          <div class="festival-emoji">❄️</div>
+          <div class="festival-emoji">🦚</div>
           <div class="festival-name">小寒</div>
           <div class="divider"></div>
           <div class="festival-info">
@@ -384,34 +384,34 @@
             <div class="poem-author">无名氏</div>
             <div class="author-seal"></div>
             <div class="poem-text">
-              小寒风渐紧<br>
-              北雁已先归
+              深寒鸣雉雊<br>
+              阳气欲迎春
             </div>
           </div>
           <div class="illustration-column">
-            <div class="hou-label">小寒一候 · 雁北乡</div>
+            <div class="hou-label">小寒三候 · 雉始雊</div>
             <div class="illustration-placeholder"></div>
-            <div class="proverb-text">阳气初动，大雁辞南，启程向北寻春暖</div>
+            <div class="proverb-text">雉鸡感阳长鸣，寒尽春生，万物静待新春来临</div>
           </div>
         </div>
       </div>
 
       <div class="bottom-info-grid">
         <div class="info-card">
-          <div class="card-title">三候·雁北乡</div>
-          <div class="card-content">大雁感知阳气生发，辞别南国，启程向北返乡，顺应天时。</div>
+          <div class="card-title">三候·雉始雊</div>
+          <div class="card-content">雉鸡感受到阳气渐长，开始高声鸣叫，求偶迎春，是冬去春来的信号。</div>
         </div>
         <div class="info-card">
           <div class="card-title">节气气象</div>
-          <div class="card-content">气温持续走低，天寒地冻，北风凛冽，初雪频降，寒意渐浓。</div>
+          <div class="card-content">小寒将尽，寒气极盛，霜凇满枝，暖阳初照，春意暗生。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时节特征</div>
-          <div class="card-content">隆冬深寒，万物蛰伏，阳气暗生，候鸟先知，时序轮转。</div>
+          <div class="card-content">寒极必暖，阴阳交替，鸟鸣唤春，天地之气悄然回转。</div>
         </div>
         <div class="info-card">
           <div class="card-title">时令养生</div>
-          <div class="card-content">温补脾肾，早睡晚起，多食羊肉、核桃、芝麻，防寒保暖护阳气。</div>
+          <div class="card-content">养阴温阳，调养肝气，多食糯米、莲子、坚果，静待春气升发。</div>
         </div>
       </div>
 

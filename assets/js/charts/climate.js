@@ -2,93 +2,80 @@
 // 功能：渲染【近10年气候趋势图】（温度折线 + 降水柱状图）
 // 作用：展示当前节气、当前地区的 10 年温度、降水变化
 
-// 更新气候图表
-// raw = 当前选中的节气完整数据（来自 data.js）
 window.updateClimate = (raw) => {
+  // 1. 获取十年气候数据（优先使用 climateSeries，否则生成模拟数据）
+  let series;
+  if (window.climateSeries && typeof window.climateSeries === 'function') {
+    series = window.climateSeries(raw);
+  } else {
+    // 降级：自动生成模拟数据
+    const d = window.adjusted ? window.adjusted(raw) : raw;
+    const baseTemp = d.temp || 20;
+    const baseRain = d.rain || 50;
+    series = {
+      years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+      temp: Array.from({ length: 10 }, () => +(baseTemp + (Math.random() - 0.5) * 1.5).toFixed(1)),
+      rain: Array.from({ length: 10 }, () => +(baseRain + (Math.random() - 0.5) * 15).toFixed(1))
+    };
+  }
 
-  // 1. 生成 10 年模拟气候数据（温度、降水、日照）
-  // 来自 utils.js → climateSeries()
-  const series = window.climateSeries(raw);
+  // 2. 主题文字颜色
+  const tc = window.textColor ? window.textColor() : '#333';
+  const color = raw.color || '#d6a928';
 
-  // 2. 获取当前主题文字颜色（适配深色/浅色模式）
-  const tc = window.textColor();
-
-  // 3. 当前节气的主题色（用于温度折线颜色）
-  const color = raw.color;
-
-  // 4. 计算 10 年平均温度
+  // 3. 计算统计指标
   const avgT = series.temp.reduce((a, b) => a + b, 0) / series.temp.length;
-
-  // 5. 计算 10 年平均降水指数
   const avgR = series.rain.reduce((a, b) => a + b, 0) / series.rain.length;
+  const trend = series.temp[series.temp.length - 1] - series.temp[0];
 
-  // 6. 计算温度趋势（最后一年 - 第一年 = 整体变暖/变冷）
-  const trend = series.temp.at(-1) - series.temp[0];
+  // 4. 更新统计卡片
+  const avgTempEl = document.getElementById('avg-temp');
+  const avgRainEl = document.getElementById('avg-rain');
+  const trendEl = document.getElementById('climate-trend');
+  if (avgTempEl) avgTempEl.textContent = `${window.fmt ? window.fmt(avgT, 1) : avgT.toFixed(1)}°C`;
+  if (avgRainEl) avgRainEl.textContent = `${window.fmt ? window.fmt(avgR, 0) : Math.round(avgR)}%`;
+  if (trendEl) trendEl.textContent = `${trend >= 0 ? '+' : ''}${window.fmt ? window.fmt(trend, 1) : trend.toFixed(1)}°C`;
 
-  // ------------------------------
-  // 把计算结果同步显示到页面文字上
-  // ------------------------------
-  // 显示平均温度
-  document.getElementById('avg-temp').textContent = `${window.fmt(avgT, 1)}°C`;
-  // 显示平均降水指数
-  document.getElementById('avg-rain').textContent = `${window.fmt(avgR, 0)}%`;
-  // 显示温度趋势（带正负号）
-  document.getElementById('climate-trend').textContent = `${trend >= 0 ? '+' : ''}${window.fmt(trend, 1)}°C`;
+  // 5. 渲染 ECharts 图表
+  const chart = window.charts ? window.charts['climate-chart'] : null;
+  if (!chart) return;
 
-  // ------------------------------
-  // ECharts 图表渲染
-  // ------------------------------
-  window.charts['climate-chart'].setOption({
-
-    // 悬浮提示框
+  chart.setOption({
     tooltip: { trigger: 'axis' },
-
-    // 图例（气温、降水）
     legend: {
       top: 2,
       textStyle: { color: tc },
       data: ['平均气温', '降水指数']
     },
-
-    // 图表内边距
     grid: { left: 36, right: 34, top: 38, bottom: 28 },
-
-    // X轴：年份 2016~2025
     xAxis: {
       type: 'category',
       data: series.years,
       axisLabel: { color: tc }
     },
-
-    // Y轴：两个（左侧温度、右侧降水）
     yAxis: [
-      { type: 'value', name: '°C', axisLabel: { color: tc } }, // 左Y轴：温度
-      { type: 'value', name: '降水', axisLabel: { color: tc }, splitLine: { show: false } } // 右Y轴：降水
+      { type: 'value', name: '°C', axisLabel: { color: tc } },
+      { type: 'value', name: '降水', axisLabel: { color: tc }, splitLine: { show: false } }
     ],
-
-    // 图表数据系列
     series: [
-      // ① 蓝色柱子：降水指数
       {
         name: '降水指数',
-        type: 'bar',            // 柱状图
-        yAxisIndex: 1,         // 使用右侧Y轴
-        data: series.rain,     // 10年降水数据
-        barWidth: 10,          // 柱子宽度
+        type: 'bar',
+        yAxisIndex: 1,
+        data: series.rain,
+        barWidth: 10,
         itemStyle: {
-          borderRadius: [6, 6, 0, 0], // 顶部圆角
-          color: 'rgba(92,173,255,.62)' // 半透明蓝色
+          borderRadius: [6, 6, 0, 0],
+          color: 'rgba(92,173,255,.62)'
         }
       },
-
-      // ② 节气色折线：平均气温
       {
         name: '平均气温',
-        type: 'line',          // 折线图
-        smooth: true,          // 平滑曲线
-        data: series.temp,     // 10年温度数据
-        lineStyle: { color: color, width: 3 }, // 线条颜色、宽度
-        itemStyle: { color: color } // 点颜色
+        type: 'line',
+        smooth: true,
+        data: series.temp,
+        lineStyle: { color: color, width: 3 },
+        itemStyle: { color: color }
       }
     ]
   });

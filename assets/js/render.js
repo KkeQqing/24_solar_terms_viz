@@ -30,13 +30,30 @@ window.selectTerm = (i) => {
 };
 
 // 3. 切换地区（南方 / 北方）
+// 切换地区（南方 / 北方）
 window.selectRegion = (region) => {
   window.currentRegion = region;
+
+  // 更新地区标签和按钮样式
   document.getElementById('region-label').textContent = window.regionProfiles[region].label;
   document.querySelectorAll('.region-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.region === region);
   });
-  window.selectTerm(window.currentTermIndex);
+
+  // 获取当前节气数据
+  const raw = window.solarTerms[window.currentTermIndex];
+
+  // 切换主题色（根据当前节气）
+  document.documentElement.style.setProperty('--season', raw.color);
+  document.documentElement.style.setProperty('--season2', raw.color2);
+
+  // 刷新时间轴高亮（不改变候选中状态）
+  window.refreshTimeline();
+
+  // 刷新所有图表（它们内部会读取 window.currentRegion 调整数据）
+  window.updateCharts(raw);
+
+  // 提示信息
   window.toast(`已切换到${window.regionProfiles[region].label}`);
 };
 

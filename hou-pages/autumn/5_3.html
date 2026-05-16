@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .scroll-component {
+      all: initial;
+      display: block;
+      width: 100%;
+      height: 100%;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      box-sizing: border-box;
+    }
+    .scroll-component * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .scroll-container {
+      width: 100%;
+      height: 100%;
+      background-color: #fffcf5;
+      border: 8px solid #e6b946;
+      border-radius: 12px;
+      box-shadow: 
+        0 0 25px rgba(180,140,40,0.15),
+        inset 0 0 30px rgba(230,185,70,0.35),
+        0 0 60px rgba(255,248,230,0.5);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><path fill="none" stroke="%23f9d78e" stroke-width="0.6" d="M0 65 Q70 35 140 65 T280 65"/></svg>'),
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.45" numOctaves="2" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23noise)"/></svg>');
+      background-size: 270px 270px, 250px 250px;
+      overflow: hidden;
+      animation: chrysanthemumGlow 5s ease-in-out infinite, unfoldFlower 1.4s ease-out;
+      background-position: 0 0;
+    }
+
+    @keyframes unfoldFlower {
+      0% { transform: scaleY(0.15) translateY(20px); opacity: 0; }
+      100% { transform: scaleY(1) translateY(0); opacity: 1; }
+    }
+
+    @keyframes chrysanthemumGlow {
+      0%, 100% { 
+        box-shadow: 0 0 25px rgba(180,140,40,0.15),
+        inset 0 0 30px rgba(230,185,70,0.35),
+        0 0 60px rgba(255,248,230,0.5);
+      }
+      50% { 
+        box-shadow: 0 0 40px rgba(217,166,54,0.25),
+        inset 0 0 50px rgba(230,185,70,0.5),
+        0 0 100px rgba(249,215,142,0.6);
+        filter: brightness(1.07);
+      }
+    }
+
+    .scroll-container::before,
+    .scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 24px;
+      background: #fff3d9;
+      border-radius: 6px;
+      z-index: 1;
+      box-shadow: 
+        inset 0 0 12px rgba(230,185,70,0.35),
+        0 0 8px rgba(0,0,0,0.1);
+    }
+    .scroll-container::before { left: -12px; }
+    .scroll-container::after { right: -12px; }
+
+    /* 创新：菊花花瓣飘落动效 */
+    .chrysanthemum {
+      position: absolute;
+      top: -10px;
+      width: 8px;
+      height: 8px;
+      background: radial-gradient(circle, #fff5cc 0%, #f9c74f 100%);
+      border-radius: 50%;
+      opacity: 0.85;
+      animation: flowerFall linear infinite;
+      z-index: 2;
+    }
+    @keyframes flowerFall {
+      0% { transform: translateY(0) scale(0.8); opacity: 0.95; }
+      100% { transform: translateY(850px) scale(1.1); opacity: 0; }
+    }
+
+    .top-section {
+      display: flex;
+      flex: 4;
+      padding: 18px 20px 14px;
+      gap: 20px;
+    }
+
+    .left-title-bar {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #e6b946;
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 4px 12px rgba(217,166,54,0.18);
+    }
+
+    .festival-emoji {
+      font-size: 32px;
+      animation: flowerShake 3s infinite alternate ease-in-out;
+      margin-bottom: 4px;
+    }
+    @keyframes flowerShake {
+      0% { transform: rotate(-1.5deg) scale(1); }
+      100% { transform: rotate(1.5deg) scale(1.05); }
+    }
+
+    .festival-name {
+      font-family: KaiTi, serif;
+      font-size: 50px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #d9a636, #e6b946, #f9d78e);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      animation: titleShine 4.5s infinite alternate;
+    }
+    @keyframes titleShine {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.3); }
+    }
+    
+    .divider {
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e6b946, transparent);
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, #fff, #f9d78e, transparent);
+      animation: lineFlow 4s ease-in-out infinite;
+    }
+    @keyframes lineFlow {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .festival-info {
+      text-align: center;
+      font-size: 15px;
+      color: #6b4e16;
+      line-height: 1.5;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+    }
+
+    .middle-poem-area {
+      flex: 1;
+      display: flex;
+      gap: 16px;
+      border: 2px solid #e6b946;
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 4px 15px rgba(217,166,54,0.22);
+    }
+    .poem-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .poem-text {
+      font-family: KaiTi, serif;
+      font-size: 21px;
+      line-height: 1.75;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      background: linear-gradient(180deg, #d9a636, #e6b946);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.08);
+      animation: poemFloat 7s ease-in-out infinite;
+    }
+    @keyframes poemFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .poem-author {
+      font-family: KaiTi, serif;
+      font-size: 19px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #6b4e16;
+      margin-right: 8px;
+    }
+
+    .author-seal {
+      width: 22px;
+      height: 22px;
+      background: #d9a636;
+      border-radius: 2px;
+      margin-top: 14px;
+      box-shadow: 0 0 8px rgba(217,166,54,0.45);
+      animation: sealPulse 3s ease-in-out infinite;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      font-family: KaiTi;
+    }
+    .author-seal::after {
+      content: "菊";
+    }
+    @keyframes sealPulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .illustration-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hou-label {
+      font-family: KaiTi, serif;
+      font-size: 21px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #6b4e16;
+      margin-right: 14px;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: flowerSway 2.5s ease-in-out infinite;
+    }
+    @keyframes flowerSway {
+      0%, 100% { transform: rotate(0deg); }
+      30% { transform: rotate(2deg); }
+      70% { transform: rotate(-2deg); }
+    }
+
+    .illustration-placeholder {
+      width: 190px;
+      height: 145px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M70 100 Q100 70 130 100" stroke="%23d9a636" stroke-width="3" fill="none"/><path d="M75 95 Q100 75 125 95" stroke="%23f9c74f" stroke-width="2" fill="none"/><circle cx="100" cy="70" r="12" fill="%23ffd966"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation: chrysanthemumSwing 4.5s ease-in-out infinite;
+    }
+    @keyframes chrysanthemumSwing {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      50% { transform: translateX(-4px) rotate(-0.8deg); }
+    }
+
+    .proverb-text {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #6b4e16;
+      text-align: center;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+      overflow: hidden;
+      white-space: nowrap;
+      animation: typing 4s steps(26);
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .bottom-info-grid {
+      display: flex;
+      flex: 1;
+      padding: 0 20px 16px 20px;
+      gap: 14px;
+    }
+    
+    .info-card {
+      flex: 1;
+      border: 2px solid #e6b946;
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 2px 8px rgba(217,166,54,0.18);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 8px 20px rgba(196,153,36,0.35);
+      border-color: #d9a636;
+    }
+    .info-card:active {
+      animation: tinyShake 0.25s;
+    }
+    @keyframes tinyShake {
+      0%{transform:translateX(0)}
+      30%{transform:translateX(-3px)}
+      70%{transform:translateX(3px)}
+      100%{transform:translateX(0)}
+    }
+
+    .card-title {
+      font-family: KaiTi, serif;
+      font-size: 15px;
+      font-weight: bold;
+      color: #d9a636;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+    }
+    .card-title::before {
+      content: '🌼';
+      font-size: 13px;
+      animation: twinkle 3.2s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .card-content {
+      font-size: 13.5px;
+      color: #4a370f;
+      line-height: 1.45;
+      text-shadow: 0 0.3px 0.8px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-component">
+    <div class="scroll-container">
+
+      <div class="chrysanthemum" style="left:9%;animation-duration:5.5s;animation-delay:0s"></div>
+      <div class="chrysanthemum" style="left:26%;animation-duration:6s;animation-delay:0.3s"></div>
+      <div class="chrysanthemum" style="left:48%;animation-duration:5.2s;animation-delay:0.1s"></div>
+      <div class="chrysanthemum" style="left:71%;animation-duration:5.8s;animation-delay:0.4s"></div>
+      <div class="chrysanthemum" style="left:90%;animation-duration:5.4s;animation-delay:0.2s"></div>
+
+      <div class="top-section">
+        <div class="left-title-bar">
+          <div class="festival-emoji">🌼</div>
+          <div class="festival-name">寒露</div>
+          <div class="divider"></div>
+          <div class="festival-info">
+            <div>菊开九月</div>
+            <div>黄经 195°</div>
+          </div>
+        </div>
+
+        <div class="middle-poem-area">
+          <div class="poem-column">
+            <div class="poem-author">陶渊明</div>
+            <div class="author-seal"></div>
+            <div class="poem-text">
+              秋丛绕舍似陶家<br>
+              遍绕篱边日渐斜
+            </div>
+          </div>
+          <div class="illustration-column">
+            <div class="hou-label">寒露三候 · 菊有黄华</div>
+            <div class="illustration-placeholder"></div>
+            <div class="proverb-text">寒露菊花开，清香淡雅自来，傲霜挺立</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-info-grid">
+        <div class="info-card">
+          <div class="card-title">三候·菊有黄华</div>
+          <div class="card-content">菊花迎寒盛放，花色金黄，傲霜挺立，为深秋最具代表性之花。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">节气气象</div>
+          <div class="card-content">霜气渐浓，寒意深重，秋意至盛，花木凋零唯菊独芳。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">文化意蕴</div>
+          <div class="card-content">菊花象征高洁坚韧，赏菊、簪菊、饮菊酒，皆是寒露雅趣。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">时令养生</div>
+          <div class="card-content">菊花养肝明目，润肺生津，宜饮菊花茶、食温润滋补之物。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

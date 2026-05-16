@@ -35,14 +35,15 @@ window.daysToNextTerm = (index) => {
 };
 
 // 5. 根据当前地区（南北）调整节气数据（温度、降水、物候）
-window.adjusted = (term) => {
-  const r = window.regionProfiles[window.currentRegion || 'north'];
+window.adjusted = (raw) => {
+  const region = window.currentRegion || 'south';
+  const profile = window.regionProfiles[region] || {};
   return {
-    ...term,
-    temp: Math.round((term.temp + r.tempOffset)*10)/10,    // 调整温度
-    rain: Math.max(0, Math.min(100, Math.round(term.rain * r.rainFactor))), // 调整降水
-    active: Math.max(5, Math.min(100, 64 + r.activeOffset + Math.round(term.rain/4))), // 物候活跃度
-    lag: r.lag
+    temp: raw.temp + (region === 'north' ? -3 : 0),
+    rain: Math.max(0, raw.rain + (region === 'north' ? -10 : 10)),
+    active: Math.min(100, Math.abs(raw.temp - 20) * 4 + 20),
+    folk: raw.folk,
+    agri: raw.agri
   };
 };
 

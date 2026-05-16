@@ -76,23 +76,6 @@ window.openAnalysis = (type = 'summary') => {
   } else if (type === 'travel') {
     kpisHtml = ''; // 无 KPI 卡片
   } else {
-    kpisHtml = `
-      <div class="modal-kpi">
-        <p class="hint">综合指数</p>
-        <div class="text-2xl font-black">${window.fmt((s.folk + s.agri + s.travel) / 3, 2)}</div>
-        <p class="hint">文化·生产·文旅三维均值</p>
-      </div>
-      <div class="modal-kpi">
-        <p class="hint">物候活跃度</p>
-        <div class="text-2xl font-black">${s.active || 0}</div>
-        <p class="hint">植被与候鸟等节律响应</p>
-      </div>
-      <div class="modal-kpi">
-        <p class="hint">区域差异指数</p>
-        <div class="text-2xl font-black">${Math.abs((s.temp || 20) - 15) + 50}</div>
-        <p class="hint">反映南北温差与物候差</p>
-      </div>
-    `;
   }
   document.getElementById('analysis-kpis').innerHTML = kpisHtml;
 
@@ -110,13 +93,21 @@ window.openAnalysis = (type = 'summary') => {
       break;
 
     case 'phenology':
-      analysisText = `
-        <p><strong>物候比较：</strong>同一节气，南方（${regionLabel === '南方' ? '如岭南、江南' : '参考南方数据'}）：${southDesc}。北方（${regionLabel === '北方' ? '如华北、东北' : '参考北方数据'}）：${northDesc}。</p>
-        <p class="mt-2"><strong>原因分析：</strong>南北纬度差异导致日照时长、积温不同，物候期通常北方比南方晚7~15天。植物萌芽、开花、昆虫活动等均呈现明显梯度。</p>
-        <p class="mt-2"><strong>当前区域：</strong>您选择了${regionLabel}，其物候特征为：${region === 'south' ? southDesc : northDesc}，建议在本地出行或农事安排时参考此特征。</p>
-        <p class="mt-2"><strong>数据支撑：</strong>物候活跃度指数${s.active || 0}，综合反映植被绿度、候鸟迁徙等动态。</p>
-      `;
-      break;
+    const currentRegion = window.currentRegion === 'north' ? '北方' : '南方';
+    const otherRegion = window.currentRegion === 'north' ? '南方' : '北方';
+    analysisText = `
+      <div style="line-height:1.8;">
+        <p><strong>🌍 当前地区：${currentRegion}</strong></p>
+        <p>${window.currentRegion === 'north' ? northDesc : southDesc}</p>
+        <p class="mt-2"><strong>🌏 对比${otherRegion}：</strong></p>
+        <p>${window.currentRegion === 'north' ? southDesc : northDesc}</p>
+        <p class="mt-2"><strong>📊 差异分析：</strong></p>
+        <p>南北纬度差导致太阳辐射量不同，物候期通常北方比南方晚7~15天。当前节气下，南方植被萌动早，昆虫活动频繁；北方则仍可能出现霜冻，植物处于休眠末期。</p>
+        <p class="mt-2"><strong>🗺️ 物候区划参考：</strong></p>
+        <p>华北地区：${t.north_cn || '气温回升，干燥多风'}；江南地区：${t.south_cn || '春雨增多，湿润温和'}；岭南地区：${t.lingnan || '已入初夏体感'}。</p>
+      </div>
+    `;
+    break;
 
     case 'climate':
       analysisText = `
@@ -223,6 +214,27 @@ window.renderAnalysisChart = (type) => {
         </div>
       </div>
     `;
+    return;
+  }
+
+  if (type === 'phenology') {
+    if (window.analysisChart) {
+      window.analysisChart.dispose();
+      window.analysisChart = null;
+    }
+    window.analysisChart = echarts.init(chartDom);
+    const northData = [t.temp - 3, t.rain - 10, Math.min(100, (t.temp - 3) * 3)];
+    const southData = [t.temp, t.rain, Math.min(100, t.temp * 3.5)];
+    window.analysisChart.setOption({
+      tooltip: {},
+      xAxis: { data: ['气温(°C)', '降水(%)', '物候活跃'], axisLabel: { color: tc } },
+      yAxis: { type: 'value', axisLabel: { color: tc } },
+      series: [
+        { name: '北方', type: 'bar', data: northData, itemStyle: { color: '#87CEEB' } },
+        { name: '南方', type: 'bar', data: southData, itemStyle: { color: '#FFB6C1' } }
+      ]
+    });
+    window.analysisChart.resize();
     return;
   }
 

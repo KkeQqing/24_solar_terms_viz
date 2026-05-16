@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .scroll-component {
+      all: initial;
+      display: block;
+      width: 100%;
+      height: 100%;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      box-sizing: border-box;
+    }
+    .scroll-component * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .scroll-container {
+      width: 100%;
+      height: 100%;
+      background-color: #f0f2f8;
+      border: 8px solid #88a6e0;
+      border-radius: 12px;
+      box-shadow: 
+        0 0 25px rgba(80,110,170,0.15),
+        inset 0 0 30px rgba(136,166,224,0.35),
+        0 0 60px rgba(225,235,250,0.5);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-sizing: border-box;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><path fill="none" stroke="%23c6d4f5" stroke-width="0.6" d="M0 65 Q80 40 160 65 T320 65"/></svg>'),
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="250" height="250" opacity="0.04"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="3" stitchTiles="stitch"/></filter><rect width="250" height="250" filter="url(%23noise)"/></svg>');
+      background-size: 290px 290px, 250px 250px;
+      overflow: hidden;
+      animation: iceGlow 4.5s ease-in-out infinite, unfoldWinter 1.3s ease-out;
+      background-position: 0 0;
+    }
+
+    @keyframes unfoldWinter {
+      0% { transform: scaleY(0.15) translateY(20px); opacity: 0; }
+      100% { transform: scaleY(1) translateY(0); opacity: 1; }
+    }
+
+    @keyframes iceGlow {
+      0%, 100% { 
+        box-shadow: 0 0 25px rgba(80,110,170,0.15),
+        inset 0 0 30px rgba(136,166,224,0.35),
+        0 0 60px rgba(225,235,250,0.5);
+      }
+      45% { 
+        box-shadow: 0 0 40px rgba(110,140,190,0.25),
+        inset 0 0 50px rgba(136,166,224,0.5),
+        0 0 100px rgba(205,220,240,0.7);
+      }
+      50%{filter:brightness(1.05)}
+      55%{filter:brightness(1)}
+    }
+
+    .scroll-container::before,
+    .scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 24px;
+      background: #e0ebf8;
+      border-radius: 6px;
+      z-index: 1;
+      box-shadow: 
+        inset 0 0 12px rgba(120,150,200,0.4),
+        0 0 8px rgba(0,0,0,0.12);
+    }
+    .scroll-container::before { left: -12px; }
+    .scroll-container::after { right: -12px; }
+
+    /* 创新：冰晶粒子 */
+    .ice-petal {
+      position: absolute;
+      top: -10px;
+      width: 7px;
+      height: 7px;
+      background: radial-gradient(circle, #c6d4f5 0%, #88a6e0 100%);
+      opacity: 0.8;
+      border-radius: 50%;
+      animation: iceFall linear infinite;
+      z-index: 2;
+    }
+    @keyframes iceFall {
+      0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 0.9; }
+      50% { transform: translateY(400px) scale(1) rotate(180deg); }
+      100% { transform: translateY(800px) scale(0.8) rotate(360deg); opacity: 0; }
+    }
+
+    .top-section {
+      display: flex;
+      flex: 4;
+      padding: 18px 20px 14px;
+      gap: 20px;
+    }
+
+    .left-title-bar {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #88a6e0;
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 4px 12px rgba(120,160,200,0.18);
+    }
+
+    .festival-emoji {
+      font-size: 32px;
+      animation: tigerShake 3s infinite alternate ease-in-out;
+      margin-bottom: 4px;
+    }
+    @keyframes tigerShake {
+      0% { transform: rotate(-1.5deg) scale(1); }
+      100% { transform: rotate(1.5deg) scale(1.05); }
+    }
+
+    .festival-name {
+      font-family: KaiTi, serif;
+      font-size: 50px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #5076c7, #6b93d8, #88a6e0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      animation: titleIceShine 4.5s infinite alternate;
+    }
+    @keyframes titleIceShine {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.25); }
+    }
+    
+    .divider {
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #88a6e0, transparent);
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, #fff, #c6d4f5, transparent);
+      animation: iceLineFlow 3.8s ease-in-out infinite;
+    }
+    @keyframes iceLineFlow {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .festival-info {
+      text-align: center;
+      font-size: 15px;
+      color: #334455;
+      line-height: 1.5;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+    }
+
+    .middle-poem-area {
+      flex: 1;
+      display: flex;
+      gap: 16px;
+      border: 2px solid #88a6e0;
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 4px 15px rgba(120,160,200,0.22);
+    }
+    .poem-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .poem-text {
+      font-family: KaiTi, serif;
+      font-size: 21px;
+      line-height: 1.75;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      background: linear-gradient(180deg, #5076c7, #6b93d8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.08);
+      animation: poemSlowFlow 7s ease-in-out infinite;
+    }
+    @keyframes poemSlowFlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .poem-author {
+      font-family: KaiTi, serif;
+      font-size: 19px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #334455;
+      margin-right: 8px;
+    }
+
+    .author-seal {
+      width: 22px;
+      height: 22px;
+      background: #5076c7;
+      border-radius: 2px;
+      margin-top: 14px;
+      box-shadow: 0 0 8px rgba(80,118,199,0.45);
+      animation: sealPulse 3s ease-in-out infinite;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      font-family: KaiTi;
+    }
+    .author-seal::after {
+      content: "雪";
+    }
+    @keyframes sealPulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .illustration-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hou-label {
+      font-family: KaiTi, serif;
+      font-size: 21px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      color: #334455;
+      margin-right: 14px;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: windSway 2.4s ease-in-out infinite;
+    }
+    @keyframes windSway {
+      0%, 100% { transform: rotate(0deg); }
+      30% { transform: rotate(1.5deg); }
+      70% { transform: rotate(-1.5deg); }
+    }
+
+    .illustration-placeholder {
+      width: 190px;
+      height: 145px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150"><path d="M65 95 Q100 70 135 95" stroke="%235076c7" stroke-width="3" fill="none"/><path d="M70 90 Q100 75 130 90" stroke="%2388a6e0" stroke-width="2" fill="none"/><path d="M80 85 Q100 80 120 85" stroke="%23c6d4f5" stroke-width="1.5" fill="none"/><circle cx="100" cy="60" r="8" fill="%23f0f4fa"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation: iceSwing 4.2s ease-in-out infinite;
+    }
+    @keyframes iceSwing {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      40% { transform: translateX(2.5px) rotate(0.4deg); }
+      60% { transform: translateX(-2.5px) rotate(-0.4deg); }
+    }
+
+    .proverb-text {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #334455;
+      text-align: center;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+      overflow: hidden;
+      white-space: nowrap;
+      animation: typingSlow 4s steps(25);
+    }
+    @keyframes typingSlow {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .bottom-info-grid {
+      display: flex;
+      flex: 1;
+      padding: 0 20px 16px 20px;
+      gap: 14px;
+    }
+    
+    .info-card {
+      flex: 1;
+      border: 2px solid #88a6e0;
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 2px 8px rgba(120,160,200,0.18);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 8px 20px rgba(100,130,180,0.35);
+      border-color: #6b93d8;
+    }
+    .info-card:active {
+      animation: tinyShake 0.25s;
+    }
+    @keyframes tinyShake {
+      0%{transform:translateX(0)}
+      30%{transform:translateX(-3px)}
+      70%{transform:translateX(3px)}
+      100%{transform:translateX(0)}
+    }
+
+    .card-title {
+      font-family: KaiTi, serif;
+      font-size: 15px;
+      font-weight: bold;
+      color: #5076c7;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-shadow: 0 0.5px 1px rgba(0,0,0,0.05);
+    }
+    .card-title::before {
+      content: '🐅';
+      font-size: 13px;
+      animation: iceTwinkle 3.2s ease-in-out infinite;
+    }
+    @keyframes iceTwinkle {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .card-content {
+      font-size: 13.5px;
+      color: #223344;
+      line-height: 1.45;
+      text-shadow: 0 0.3px 0.8px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-component">
+    <div class="scroll-container">
+
+      <div class="ice-petal" style="left:10%;animation-duration:5.5s;animation-delay:0s"></div>
+      <div class="ice-petal" style="left:28%;animation-duration:6s;animation-delay:0.3s"></div>
+      <div class="ice-petal" style="left:50%;animation-duration:5.2s;animation-delay:0.5s"></div>
+      <div class="ice-petal" style="left:72%;animation-duration:6.5s;animation-delay:0.2s"></div>
+      <div class="ice-petal" style="left:90%;animation-duration:5.8s;animation-delay:0.7s"></div>
+
+      <div class="top-section">
+        <div class="left-title-bar">
+          <div class="festival-emoji">🐅</div>
+          <div class="festival-name">大雪</div>
+          <div class="divider"></div>
+          <div class="festival-info">
+            <div>仲冬深寒</div>
+            <div>瑞雪丰年</div>
+          </div>
+        </div>
+
+        <div class="middle-poem-area">
+          <div class="poem-column">
+            <div class="poem-author">陆游</div>
+            <div class="author-seal"></div>
+            <div class="poem-text">
+              大雪江南见<br>
+              寒生万物苏
+            </div>
+          </div>
+          <div class="illustration-column">
+            <div class="hou-label">大雪二候 · 虎始交</div>
+            <div class="illustration-placeholder"></div>
+            <div class="proverb-text">深冬寒气盛，老虎求偶鸣，生机藏于寒</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-info-grid">
+        <div class="info-card">
+          <div class="card-title">三候·虎始交</div>
+          <div class="card-content">阴气最盛之时，阳气开始萌动，老虎开始求偶繁衍。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">节气气象</div>
+          <div class="card-content">强冷空气频发，大雪覆盖原野，天寒地冻万物藏。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">自然生机</div>
+          <div class="card-content">极寒之中藏阳气，生命萌动待春来，静中藏动。</div>
+        </div>
+        <div class="info-card">
+          <div class="card-title">时令养生</div>
+          <div class="card-content">温补肾阳，多食羊肉、枸杞、核桃，防寒保暖护关节。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

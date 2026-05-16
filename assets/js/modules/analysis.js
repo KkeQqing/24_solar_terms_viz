@@ -43,7 +43,6 @@ window.openAnalysis = (type = 'summary') => {
       <div class="modal-kpi">
         <p class="hint">民俗活动</p>
         <div class="text-2xl font-black">${folkList.length} 项</div>
-        <p class="hint">${folkList.join('、') || '暂无记录'}</p>
       </div>
       <div class="modal-kpi">
         <p class="hint">北方特色</p>
@@ -73,7 +72,46 @@ window.openAnalysis = (type = 'summary') => {
         <p class="hint">参考近十年均值</p>
       </div>
     `;
-  } else if (type === 'travel') {
+      } else if (type === 'climate') {
+      const rcd = window.realClimateData;
+      const regionKey = region === 'north' ? 'beijing' : 'guangzhou';
+      const decadeData = rcd?.decadalTrend?.[regionKey];
+      let avgTemp = '--', avgRain = '--', trendVal = '--', tempRange = '--';
+
+      if (decadeData) {
+        // 计算十年均温
+        const temps = decadeData.annualTemp;
+        avgTemp = (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(1);
+        // 计算温度趋势（最后一年 - 第一年）
+        const trend = temps[temps.length - 1] - temps[0];
+        trendVal = (trend >= 0 ? '+' : '') + trend.toFixed(1);
+        // 计算十年均降水
+        const rains = decadeData.annualRain;
+        avgRain = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length);
+        // 计算温度波动范围（所有年份最低 ~ 最高）
+        const allMins = decadeData.tempMin;
+        const allMaxs = decadeData.tempMax;
+        tempRange = `${Math.min(...allMins)} ~ ${Math.max(...allMaxs)}°C`;
+      }
+
+      kpisHtml = `
+        <div class="modal-kpi">
+          <p class="hint">十年均温</p>
+          <div class="text-2xl font-black">${avgTemp}°C</div>
+          <p class="hint">波动 ${tempRange}</p>
+        </div>
+        <div class="modal-kpi">
+          <p class="hint">十年均降水</p>
+          <div class="text-2xl font-black">${avgRain} mm</div>
+          <p class="hint">${regionLabel}</p>
+        </div>
+        <div class="modal-kpi">
+          <p class="hint">温度趋势</p>
+          <div class="text-2xl font-black">${trendVal}°C</div>
+          <p class="hint">十年变化</p>
+        </div>
+      `;
+    }else if (type === 'travel') {
     kpisHtml = ''; // 无 KPI 卡片
   } else {
   }
@@ -215,6 +253,141 @@ window.renderAnalysisChart = (type) => {
         </div>
       </div>
     `;
+    return;
+  }
+
+  // 气候变化：双轴组合图（真实数据 + 增强标注）
+  // 气候变化：带误差线的折线图
+  if (type === 'climate') {
+    if (window.analysisChart) {
+      window.analysisChart.dispose();
+      window.analysisChart = null;
+    }
+    window.analysisChart = echarts.init(chartDom);
+
+    const rcd = window.realClimateData;
+    const regionKey = window.currentRegion === 'north' ? 'beijing' : 'guangzhou';
+    const decadeData = rcd?.decadalTrend?.[regionKey];
+
+    if (!decadeData) return;
+
+    const years = decadeData.years;
+    const temps = decadeData.annualTemp;
+    const tempMax = decadeData.tempMax;
+    const tempMin = decadeData.tempMin;
+    const rains = decadeData.annualRain;
+    const rainMax = decadeData.rainMax;
+    const rainMin = decadeData.rainMin;
+
+    // 计算温度误差（正负各一条）
+    const tempUpper = temps.map((t, i) => tempMax[i] - t);
+    const tempLower = temps.map((t, i) => t - tempMin[i]);
+    // 降水误差
+    const rainUpper = rains.map((r, i) => rainMax[i] - r);
+    const rainLower = rains.map((r, i) => r - rainMin[i]);
+
+    // 温度阈值（用于背景着色）
+    const tempWarm = 23;
+    const tempCold = 18;
+    // 降水阈值
+    const rainWet = 800;
+    const rainDry = 500;
+
+    // 生成颜色渐变（年份越新颜色越深）
+    const colorStops = years.map((_, i) => {
+      const ratio = i / (years.length - 1);
+      // 气温用暖色调
+      const r = Math.round(255 * ratio + 180 * (1 - ratio));
+      const g = Math.round(80 * ratio + 100 * (1 - ratio));
+      const b = Math.round(60 * ratio + 120 * (1 - ratio));
+      return `rgb(${r},${g},${b})`;
+    });
+    const rainColorStops = years.map((_, i) => {
+      const ratio = i / (years.length - 1);
+      const r = Math.round(80 * ratio + 40 * (1 - ratio));
+      const g = Math.round(140 * ratio + 120 * (1 - ratio));
+      const b = Math.round(220 * ratio + 200 * (1 - ratio));
+      return `rgb(${r},${g},${b})`;
+    });
+
+    window.analysisChart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: {
+        data: ['年均温', '年降水'],
+        textStyle: { color: tc }
+      },
+      grid: { left: 70, right: 70, top: 50, bottom: 50 },
+      xAxis: {
+        type: 'category',
+        data: years,
+        axisLabel: { color: tc }
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: '°C',
+          min: tempCold - 5,
+          max: tempWarm + 5,
+          axisLabel: { color: tc },
+          nameTextStyle: { color: tc },
+          splitLine: { lineStyle: { color: 'rgba(128,128,128,0.15)' } }
+        },
+        {
+          type: 'value',
+          name: 'mm',
+          axisLabel: { color: tc },
+          nameTextStyle: { color: tc },
+          splitLine: { show: false }
+        }
+      ],
+      series: [
+        // 降水带误差线
+        {
+          name: '年降水',
+          type: 'line',
+          yAxisIndex: 1,
+          data: rains.map((r, i) => ({
+            value: r,
+            itemStyle: { color: rainColorStops[i] }
+          })),
+          lineStyle: { width: 2 },
+          errorBar: {
+            data: rains.map((_, i) => [rainLower[i], rainUpper[i]]),
+            itemStyle: { color: 'rgba(100,180,255,0.6)', width: 1.5 }
+          },
+          markArea: {
+            silent: true,
+            data: [
+              [{ yAxis: rainWet, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: 9999 }],
+              [{ yAxis: 0, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: rainDry }]
+            ]
+          }
+        },
+        // 气温带误差线
+        {
+          name: '年均温',
+          type: 'line',
+          data: temps.map((t, i) => ({
+            value: t,
+            itemStyle: { color: colorStops[i] }
+          })),
+          lineStyle: { width: 2.5 },
+          errorBar: {
+            data: temps.map((_, i) => [tempLower[i], tempUpper[i]]),
+            itemStyle: { color: 'rgba(255,150,100,0.6)', width: 1.5 }
+          },
+          markArea: {
+            silent: true,
+            data: [
+              [{ yAxis: tempWarm, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: 999 }],
+              [{ yAxis: -999, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: tempCold }]
+            ]
+          }
+        }
+      ]
+    });
+
+    window.analysisChart.resize();
     return;
   }
 

@@ -256,8 +256,7 @@ window.renderAnalysisChart = (type) => {
     return;
   }
 
-  // 气候变化：双轴组合图（真实数据 + 增强标注）
-  // 气候变化：带误差线的折线图
+  // 气候变化：带误差线的折线图（已添加数值标签）
   if (type === 'climate') {
     if (window.analysisChart) {
       window.analysisChart.dispose();
@@ -296,7 +295,6 @@ window.renderAnalysisChart = (type) => {
     // 生成颜色渐变（年份越新颜色越深）
     const colorStops = years.map((_, i) => {
       const ratio = i / (years.length - 1);
-      // 气温用暖色调
       const r = Math.round(255 * ratio + 180 * (1 - ratio));
       const g = Math.round(80 * ratio + 100 * (1 - ratio));
       const b = Math.round(60 * ratio + 120 * (1 - ratio));
@@ -316,7 +314,8 @@ window.renderAnalysisChart = (type) => {
         data: ['年均温', '年降水'],
         textStyle: { color: tc }
       },
-      grid: { left: 70, right: 70, top: 50, bottom: 50 },
+      // 增加顶部留白，避免标签被裁剪
+      grid: { left: 70, right: 70, top: 70, bottom: 50 },
       xAxis: {
         type: 'category',
         data: years,
@@ -341,57 +340,57 @@ window.renderAnalysisChart = (type) => {
         }
       ],
       series: [
-        // 降水带误差线
-        {
-          name: '年降水',
-          type: 'line',
-          yAxisIndex: 1,
-          data: rains.map((r, i) => ({
-            value: r,
-            itemStyle: { color: rainColorStops[i] }
-          })),
-          lineStyle: { width: 2 },
-          errorBar: {
-            data: rains.map((_, i) => [rainLower[i], rainUpper[i]]),
-            itemStyle: { color: 'rgba(100,180,255,0.6)', width: 1.5 }
-          },
-          markArea: {
-            silent: true,
-            data: [
-              [{ yAxis: rainWet, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: 9999 }],
-              [{ yAxis: 0, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: rainDry }]
-            ]
-          }
+  // 年降水系列（无标签）
+      {
+        name: '年降水',
+        type: 'line',
+        yAxisIndex: 1,
+        data: rains.map((r, i) => ({
+          value: r,
+          itemStyle: { color: rainColorStops[i] }
+        })),
+        lineStyle: { width: 2 },
+        errorBar: {
+          data: rains.map((_, i) => [rainLower[i], rainUpper[i]]),
+          itemStyle: { color: 'rgba(100,180,255,0.6)', width: 1.5 }
         },
-        // 气温带误差线
-        {
-          name: '年均温',
-          type: 'line',
-          data: temps.map((t, i) => ({
-            value: t,
-            itemStyle: { color: colorStops[i] }
-          })),
-          lineStyle: { width: 2.5 },
-          errorBar: {
-            data: temps.map((_, i) => [tempLower[i], tempUpper[i]]),
-            itemStyle: { color: 'rgba(255,150,100,0.6)', width: 1.5 }
-          },
-          markArea: {
-            silent: true,
-            data: [
-              [{ yAxis: tempWarm, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: 999 }],
-              [{ yAxis: -999, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: tempCold }]
-            ]
-          }
+        markArea: {
+          silent: true,
+          data: [
+            [{ yAxis: rainWet, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: 9999 }],
+            [{ yAxis: 0, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: rainDry }]
+          ]
         }
-      ]
+      },
+      // 年均温系列（无标签）
+      {
+        name: '年均温',
+        type: 'line',
+        data: temps.map((t, i) => ({
+          value: t,
+          itemStyle: { color: colorStops[i] }
+        })),
+        lineStyle: { width: 2.5 },
+        errorBar: {
+          data: temps.map((_, i) => [tempLower[i], tempUpper[i]]),
+          itemStyle: { color: 'rgba(255,150,100,0.6)', width: 1.5 }
+        },
+        markArea: {
+          silent: true,
+          data: [
+            [{ yAxis: tempWarm, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: 999 }],
+            [{ yAxis: -999, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: tempCold }]
+          ]
+        }
+      }
+    ]
     });
 
     window.analysisChart.resize();
     return;
   }
 
-  // 在 renderAnalysisChart 中，phenology 类型的柱状图
+  // 物候分析：哑铃图（南北对比）
   if (type === 'phenology') {
     if (window.analysisChart) {
       window.analysisChart.dispose();
@@ -400,24 +399,138 @@ window.renderAnalysisChart = (type) => {
     window.analysisChart = echarts.init(chartDom);
 
     const rcd = window.realClimateData;
-    const bj = rcd?.terms?.[t.name]?.beijing || {};
-    const gz = rcd?.terms?.[t.name]?.guangzhou || {};
+    const termName = t.name || '';
+    const bj = rcd?.terms?.[termName]?.beijing || {};
+    const gz = rcd?.terms?.[termName]?.guangzhou || {};
 
-    const northTemp = bj.temp ?? (t.temp - 3);
-    const northRain = bj.rain ?? (t.rain - 10);
-    const southTemp = gz.temp ?? t.temp;
-    const southRain = gz.rain ?? t.rain;
+    const getVal = (city, key, fallback) => (city[key] !== undefined ? city[key] : fallback);
+    const nTemp = getVal(bj, 'temp', t.temp - 3);
+    const nRain = getVal(bj, 'rain', t.rain - 10);
+    const nHum  = getVal(bj, 'humidity', 45);
+    const sTemp = getVal(gz, 'temp', t.temp);
+    const sRain = getVal(gz, 'rain', t.rain);
+    const sHum  = getVal(gz, 'humidity', 75);
+
+    const indicators = [
+      { name: '均温(℃)', min: -10, max: 40, north: nTemp, south: sTemp, unit: '℃' },
+      { name: '降水(mm)', min: 0,   max: 400, north: nRain, south: sRain, unit: 'mm' },
+      { name: '湿度(%)', min: 20,  max: 100, north: nHum,  south: sHum,  unit: '%' }
+    ];
+
+    const norm = (val, min, max) => Math.min(100, Math.max(0, ((val - min) / (max - min)) * 100));
+    const data = indicators.map((item, idx) => ({
+      y: idx,
+      northRaw: item.north,
+      southRaw: item.south,
+      north: norm(item.north, item.min, item.max),
+      south: norm(item.south, item.min, item.max),
+      name: item.name,
+      unit: item.unit
+    }));
+
+    const climateComment = (window.scienceExplanations && window.scienceExplanations[termName])
+      || `${termName}期间，北方干燥多风，南方温润多雨，南北物候差异显著。`;
+
+    const dumbbellSeries = {
+      type: 'custom',
+      renderItem: function (params, api) {
+        const yIndex = api.value(0);
+        const northVal = api.value(1);   // 归一化后的值（0~100）
+        const southVal = api.value(2);
+        const name     = api.value(3);
+        const northRaw = api.value(4);
+        const southRaw = api.value(5);
+        const unit     = api.value(6) || '';
+
+        const y  = api.coord([0, yIndex])[1];
+        const x1 = api.coord([northVal, yIndex])[0];
+        const x2 = api.coord([southVal, yIndex])[0];
+
+        // 根据差值变化连线颜色
+        const diff = Math.abs(southVal - northVal);
+        const ratio = Math.min(diff / 100, 1);
+        const r = Math.round(111 + (212 - 111) * ratio);
+        const g = Math.round(168 + (138 - 168) * ratio);
+        const b = Math.round(220 + (138 - 220) * ratio);
+        const lineColor = `rgb(${r}, ${g}, ${b})`;
+
+        return {
+          type: 'group',
+          children: [
+            // 连接线
+            { type: 'line', shape: { x1, y1: y, x2, y2: y }, style: { stroke: lineColor, lineWidth: 3 } },
+            // 左端点（北方）
+            { type: 'circle', shape: { cx: x1, cy: y, r: 8 }, style: { fill: '#6FA8DC', stroke: '#fff', lineWidth: 2 } },
+            // 右端点（南方）
+            { type: 'circle', shape: { cx: x2, cy: y, r: 8 }, style: { fill: '#D48A8A', stroke: '#fff', lineWidth: 2 } },
+            // ---- 新增常驻数值标签 ----
+            // 北方数值（圆点左上方）
+            {
+              type: 'text',
+              x: x1 - 10,
+              y: y - 14,
+              style: {
+                text: `${northRaw.toFixed(1)}${unit}`,
+                fill: '#6FA8DC',
+                font: 'bold 11px "Noto Sans SC", sans-serif',
+                textAlign: 'right',
+                textVerticalAlign: 'bottom'
+              }
+            },
+            // 南方数值（圆点右上方）
+            {
+              type: 'text',
+              x: x2 + 10,
+              y: y - 14,
+              style: {
+                text: `${southRaw.toFixed(1)}${unit}`,
+                fill: '#D48A8A',
+                font: 'bold 11px "Noto Sans SC", sans-serif',
+                textAlign: 'left',
+                textVerticalAlign: 'bottom'
+              }
+            }
+            // -------------------------
+          ]
+        };
+      },
+      data: data.map(d => [d.y, d.north, d.south, d.name, d.northRaw, d.southRaw, d.unit]),
+      z: 10
+    };
 
     window.analysisChart.setOption({
-      tooltip: {},
-      title: { text: `${t.name} 南北物候对比`, left: 'center', textStyle: { color: tc, fontSize: 14 } },
-      xAxis: { data: ['均温(°C)', '降水(mm)'], axisLabel: { color: tc } },
-      yAxis: { type: 'value', axisLabel: { color: tc } },
-      series: [
-        { name: '北方(北京)', type: 'bar', data: [northTemp, northRain], itemStyle: { color: '#87CEEB' } },
-        { name: '南方(广州)', type: 'bar', data: [southTemp, southRain], itemStyle: { color: '#FFB6C1' } }
+      tooltip: {
+        trigger: 'item',
+        formatter: (params) => {
+          if (params.seriesName === '哑铃图') {
+            const d = data[params.dataIndex];
+            return `<strong>${d.name}</strong><br/>北方：${d.northRaw.toFixed(1)} ${d.unit}<br/>南方：${d.southRaw.toFixed(1)} ${d.unit}<br/>差值：${(d.southRaw - d.northRaw).toFixed(1)} ${d.unit}<br/><small>${climateComment}</small>`;
+          }
+          return '';
+        }
+      },
+      grid: { left: 80, right: 40, top: 30, bottom: 40 },
+      xAxis: {
+        type: 'value',
+        min: 0,
+        max: 100,
+        axisLabel: { show: false },
+        splitLine: { show: false }
+      },
+      yAxis: {
+        type: 'category',
+        data: indicators.map(i => i.name),
+        axisLabel: { color: tc, fontSize: 13, fontWeight: 'bold' },
+        axisTick: { show: false },
+        axisLine: { show: false }
+      },
+      series: [dumbbellSeries],
+      graphic: [
+        { type: 'text', left: 70, top: 20, style: { text: '← 北方', fill: '#6FA8DC', fontSize: 12, fontWeight: 'bold' } },
+        { type: 'text', right: 30, top: 20, style: { text: '南方 →', fill: '#D48A8A', fontSize: 12, fontWeight: 'bold' } }
       ]
     });
+
     window.analysisChart.resize();
     return;
   }
@@ -432,11 +545,10 @@ window.renderAnalysisChart = (type) => {
 
     const currentTerm = t.name;
     const allTerms = window.solarTerms.map(t => t.name);
-    const xiazhiIndex = 9;   // 夏至
-    const dongzhiIndex = 21; // 冬至
+    const xiazhiIndex = 9;
+    const dongzhiIndex = 21;
     const currentIndex = allTerms.indexOf(currentTerm);
 
-    // 模拟全年昼长（可用真实天文数据替换）
     const dayLengths = allTerms.map((_, i) => {
       const phase = (i - 21) / 24 * 2 * Math.PI;
       return +(12 + 3.5 * Math.sin(phase)).toFixed(2);

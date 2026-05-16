@@ -191,7 +191,14 @@
       border-radius: 10px;
       padding: 20px;
       background: rgba(255,255,255,0.65);
-      box-shadow: 0 6px 18px rgba(180,120,50,0.25);
+      box-shadow: 0 6px 18px rgba(180,120,50,0.25);  
+/* 新增：专属这一块的整张背景图 */
+    background-image: url('../img/12.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* 叠加原有底色，文字更清晰 */
+    background-blend-mode: overlay;
     }
     .poem-column {
       flex: 1;

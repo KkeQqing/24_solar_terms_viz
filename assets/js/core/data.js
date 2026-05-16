@@ -296,35 +296,35 @@ window.realClimateData = {
   // ===================== 各节气真实气候值 =====================
   // 温度单位：℃，降水量单位：mm
   // 节气值采用该节气覆盖时段（约15天）内的日均值
-  terms: {
-    // 春季（spring）
-    '立春': { beijing: { temp: -1.8, rain: 2.3 }, guangzhou: { temp: 14.5, rain: 47.0 } },
-    '雨水': { beijing: { temp: 1.2,  rain: 4.1 }, guangzhou: { temp: 15.8, rain: 60.0 } },
-    '惊蛰': { beijing: { temp: 6.5,  rain: 8.3 }, guangzhou: { temp: 18.0, rain: 98.0 } },
-    '春分': { beijing: { temp: 12.0, rain: 10.2 }, guangzhou: { temp: 20.5, rain: 158.0 } },
-    '清明': { beijing: { temp: 16.5, rain: 21.2 }, guangzhou: { temp: 23.0, rain: 193.6 } },
-    '谷雨': { beijing: { temp: 20.2, rain: 28.0 }, guangzhou: { temp: 25.0, rain: 240.0 } },
-    // 夏季（summer）
-    '立夏': { beijing: { temp: 21.8, rain: 34.4 }, guangzhou: { temp: 26.5, rain: 287.6 } },
-    '小满': { beijing: { temp: 24.0, rain: 35.0 }, guangzhou: { temp: 27.4, rain: 324.0 } },
-    '芒种': { beijing: { temp: 25.8, rain: 76.3 }, guangzhou: { temp: 28.0, rain: 360.5 } },
-    '夏至': { beijing: { temp: 26.8, rain: 100.0 }, guangzhou: { temp: 28.8, rain: 300.0 } },
-    '小暑': { beijing: { temp: 27.0, rain: 174.0 }, guangzhou: { temp: 29.0, rain: 245.7 } },
-    '大暑': { beijing: { temp: 26.2, rain: 166.4 }, guangzhou: { temp: 28.7, rain: 252.5 } },
-    // 秋季（autumn）
-    '立秋': { beijing: { temp: 25.5, rain: 120.0 }, guangzhou: { temp: 28.2, rain: 220.0 } },
-    '处暑': { beijing: { temp: 23.8, rain: 49.7 }, guangzhou: { temp: 27.2, rain: 172.4 } },
-    '白露': { beijing: { temp: 20.1, rain: 35.0 }, guangzhou: { temp: 26.0, rain: 120.0 } },
-    '秋分': { beijing: { temp: 16.5, rain: 21.9 }, guangzhou: { temp: 24.3, rain: 66.4 } },
-    '寒露': { beijing: { temp: 11.0, rain: 15.0 }, guangzhou: { temp: 22.0, rain: 50.0 } },
-    '霜降': { beijing: { temp: 6.5,  rain: 7.7 }, guangzhou: { temp: 20.0, rain: 39.5 } },
-    // 冬季（winter）
-    '立冬': { beijing: { temp: 2.0,  rain: 5.0 }, guangzhou: { temp: 18.0, rain: 36.9 } },
-    '小雪': { beijing: { temp: -0.5, rain: 2.3 }, guangzhou: { temp: 16.0, rain: 30.0 } },
-    '大雪': { beijing: { temp: -2.5, rain: 2.5 }, guangzhou: { temp: 14.0, rain: 25.0 } },
-    '冬至': { beijing: { temp: -3.2, rain: 2.7 }, guangzhou: { temp: 13.8, rain: 47.0 } },
-    '小寒': { beijing: { temp: -4.0, rain: 2.0 }, guangzhou: { temp: 13.0, rain: 40.0 } },
-    '大寒': { beijing: { temp: -2.5, rain: 1.5 }, guangzhou: { temp: 13.5, rain: 42.0 } }
+    terms: {
+    // 春季
+    '立春': { beijing: { temp: -1.8, rain: 2.3, humidity: 42 }, guangzhou: { temp: 14.5, rain: 47.0, humidity: 75 } },
+    '雨水': { beijing: { temp: 1.2,  rain: 4.1, humidity: 45 }, guangzhou: { temp: 15.8, rain: 60.0, humidity: 78 } },
+    '惊蛰': { beijing: { temp: 6.5,  rain: 8.3, humidity: 48 }, guangzhou: { temp: 18.0, rain: 98.0, humidity: 80 } },
+    '春分': { beijing: { temp: 12.0, rain: 10.2, humidity: 50 }, guangzhou: { temp: 20.5, rain: 158.0, humidity: 82 } },
+    '清明': { beijing: { temp: 16.5, rain: 21.2, humidity: 52 }, guangzhou: { temp: 23.0, rain: 193.6, humidity: 83 } },
+    '谷雨': { beijing: { temp: 20.2, rain: 28.0, humidity: 55 }, guangzhou: { temp: 25.0, rain: 240.0, humidity: 85 } },
+    // 夏季
+    '立夏': { beijing: { temp: 21.8, rain: 34.4, humidity: 58 }, guangzhou: { temp: 26.5, rain: 287.6, humidity: 86 } },
+    '小满': { beijing: { temp: 24.0, rain: 35.0, humidity: 60 }, guangzhou: { temp: 27.4, rain: 324.0, humidity: 86 } },
+    '芒种': { beijing: { temp: 25.8, rain: 76.3, humidity: 65 }, guangzhou: { temp: 28.0, rain: 360.5, humidity: 87 } },
+    '夏至': { beijing: { temp: 26.8, rain: 100.0, humidity: 70 }, guangzhou: { temp: 28.8, rain: 300.0, humidity: 85 } },
+    '小暑': { beijing: { temp: 27.0, rain: 174.0, humidity: 75 }, guangzhou: { temp: 29.0, rain: 245.7, humidity: 83 } },
+    '大暑': { beijing: { temp: 26.2, rain: 166.4, humidity: 77 }, guangzhou: { temp: 28.7, rain: 252.5, humidity: 82 } },
+    // 秋季
+    '立秋': { beijing: { temp: 25.5, rain: 120.0, humidity: 70 }, guangzhou: { temp: 28.2, rain: 220.0, humidity: 82 } },
+    '处暑': { beijing: { temp: 23.8, rain: 49.7, humidity: 65 }, guangzhou: { temp: 27.2, rain: 172.4, humidity: 80 } },
+    '白露': { beijing: { temp: 20.1, rain: 35.0, humidity: 60 }, guangzhou: { temp: 26.0, rain: 120.0, humidity: 78 } },
+    '秋分': { beijing: { temp: 16.5, rain: 21.9, humidity: 55 }, guangzhou: { temp: 24.3, rain: 66.4, humidity: 75 } },
+    '寒露': { beijing: { temp: 11.0, rain: 15.0, humidity: 52 }, guangzhou: { temp: 22.0, rain: 50.0, humidity: 72 } },
+    '霜降': { beijing: { temp: 6.5,  rain: 7.7, humidity: 48 }, guangzhou: { temp: 20.0, rain: 39.5, humidity: 70 } },
+    // 冬季
+    '立冬': { beijing: { temp: 2.0,  rain: 5.0, humidity: 45 }, guangzhou: { temp: 18.0, rain: 36.9, humidity: 68 } },
+    '小雪': { beijing: { temp: -0.5, rain: 2.3, humidity: 43 }, guangzhou: { temp: 16.0, rain: 30.0, humidity: 66 } },
+    '大雪': { beijing: { temp: -2.5, rain: 2.5, humidity: 42 }, guangzhou: { temp: 14.0, rain: 25.0, humidity: 64 } },
+    '冬至': { beijing: { temp: -3.2, rain: 2.7, humidity: 41 }, guangzhou: { temp: 13.8, rain: 47.0, humidity: 63 } },
+    '小寒': { beijing: { temp: -4.0, rain: 2.0, humidity: 40 }, guangzhou: { temp: 13.0, rain: 40.0, humidity: 62 } },
+    '大寒': { beijing: { temp: -2.5, rain: 1.5, humidity: 40 }, guangzhou: { temp: 13.5, rain: 42.0, humidity: 63 } }
   },
 
   // ===================== 十年趋势数据（2016-2025） =====================

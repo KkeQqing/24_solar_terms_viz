@@ -86,9 +86,20 @@
 
     <!-- 右侧列 -->
     <section class="right-col">
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="folk"><div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:users-three-bold"></iconify-icon><span>华夏民俗分布</span></div><div class="chart flex-1" id="folk-chart"></div></div>
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="agri"><div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:sprout-bold"></iconify-icon><span>农事结构指数</span></div><div class="chart flex-1" id="agri-chart"></div></div>
-      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="travel"><div class="card-title"><iconify-icon style="color:var(--gold)" icon="ph:trend-up-bold"></iconify-icon><span>文旅热度趋势</span><span class="ml-auto hint" id="trend-score"></span></div><div class="chart flex-1" id="travel-chart"></div></div>
+      <!-- 民俗卡片（占比较大） -->
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="folk">
+        <div class="card-title">
+          <iconify-icon style="color:var(--gold)" icon="ph:users-three-bold"></iconify-icon>
+          <span>华夏民俗分布</span>
+        </div>
+        <div class="flex-1" id="folk-chart"></div>
+      </div>
+
+      <!-- 旅游改为节气趣味科普小卡片 -->
+      <div class="glass p-4 flex flex-col min-h-0 module-card" data-analysis="travel">
+        
+        <div class="flex-1 font-sans text-sm overflow-y-auto" id="travel-card"></div>
+      </div>
     </section>
 
     <!-- 底部时间轴 -->
@@ -196,15 +207,13 @@
   <script src="assets/js/core/data.js"></script>
   <script src="assets/js/core/utils.js"></script>
   <script src="assets/js/core/config.js"></script>
+
   <script src="assets/js/charts/phenology.js"></script>
   <script src="assets/js/charts/climate.js"></script>
   <script src="assets/js/charts/map.js"></script>
   <script src="assets/js/charts/folk.js"></script>
-  <script src="assets/js/charts/agri.js"></script>
   <script src="assets/js/charts/travel.js"></script>
   <script src="assets/js/modules/timeline.js"></script>
-  <script src="assets/js/modules/search.js"></script>
-  <script src="assets/js/modules/favorite.js"></script>
   <script src="assets/js/modules/autoplay.js"></script>
   <script src="assets/js/modules/theme.js"></script>
   <script src="assets/js/modules/poster.js"></script>

@@ -6,8 +6,7 @@
 window.updateCharts = (raw) => {
   window.updatePhenology(raw);    // 物候雷达图
   window.updateFolk(raw);         // 民俗圆环图
-  window.updateAgri(raw);         // 农事柱状图
-  window.updateTravel(raw);       // 文旅热度图
+  window.updateTravel(raw);      // 节气趣味科普小卡片
   window.updateClimate(raw);      // 气候趋势图
 };
 
@@ -46,8 +45,6 @@ window.initCharts = () => {
   const chartIds = [
     'phenology-chart',
     'folk-chart',
-    'agri-chart',
-    'travel-chart',
     'climate-chart'
   ];
   chartIds.forEach(id => {

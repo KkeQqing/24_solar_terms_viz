@@ -22,7 +22,14 @@ header { grid-column: 1/4; grid-row: 1; display: flex; align-items: flex-start; 
   min-width: 0;
   min-height: 0;
 }
-.right-col { grid-column: 3; grid-row: 2/4; display: grid; grid-template-rows: 1fr 1fr 0.92fr; gap: 16px; min-height: 0; }
+.right-col {
+  grid-column: 3;
+  grid-row: 2/4;
+  display: grid;
+  grid-template-rows: 2.2fr 1fr;   /* 民俗占2.2份，科普占1份 */
+  gap: 16px;
+  min-height: 0;
+}
 .timeline-card { grid-column: 1/4; grid-row: 4; position: relative; min-height: 122px; }
 @media (max-width: 1120px) {
   html, body { overflow: auto; }

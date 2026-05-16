@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .scroll-component {
+      all: initial;
+      display: block;
+      width: 100%;
+      height: 100vh;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    }
+
+    .scroll-container {
+      width: 100%;
+      height: 100%;
+      background-color: #fff9f0;
+      border: 8px solid #ffb74d;
+      border-radius: 12px;
+      box-shadow: 
+        0 0 30px rgba(100,60,20,0.18),
+        inset 0 0 40px rgba(255, 183, 77, 0.4),
+        0 0 70px rgba(255,230,200,0.55);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-image: 
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 120 120"><path fill="none" stroke="%23ffe0b2" stroke-width="0.7" d="M20 60 Q60 40 100 60 T180 60"/></svg>'),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" opacity="0.05"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="240" height="240" filter="url(%23noise)"/></svg>');
+      background-size: 140px 140px, 240px 240px;
+      overflow: hidden;
+      animation: lightEquinoxGlow 4.2s ease-in-out infinite, unfoldSpring 1.2s ease-out;
+      background-position: 0 0;
+    }
+
+    @keyframes lightEquinoxGlow {
+      0%, 100% { 
+        box-shadow: 0 0 30px rgba(100,60,20,0.18), inset 0 0 40px rgba(255, 183, 77, 0.4), 0 0 70px rgba(255,230,200,0.55);
+      }
+      50% { 
+        box-shadow: 0 0 50px rgba(130,80,30,0.28), inset 0 0 60px rgba(255, 183, 77, 0.55), 0 0 110px rgba(255,210,160,0.75);
+        filter: brightness(1.06);
+      }
+    }
+
+    @keyframes unfoldSpring {
+      0% { transform: scaleY(0.15) translateY(20px); opacity: 0; }
+      100% { transform: scaleY(1) translateY(0); opacity: 1; }
+    }
+
+    .scroll-container::before,
+    .scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 26px;
+      background: linear-gradient(180deg, #ffe0b2, #ffcc80);
+      border-radius: 6px;
+      z-index: 1;
+      box-shadow: inset 0 0 15px rgba(180,120,50,0.4);
+    }
+    .scroll-container::before { left: -13px; }
+    .scroll-container::after { right: -13px; }
+
+    /* 电光粒子 */
+    .petal {
+      position: absolute;
+      top: -10px;
+      width: 14px;
+      height: 4px;
+      background: #ff9800;
+      opacity: 0.85;
+      animation: lightDrift linear infinite;
+      z-index: 2;
+      border-radius: 50px;
+    }
+    @keyframes lightDrift {
+      0% { transform: translateY(0) translateX(0); opacity: 0.9; }
+      100% { transform: translateY(800px) translateX(-30px); opacity: 0; }
+    }
+
+    /* 闪电光点 */
+    .light {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ffff00;
+      border-radius: 50%;
+      opacity: 0.7;
+      animation: lightFloat 4s infinite alternate;
+      z-index: 2;
+      box-shadow: 0 0 12px #ffff00;
+    }
+    @keyframes lightFloat {
+      0% { transform: translate(0,0); opacity: 0.6; }
+      100% { transform: translate(20px, -20px); opacity: 1; }
+    }
+
+    .top-section {
+      display: flex;
+      flex: 4;
+      padding: 24px 24px 16px;
+      gap: 24px;
+    }
+
+    .left-title-bar {
+      width: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffb74d;
+      border-radius: 10px;
+      padding: 18px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 6px 16px rgba(180,120,50,0.22);
+      transition: 0.4s;
+    }
+    .left-title-bar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(180,120,50,0.28);
+    }
+
+    .festival-emoji {
+      font-size: 36px;
+      animation: lightShake 3s infinite alternate ease-in-out;
+      margin-bottom: 6px;
+    }
+    @keyframes lightShake {
+      0% { transform: rotate(-5deg) scale(1); }
+      100% { transform: rotate(5deg) scale(1.06); }
+    }
+
+    .festival-name {
+      font-family: KaiTi, serif;
+      font-size: 52px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #e65100, #ff9800, #ffb74d);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+      animation: titleOrangeShine 4.5s infinite alternate;
+    }
+    @keyframes titleOrangeShine {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.28); }
+    }
+    
+    .divider {
+      width: 85%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffb74d, transparent);
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1px;
+    }
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, #fff, #ffe0b2, transparent);
+      animation: orangeLineFlow 3.6s ease-in-out infinite;
+    }
+    @keyframes orangeLineFlow {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .festival-info {
+      text-align: center;
+      font-size: 15px;
+      color: #664422;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .middle-poem-area {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      border: 2px solid #ffb74d;
+      border-radius: 10px;
+      padding: 20px;
+      background: rgba(255,255,255,0.65);
+      box-shadow: 0 6px 18px rgba(180,120,50,0.25);
+    }
+    .poem-column {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .poem-text {
+      font-family: KaiTi, serif;
+      font-size: 22px;
+      line-height: 1.8;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      background: linear-gradient(180deg, #e65100, #ff9800);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: poemSlowRise 7s ease-in-out infinite;
+    }
+    @keyframes poemSlowRise {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .poem-author {
+      font-family: KaiTi, serif;
+      font-size: 19px;
+      writing-mode: vertical-rl;
+      color: #664422;
+    }
+
+    .author-seal {
+      width: 26px;
+      height: 26px;
+      background: #e65100;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(230,81,0,0.5);
+      animation: sealVital 3.2s ease-in-out infinite;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+      font-family: Kai

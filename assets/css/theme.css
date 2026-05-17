@@ -1,72 +1,117 @@
 /* assets/css/theme.css */
 
-/*从从谷歌字体库加载 两种中文字体：思源宋体（有衬线，文化感强，用于标题、诗词、节气文字）；思源黑体（无衬线，清晰易读，用于数据、按钮、小字）*/
+/* 从谷歌字体库加载两种中文字体：
+   - 思源宋体（有衬线，文化感强，用于标题、诗词、节气文字）
+   - 思源黑体（无衬线，清晰易读，用于数据、按钮、小字） */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
 
-/*白天模式样式变量*/
+/* 白天模式样式变量 */
 :root {
-  --bg: #f8f3e8;          /* 页面底色：米色 */
-  --ink: #263238;         /* 主要文字：深灰黑 */
-  --sub: #8a8276;         /* 次要文字：浅褐色 */
-  --gold: #d6a928;        /* 主题金色（核心！）*/
-  --season: #c3e88d;      /* 季节色：春季绿 */
-  --season2: #ffe4e1;     /* 季节色：春季粉 */
-  --card: rgba(255,255,255,0.72); /* 卡片半透明白 */
-  --line: rgba(120,100,60,0.13); /* 分割线颜色 */
+  --bg: #f8f3e8;                    /* 页面底色：米色 */
+  --ink: #263238;                   /* 主要文字：深灰黑 */
+  --sub: #8a8276;                   /* 次要文字：浅褐色 */
+  --gold: #d6a928;                  /* 主题金色（核心！）*/
+  --season: #c3e88d;                /* 季节色：春季绿 */
+  --season2: #ffe4e1;               /* 季节色：春季粉 */
+  --card: rgba(255,255,255,0.85);   /* 卡片背景：提高不透明度，减少背景穿透 */
+  --line: rgba(120,100,60,0.13);    /* 分割线颜色 */
   --shadow: 0 20px 60px rgba(80,60,30,0.11); /* 卡片阴影 */
 }
-/*深色模式变量（夜间模式）*/
+
+/* 深色模式变量（夜间模式） */
 body.dark {
-  --bg: #111615;          /* 深色模式：页面整体背景色（深墨绿色） */
-  --ink: #f5efe4;         /* 深色模式：主要文字颜色（浅米白色，保证清晰可读） */
-  --sub: #b9b0a2;         /* 深色模式：次要/说明文字颜色（浅灰色，弱化显示） */
-  --card: rgba(24, 28, 27, 0.76); /* 深色模式：卡片/面板背景色（半透明深灰，毛玻璃效果） */
-  --line: rgba(255, 255, 255, 0.1); /* 深色模式：分割线/边框颜色（极淡白色，低调分隔） */
-  --shadow: 0 22px 80px rgba(0, 0, 0, 0.35); /* 深色模式：卡片阴影（更重更黑，增强悬浮感） */
+  --bg: #111615;                               /* 页面整体背景色（深墨绿色） */
+  --ink: #f5efe4;                              /* 主要文字颜色（浅米白色，保证清晰可读） */
+  --sub: #b9b0a2;                              /* 次要/说明文字颜色（浅灰色，弱化显示） */
+  --card: rgba(24, 28, 27, 0.85);              /* 卡片背景：保持较高不透明度 */
+  --line: rgba(255, 255, 255, 0.15);           /* 分割线颜色：更亮一点 */
+  --shadow: 0 22px 80px rgba(0, 0, 0, 0.55);  /* 卡片阴影：更重，突出悬浮感 */
+
+  /* 修复：强制全局文字颜色为浅色，避免继承白色模式下的深色 */
+  color: var(--ink);
 }
+
 /* 页面背景渐变 */
 body {
-  background: radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 30%, transparent), transparent 34%),/* 右上角柔光 */
-              radial-gradient(circle at 12% 88%, rgba(212, 169, 40, 0.12), transparent 30%),/* 左下角柔光 */
-              linear-gradient(135deg, #fffaf0 0%, var(--bg) 55%, #f1e8d9 100%); /* 主渐变 */
-  transition: 0.45s ease; / /* 切换主题时平滑过渡 */
+  background: radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 30%, transparent), transparent 34%),
+              radial-gradient(circle at 12% 88%, rgba(212, 169, 40, 0.12), transparent 30%),
+              linear-gradient(135deg, #fffaf0 0%, var(--bg) 55%, #f1e8d9 100%);
+  transition: 0.45s ease;
 }
+
 body.dark {
   background: radial-gradient(circle at 76% 12%, color-mix(in srgb, var(--season) 22%, transparent), transparent 36%),
               linear-gradient(135deg, #0f1110 0%, #171b19 55%, #282118 100%);
 }
+
 /* 背景网格纹理 */
 .pattern {
-  /* 固定定位：让纹理始终铺满整个屏幕，不随页面滚动而移动 */
   position: fixed;
-  
-  /* 等同于 top:0; right:0; bottom:0; left:0; 让元素撑满整个屏幕 */
   inset: 0;
-  
-  /* 层级设为 -2，确保在所有内容的最底层，不会遮挡页面元素 */
   z-index: -2;
-  
-  /* 关键：禁止该元素响应鼠标/触摸事件，点击、滑动等操作会穿透到下层内容 */
   pointer-events: none;
 
-  /* 背景图片：用两层线性渐变绘制细网格线
-   * 第一层：水平方向的细横线（1px高，半透明黑，其余透明）
-   * 第二层：垂直方向的细竖线（90deg旋转，1px宽，同色透明）
-   * 组合后形成均匀的点阵/网格纹理
-   */
   background-image: 
     linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
-
-  /* 背景尺寸：定义每个网格单元的大小为 42px × 42px */
   background-size: 42px 42px;
 
-  /* 遮罩效果：从中心向外渐变显示
-   * 中心完全显示纹理，向外逐渐过渡到透明，边缘自然消失，提升高级感
-   */
   mask-image: radial-gradient(circle at center, #000 0%, transparent 78%);
 }
+
 body.dark .pattern {
   filter: invert(1);
-  opacity: 0.18;
+  opacity: 0.12;                             /* 降低网格不透明度，避免干扰文字 */
+}
+
+/* ===== 毛玻璃卡片通用增强 ===== */
+.glass {
+  /* 默认使用半透明背景（由 --card 变量控制） */
+  background: var(--card);
+  /* 增加轻微背景模糊，柔和处理背后的渐变和网格，大幅提升文字可读性 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  /* 确保文字颜色正确（白天深色，夜间由后续规则覆盖） */
+  color: var(--ink);
+  /* 圆角、阴影等继承原有布局样式 */
+}
+
+/* 深色模式下卡片微调 */
+body.dark .glass {
+  /* 夜间可进一步增强模糊，使得背景更柔和 */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--ink);                         /* 再次保证文字颜色 */
+}
+
+/* 覆盖一些可能硬编码颜色的通用元素 */
+body.dark .hint,
+body.dark .card-title span,
+body.dark .stat-card p {
+  color: var(--sub);
+}
+
+body.dark .btn:not(.active):not([style*="background"]) {
+  color: var(--ink);
+  border-color: var(--line);
+  background: rgba(255,255,255,0.08);
+}
+
+body.dark .modal,
+body.dark .modal-card {
+  color: var(--ink);
+}
+
+/* 确保输入框和选择框在深色模式下可读 */
+body.dark select,
+body.dark input[type="text"],
+body.dark textarea {
+  background: rgba(255,255,255,0.1);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+/* 提高深色模式下的链接和强调色可读性（如有需要） */
+body.dark a {
+  color: var(--gold);
 }

@@ -1,6 +1,7 @@
 // assets/js/charts/climate.js
 // 功能：渲染【近10年气候趋势图】（温度折线 + 降水柱状图）
 // 数据来源：1991-2020 国家气象信息中心公开数据，2016-2025 统计年鉴
+// 适配节气：根据当前节气展示该节气十年数据
 
 window.updateClimate = (raw) => {
   const tc = window.textColor ? window.textColor() : '#333';
@@ -8,13 +9,25 @@ window.updateClimate = (raw) => {
   const region = window.currentRegion || 'south';   // 根据南北按钮
   const regionKey = region === 'north' ? 'beijing' : 'guangzhou';
 
-  // 1. 读取真实十年趋势数据
+  // 获取当前节气名称
+  const currentTermIndex = window.currentTermIndex || 0;
+  const term = window.solarTerms[currentTermIndex];
+  const termName = term ? term.name : '立春';
+
+  // 1. 读取当前节气的十年趋势数据（优先节气数据，降级到年度数据）
   const rcd = window.realClimateData;
   let years, temps, rains;
-  if (rcd && rcd.decadalTrend && rcd.decadalTrend[regionKey]) {
-    years = rcd.decadalTrend[regionKey].years;
-    temps = rcd.decadalTrend[regionKey].annualTemp;
-    rains = rcd.decadalTrend[regionKey].annualRain;
+  const decadeTerms = rcd?.decadalTrend?.terms?.[regionKey]?.[termName];
+  if (decadeTerms) {
+    years = decadeTerms.years;
+    temps = decadeTerms.annualTemp;
+    rains = decadeTerms.annualRain;
+  } else if (rcd?.decadalTrend?.[regionKey]) {
+    // 降级：使用年度汇总数据
+    const fallback = rcd.decadalTrend[regionKey];
+    years = fallback.years;
+    temps = fallback.annualTemp;
+    rains = fallback.annualRain;
   } else {
     // 极端情况降级：生成简单趋势（仍不用随机）
     const base = window.adjusted ? window.adjusted(raw) : raw;

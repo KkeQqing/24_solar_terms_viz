@@ -1,7 +1,7 @@
 // assets/js/modules/analysis.js
 // 功能：【节气分析弹窗】
 // 作用：点击分析卡片 → 弹出弹窗，展示该类型下的详实数据解读 + 图表
-// 修改：趣味科普(travel) 展示真实的科学解释（来自 funFacts），无占位符
+// 修改：气候分析适配当前节气，使用节气十年数据
 
 window.openAnalysis = (type = 'summary') => {
   window.currentAnalysisType = type;
@@ -72,48 +72,61 @@ window.openAnalysis = (type = 'summary') => {
         <p class="hint">参考近十年均值</p>
       </div>
     `;
-      } else if (type === 'climate') {
-      const rcd = window.realClimateData;
-      const regionKey = region === 'north' ? 'beijing' : 'guangzhou';
-      const decadeData = rcd?.decadalTrend?.[regionKey];
-      let avgTemp = '--', avgRain = '--', trendVal = '--', tempRange = '--';
+  } else if (type === 'climate') {
+    // 使用当前节气的十年数据计算 KPI
+    const rcd = window.realClimateData;
+    const regionKey = region === 'north' ? 'beijing' : 'guangzhou';
+    const termName = t.name || '立春';
+    const decadeTerms = rcd?.decadalTrend?.terms?.[regionKey]?.[termName];
+    let avgTemp = '--', avgRain = '--', trendVal = '--', tempRange = '--';
 
+    if (decadeTerms) {
+      const temps = decadeTerms.annualTemp;
+      avgTemp = (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(1);
+      const trend = temps[temps.length - 1] - temps[0];
+      trendVal = (trend >= 0 ? '+' : '') + trend.toFixed(1);
+      const rains = decadeTerms.annualRain;
+      avgRain = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length);
+      const allMins = decadeTerms.tempMin;
+      const allMaxs = decadeTerms.tempMax;
+      tempRange = `${Math.min(...allMins)} ~ ${Math.max(...allMaxs)}°C`;
+    } else {
+      // 降级使用年度汇总
+      const decadeData = rcd?.decadalTrend?.[regionKey];
       if (decadeData) {
-        // 计算十年均温
         const temps = decadeData.annualTemp;
         avgTemp = (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(1);
-        // 计算温度趋势（最后一年 - 第一年）
         const trend = temps[temps.length - 1] - temps[0];
         trendVal = (trend >= 0 ? '+' : '') + trend.toFixed(1);
-        // 计算十年均降水
         const rains = decadeData.annualRain;
         avgRain = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length);
-        // 计算温度波动范围（所有年份最低 ~ 最高）
         const allMins = decadeData.tempMin;
         const allMaxs = decadeData.tempMax;
         tempRange = `${Math.min(...allMins)} ~ ${Math.max(...allMaxs)}°C`;
       }
+    }
 
-      kpisHtml = `
-        <div class="modal-kpi">
-          <p class="hint">十年均温</p>
-          <div class="text-2xl font-black">${avgTemp}°C</div>
-          <p class="hint">波动 ${tempRange}</p>
-        </div>
-        <div class="modal-kpi">
-          <p class="hint">十年均降水</p>
-          <div class="text-2xl font-black">${avgRain} mm</div>
-          <p class="hint">${regionLabel}</p>
-        </div>
-        <div class="modal-kpi">
-          <p class="hint">温度趋势</p>
-          <div class="text-2xl font-black">${trendVal}°C</div>
-          <p class="hint">十年变化</p>
-        </div>
-      `;
-    }else if (type === 'travel') {
-    kpisHtml = ''; // 无 KPI 卡片
+    kpisHtml = `
+      <div class="modal-kpi">
+        <p class="hint">十年均温</p>
+        <div class="text-2xl font-black">${avgTemp}°C</div>
+        <p class="hint">波动 ${tempRange}</p>
+      </div>
+      <div class="modal-kpi">
+        <p class="hint">十年均降水</p>
+        <div class="text-2xl font-black">${avgRain} mm</div>
+        <p class="hint">${regionLabel}</p>
+      </div>
+      <div class="modal-kpi">
+        <p class="hint">温度趋势</p>
+        <div class="text-2xl font-black">${trendVal}°C</div>
+        <p class="hint">十年变化</p>
+      </div>
+    `;
+  } else if (type === 'travel') {
+    kpisHtml = '';
   } else {
+    kpisHtml = '';
   }
   document.getElementById('analysis-kpis').innerHTML = kpisHtml;
 
@@ -256,7 +269,7 @@ window.renderAnalysisChart = (type) => {
     return;
   }
 
-  // 气候变化：带误差线的折线图（已添加数值标签）
+  // 气候变化：带误差线的折线图（适配当前节气十年数据）
   if (type === 'climate') {
     if (window.analysisChart) {
       window.analysisChart.dispose();
@@ -266,8 +279,14 @@ window.renderAnalysisChart = (type) => {
 
     const rcd = window.realClimateData;
     const regionKey = window.currentRegion === 'north' ? 'beijing' : 'guangzhou';
-    const decadeData = rcd?.decadalTrend?.[regionKey];
+    const termName = t.name || '立春';
 
+    // 优先获取节气十年数据
+    let decadeData = rcd?.decadalTrend?.terms?.[regionKey]?.[termName];
+    if (!decadeData) {
+      // 降级使用年度数据
+      decadeData = rcd?.decadalTrend?.[regionKey];
+    }
     if (!decadeData) return;
 
     const years = decadeData.years;
@@ -278,21 +297,16 @@ window.renderAnalysisChart = (type) => {
     const rainMax = decadeData.rainMax;
     const rainMin = decadeData.rainMin;
 
-    // 计算温度误差（正负各一条）
     const tempUpper = temps.map((t, i) => tempMax[i] - t);
     const tempLower = temps.map((t, i) => t - tempMin[i]);
-    // 降水误差
     const rainUpper = rains.map((r, i) => rainMax[i] - r);
     const rainLower = rains.map((r, i) => r - rainMin[i]);
 
-    // 温度阈值（用于背景着色）
     const tempWarm = 23;
     const tempCold = 18;
-    // 降水阈值
     const rainWet = 800;
     const rainDry = 500;
 
-    // 生成颜色渐变（年份越新颜色越深）
     const colorStops = years.map((_, i) => {
       const ratio = i / (years.length - 1);
       const r = Math.round(255 * ratio + 180 * (1 - ratio));
@@ -314,7 +328,6 @@ window.renderAnalysisChart = (type) => {
         data: ['年均温', '年降水'],
         textStyle: { color: tc }
       },
-      // 增加顶部留白，避免标签被裁剪
       grid: { left: 70, right: 70, top: 70, bottom: 50 },
       xAxis: {
         type: 'category',
@@ -340,50 +353,48 @@ window.renderAnalysisChart = (type) => {
         }
       ],
       series: [
-  // 年降水系列（无标签）
-      {
-        name: '年降水',
-        type: 'line',
-        yAxisIndex: 1,
-        data: rains.map((r, i) => ({
-          value: r,
-          itemStyle: { color: rainColorStops[i] }
-        })),
-        lineStyle: { width: 2 },
-        errorBar: {
-          data: rains.map((_, i) => [rainLower[i], rainUpper[i]]),
-          itemStyle: { color: 'rgba(100,180,255,0.6)', width: 1.5 }
+        {
+          name: '年降水',
+          type: 'line',
+          yAxisIndex: 1,
+          data: rains.map((r, i) => ({
+            value: r,
+            itemStyle: { color: rainColorStops[i] }
+          })),
+          lineStyle: { width: 2 },
+          errorBar: {
+            data: rains.map((_, i) => [rainLower[i], rainUpper[i]]),
+            itemStyle: { color: 'rgba(100,180,255,0.6)', width: 1.5 }
+          },
+          markArea: {
+            silent: true,
+            data: [
+              [{ yAxis: rainWet, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: 9999 }],
+              [{ yAxis: 0, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: rainDry }]
+            ]
+          }
         },
-        markArea: {
-          silent: true,
-          data: [
-            [{ yAxis: rainWet, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: 9999 }],
-            [{ yAxis: 0, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: rainDry }]
-          ]
+        {
+          name: '年均温',
+          type: 'line',
+          data: temps.map((t, i) => ({
+            value: t,
+            itemStyle: { color: colorStops[i] }
+          })),
+          lineStyle: { width: 2.5 },
+          errorBar: {
+            data: temps.map((_, i) => [tempLower[i], tempUpper[i]]),
+            itemStyle: { color: 'rgba(255,150,100,0.6)', width: 1.5 }
+          },
+          markArea: {
+            silent: true,
+            data: [
+              [{ yAxis: tempWarm, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: 999 }],
+              [{ yAxis: -999, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: tempCold }]
+            ]
+          }
         }
-      },
-      // 年均温系列（无标签）
-      {
-        name: '年均温',
-        type: 'line',
-        data: temps.map((t, i) => ({
-          value: t,
-          itemStyle: { color: colorStops[i] }
-        })),
-        lineStyle: { width: 2.5 },
-        errorBar: {
-          data: temps.map((_, i) => [tempLower[i], tempUpper[i]]),
-          itemStyle: { color: 'rgba(255,150,100,0.6)', width: 1.5 }
-        },
-        markArea: {
-          silent: true,
-          data: [
-            [{ yAxis: tempWarm, itemStyle: { color: 'rgba(255,0,0,0.05)' } }, { yAxis: 999 }],
-            [{ yAxis: -999, itemStyle: { color: 'rgba(0,0,255,0.05)' } }, { yAxis: tempCold }]
-          ]
-        }
-      }
-    ]
+      ]
     });
 
     window.analysisChart.resize();
@@ -435,7 +446,7 @@ window.renderAnalysisChart = (type) => {
       type: 'custom',
       renderItem: function (params, api) {
         const yIndex = api.value(0);
-        const northVal = api.value(1);   // 归一化后的值（0~100）
+        const northVal = api.value(1);
         const southVal = api.value(2);
         const name     = api.value(3);
         const northRaw = api.value(4);
@@ -446,7 +457,6 @@ window.renderAnalysisChart = (type) => {
         const x1 = api.coord([northVal, yIndex])[0];
         const x2 = api.coord([southVal, yIndex])[0];
 
-        // 根据差值变化连线颜色
         const diff = Math.abs(southVal - northVal);
         const ratio = Math.min(diff / 100, 1);
         const r = Math.round(111 + (212 - 111) * ratio);
@@ -457,14 +467,9 @@ window.renderAnalysisChart = (type) => {
         return {
           type: 'group',
           children: [
-            // 连接线
             { type: 'line', shape: { x1, y1: y, x2, y2: y }, style: { stroke: lineColor, lineWidth: 3 } },
-            // 左端点（北方）
             { type: 'circle', shape: { cx: x1, cy: y, r: 8 }, style: { fill: '#6FA8DC', stroke: '#fff', lineWidth: 2 } },
-            // 右端点（南方）
             { type: 'circle', shape: { cx: x2, cy: y, r: 8 }, style: { fill: '#D48A8A', stroke: '#fff', lineWidth: 2 } },
-            // ---- 新增常驻数值标签 ----
-            // 北方数值（圆点左上方）
             {
               type: 'text',
               x: x1 - 10,
@@ -477,7 +482,6 @@ window.renderAnalysisChart = (type) => {
                 textVerticalAlign: 'bottom'
               }
             },
-            // 南方数值（圆点右上方）
             {
               type: 'text',
               x: x2 + 10,
@@ -490,7 +494,6 @@ window.renderAnalysisChart = (type) => {
                 textVerticalAlign: 'bottom'
               }
             }
-            // -------------------------
           ]
         };
       },
